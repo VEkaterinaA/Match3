@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7307179398249888347}
   - component: {fileID: 7307179398249888346}
   m_Layer: 0
-  m_Name: RedBlock
+  m_Name: BlockRed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

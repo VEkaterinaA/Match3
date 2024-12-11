@@ -9622,7 +9622,7 @@ GameObject:
   - component: {fileID: 6623336022779351222}
   - component: {fileID: 475508367668023793}
   m_Layer: 0
-  m_Name: DnmtDeb
+  m_Name: TntParts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
