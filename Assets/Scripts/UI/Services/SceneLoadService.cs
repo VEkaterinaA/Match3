@@ -6,7 +6,7 @@ namespace UI.Services
 {
 	public class SceneLoadService : ISceneLoadService
 	{
-		private const string LevelSceneAssetKey = "RoadScene";
+		private const string LevelSceneAssetKey = "GameScene";
 		private const string MenuSceneAssetKey = "StartMenuScene";
 
 		public void LoadLevelScene()
