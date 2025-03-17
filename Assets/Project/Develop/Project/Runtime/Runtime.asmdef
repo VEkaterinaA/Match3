@@ -1,0 +1,28 @@
+{
+    "name": "Runtime",
+    "rootNamespace": "",
+    "references": [
+        "UniTask",
+        "VContainer",
+        "LitMotion",
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "Unity.Cinemachine",
+        "Unity.Localization",
+        "UniTask.Addressables",
+        "UniRx",
+        "AYellowpaper.SerializedCollections",
+        "Unity.InputSystem",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.RenderPipelines.Universal.2D.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
