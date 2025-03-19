@@ -9,7 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8458401065805826530}
-  - component: {fileID: 4124076498467787368}
+  - component: {fileID: 3231188096190005964}
+  - component: {fileID: 1709317517889402668}
   m_Layer: 0
   m_Name: LifetimeScope
   m_TagString: Untagged
@@ -34,7 +35,7 @@ Transform:
   - {fileID: 6132145862161085056}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4124076498467787368
+--- !u!114 &3231188096190005964
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -43,7 +44,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2137375954855335648}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea02038707bc947469b620fa7d1514b0, type: 3}
+  m_Script: {fileID: 11500000, guid: 6bb7fab266e34198bb8e814440734ad0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   parentReference:
@@ -51,6 +52,36 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   _injectableComponents: []
+  _screensInfoAssetsContainer:
+    _uiDocumentsInfosDictionary:
+      _serializedList: []
+  _popupsInfoAssetsContainer:
+    _uiDocumentsInfosDictionary:
+      _serializedList: []
+  _vfxPrefabAssetsContainer:
+    _prefabsAssetsReferencesDictionary:
+      _serializedList: []
+  _prefabAssetsContainer:
+    _prefabsAssetsReferencesDictionary:
+      _serializedList: []
+  _templateAssetsContainer:
+    _prefabsAssetsReferencesDictionary:
+      _serializedList: []
+  _loadingScreenUIDocument: {fileID: 8029656556591331133}
+  _loopsService: {fileID: 1709317517889402668}
+  _eventSystem: {fileID: 63184350791074214}
+--- !u!114 &1709317517889402668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2137375954855335648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fe4020bd11d26b43af861f3a8d3e6af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2411166386036528291
 GameObject:
   m_ObjectHideFlags: 0
@@ -149,6 +180,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6031197362375160007}
+  - component: {fileID: 8029656556591331133}
   m_Layer: 0
   m_Name: LoadingScreen
   m_TagString: Untagged
@@ -171,3 +203,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8458401065805826530}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8029656556591331133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8793052650143813431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PanelSettings: {fileID: 0}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 0}
+  m_SortingOrder: 0

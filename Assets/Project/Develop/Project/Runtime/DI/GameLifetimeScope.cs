@@ -1,6 +1,7 @@
 using Runtime.Attributes;
 using Runtime.Data.Constants.Enums;
 using Runtime.Data.Constants.Enums.AssetReferencesTypes;
+using Runtime.DI.Core;
 using Runtime.Infrastructure.Factories;
 using Runtime.Infrastructure.Factories.Core;
 using Runtime.Infrastructure.Services;
@@ -11,7 +12,6 @@ using Runtime.Infrastructure.Services.Input;
 using Runtime.Infrastructure.Services.Localization;
 using Runtime.Infrastructure.Services.SaveProgressServices;
 using Runtime.Infrastructure.Services.UIServices;
-using Runtime.MonoBehaviours.LifetimeScopes.Core;
 using Runtime.Visual.UI.UIDocumentWrappers.Screens;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -64,10 +64,6 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 		[SerializeField]
 		private UIDocument _loadingScreenUIDocument;
 		[SerializeField]
-		private RenderTexture _activeRenderTexture;
-		[SerializeField]
-		private Material _vignetteMaterial;
-		[SerializeField]
 		[GetComponent]
 		private LoopsService _loopsService;
 		/*		[SerializeField]
@@ -75,8 +71,6 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 				private TimerService _timerManager;*/
 		[SerializeField]
 		private EventSystem _eventSystem;
-		[SerializeField]
-		private PlatformManager _platformManager;
 
 		private LoadingScreen _loadingScreen;
 
@@ -114,37 +108,31 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 		{
 			containerBuilder.Register<UIDocumentsFactory<ScreenType>>(Lifetime.Singleton).As<IUIDocumentsFactory<ScreenType>>();
 			containerBuilder.Register<UIDocumentsFactory<PopupType>>(Lifetime.Singleton).As<IUIDocumentsFactory<PopupType>>();
-/*			containerBuilder.Register<ComponentsFactory>(Lifetime.Singleton).As<IComponentsFactory>();
-			containerBuilder.Register<TemplatesFactory>(Lifetime.Singleton).As<ITemplatesFactory>();
-*/			containerBuilder.Register<ProgressFactory>(Lifetime.Singleton).As<IProgressFactory>();
+			/*			containerBuilder.Register<ComponentsFactory>(Lifetime.Singleton).As<IComponentsFactory>();
+						containerBuilder.Register<TemplatesFactory>(Lifetime.Singleton).As<ITemplatesFactory>();
+			*/
+			containerBuilder.Register<ProgressFactory>(Lifetime.Singleton).As<IProgressFactory>();
 			containerBuilder.UseEntryPoints(ConfigureEntryPoints);
 
 			return;
 
 			void ConfigureEntryPoints(EntryPointsBuilder entryPointsBuilder)
 			{
-/*				entryPointsBuilder.Add<PrefabsFactory<PrefabType, GameObject>>();
-				entryPointsBuilder.Add<PrefabsFactory<VFXType, GameObject>>();
-*/			}
+				/*				entryPointsBuilder.Add<PrefabsFactory<PrefabType, GameObject>>();
+								entryPointsBuilder.Add<PrefabsFactory<VFXType, GameObject>>();
+				*/
+			}
 		}
 
 		private void RegisterServices(IContainerBuilder containerBuilder)
 		{
-			//containerBuilder.Register<PostProcessingService>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(_vignetteMaterial);
-			containerBuilder.Register<CamerasService>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(_activeRenderTexture);
 			containerBuilder.Register<PopupsService>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(transform);
-			//containerBuilder.Register<ResourceLocalizationService>(Lifetime.Singleton).AsImplementedInterfaces();
-			//containerBuilder.Register<AudioDialogueService>(Lifetime.Singleton).AsImplementedInterfaces();
-			//containerBuilder.Register<EnvironmentBehaviour>(Lifetime.Singleton).AsImplementedInterfaces();
 			containerBuilder.Register<LocalizationService>(Lifetime.Singleton).AsImplementedInterfaces();
 			containerBuilder.Register<SystemRandomService>(Lifetime.Singleton).AsImplementedInterfaces();
 			containerBuilder.Register<FileSystemService>(Lifetime.Singleton).AsImplementedInterfaces();
-			//containerBuilder.Register<ParticlesService>(Lifetime.Singleton).AsImplementedInterfaces();
 			containerBuilder.Register<SceneLoadService>(Lifetime.Singleton).AsImplementedInterfaces();
-			//containerBuilder.Register<CutsceneService>(Lifetime.Singleton).AsImplementedInterfaces();
-			//containerBuilder.Register<AudioService>(Lifetime.Singleton).AsImplementedInterfaces();
 			containerBuilder.Register<Pauseable>(Lifetime.Singleton).AsImplementedInterfaces();
-			containerBuilder.RegisterComponent(_platformManager).AsImplementedInterfaces();
+
 			containerBuilder.RegisterComponent(_loopsService).AsImplementedInterfaces();
 			//containerBuilder.RegisterComponent(_timerManager).AsImplementedInterfaces();
 			containerBuilder.UseEntryPoints(ConfigureEntryPoints);
@@ -154,18 +142,9 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 			void ConfigureEntryPoints(EntryPointsBuilder entryPointsBuilder)
 			{
 				entryPointsBuilder.Add<ScreensService>().WithParameter(_loadingScreen).WithParameter(transform);
-				//entryPointsBuilder.Add<EnemyService>().WithParameter(_enemyConfig);
 				entryPointsBuilder.Add<PersistentProgressService>();
-				/*entryPointsBuilder.Add<InventoryItemsService>();
-				entryPointsBuilder.Add<InteriorStateService>();
-				entryPointsBuilder.Add<MiniQuestsService>();
-				entryPointsBuilder.Add<LightingService>();
-				entryPointsBuilder.Add<PlayerService>();
-				entryPointsBuilder.Add<BattleService>();
-				entryPointsBuilder.Add<QuestsService>();*/
 				entryPointsBuilder.Add<InputService>();
 				entryPointsBuilder.Add<GameService>();
-
 
 #if UNITY_EDITOR
 				entryPointsBuilder.Add<EditorApplicationService>();
@@ -177,17 +156,17 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 
 		private void RegisterConfigs(IContainerBuilder containerBuilder)
 		{
-/*			containerBuilder.RegisterInstance(_inventoryConfig).AsImplementedInterfaces();
-			containerBuilder.RegisterInstance(_lightingConfig).AsImplementedInterfaces();
-			containerBuilder.RegisterInstance(_progressConfig).AsImplementedInterfaces();
-			containerBuilder.RegisterInstance(_graphicsConfig).AsImplementedInterfaces();
-			containerBuilder.RegisterInstance(_questsConfig).AsImplementedInterfaces();
-			containerBuilder.RegisterInstance(_cameraConfig).AsImplementedInterfaces();
-			containerBuilder.RegisterInstance(_inputConfig).AsImplementedInterfaces();
-			containerBuilder.RegisterInstance(_audioConfig).AsImplementedInterfaces();
-			containerBuilder.RegisterInstance(_gameConfig).AsImplementedInterfaces();
-			containerBuilder.RegisterInstance(_fogConfig).AsImplementedInterfaces();
-			containerBuilder.RegisterInstance(_uiConfig).AsImplementedInterfaces();*/
+			/*			containerBuilder.RegisterInstance(_inventoryConfig).AsImplementedInterfaces();
+						containerBuilder.RegisterInstance(_lightingConfig).AsImplementedInterfaces();
+						containerBuilder.RegisterInstance(_progressConfig).AsImplementedInterfaces();
+						containerBuilder.RegisterInstance(_graphicsConfig).AsImplementedInterfaces();
+						containerBuilder.RegisterInstance(_questsConfig).AsImplementedInterfaces();
+						containerBuilder.RegisterInstance(_cameraConfig).AsImplementedInterfaces();
+						containerBuilder.RegisterInstance(_inputConfig).AsImplementedInterfaces();
+						containerBuilder.RegisterInstance(_audioConfig).AsImplementedInterfaces();
+						containerBuilder.RegisterInstance(_gameConfig).AsImplementedInterfaces();
+						containerBuilder.RegisterInstance(_fogConfig).AsImplementedInterfaces();
+						containerBuilder.RegisterInstance(_uiConfig).AsImplementedInterfaces();*/
 		}
 	}
 }

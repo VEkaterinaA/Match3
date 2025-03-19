@@ -55,13 +55,6 @@ namespace Runtime.Infrastructure.Services
 			remove => _initialized -= value;
 		}
 
-		internal CamerasService(RenderTexture activeRenderTexture)
-		{
-			_activeRenderTexture = activeRenderTexture;
-
-			RenderTexture.active = activeRenderTexture;
-		}
-
 
 		void ICamerasService.Setup(Dictionary<VirtualCameraSetupType, VirtualCameraSetup> virtualCamerasSetups, CinemachineConfiner2D cinemachineConfiner2D,
 			CinemachineCamera cinemachineVirtualCamera, CinemachineBrain cinemachineBrain, Camera uiVirtualCamera, Camera camera)

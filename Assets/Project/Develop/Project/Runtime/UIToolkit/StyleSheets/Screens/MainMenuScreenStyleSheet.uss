@@ -1,0 +1,29 @@
+#Background {
+    background-image: url("project://database/Assets/Textures/Backgrounds/background_image.png?fileID=2800000&guid=be06ef908b7eb1542954856444d1326c&type=3#background_image");
+}
+
+#Logo {
+    background-image: url("project://database/Assets/Textures/LogoTexture.png?fileID=2800000&guid=ac52ec99dbf26ed4e836ad106b39d9d1&type=3#LogoTexture");
+    -unity-background-scale-mode: scale-to-fit;
+    width: 100%;
+    height: 50%;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.Button {
+    height: 12%;
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-bottom: 20px;
+    margin-left: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    background-image: url("project://database/Assets/Textures/Backgrounds/back_plate_04.png?fileID=2800000&guid=a6d2033a9e3b401429766cbe4756caf2&type=3#back_plate_04");
+    background-color: rgba(0, 0, 0, 0);
+}

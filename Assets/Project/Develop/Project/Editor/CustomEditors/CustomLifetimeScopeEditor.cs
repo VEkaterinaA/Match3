@@ -1,8 +1,8 @@
-using System.Linq;
+using HiddenLightEditor.Extensions;
+using Runtime.DI.Core;
 using Runtime.Extensions.System;
 using Runtime.MonoBehaviours;
-using Runtime.MonoBehaviours.LifetimeScopes.Core;
-using HiddenLightEditor.Extensions;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -14,7 +14,7 @@ namespace HiddenLightEditor.CustomEditors
 	{
 		private SerializedProperty _injectableComponents;
 
-		private CustomLifetimeScope CustomLifetimeScope => ((CustomLifetimeScope)target);
+		private CustomLifetimeScope CustomLifetimeScope => ((CustomLifetimeScope) target);
 
 		private void OnEnable()
 		{

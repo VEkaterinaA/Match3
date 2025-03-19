@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
 using Runtime.Attributes;
+using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace Runtime.MonoBehaviours.LifetimeScopes.Core
+namespace Runtime.DI.Core
 {
 	public class CustomLifetimeScope : LifetimeScope
 	{
-		[SerializeField] [ReadOnlyField]
+		[SerializeField]
+		[ReadOnlyField]
 		private List<Component> _injectableComponents;
 
 		protected override void Configure(IContainerBuilder containerBuilder)
