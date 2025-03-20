@@ -1,13 +1,11 @@
-﻿using Runtime.Extensions.LitMotion;
+﻿using LitMotion;
+using Runtime.Extensions.LitMotion;
 using Runtime.Extensions.System;
 using Runtime.Extensions.UnityEngine.UIElements;
-using Runtime.Infrastructure.Services.Localization.Core;
 using Runtime.Infrastructure.Services.UIServices.Core;
 using Runtime.Visual.UI.UIDocumentWrappers.Core;
-using LitMotion;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer;
@@ -29,8 +27,6 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens.Core
 
 		protected IStyle RootStyle => RootVisualElement.style;
 
-		protected ILocalizationService LocalizationService { get; private set; }
-
 		protected IScreensService ScreensService { get; private set; }
 
 		internal Boolean IsShowed { get; private protected set; }
@@ -42,9 +38,8 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens.Core
 		}
 
 		[Inject]
-		internal void Construct(IScreensService screensService, ILocalizationService localizationService)
+		internal void Construct(IScreensService screensService)
 		{
-			LocalizationService = localizationService;
 			ScreensService = screensService;
 		}
 
@@ -98,37 +93,23 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens.Core
 			RootStyle.visibility = Visibility.Hidden;
 		}
 
-		protected virtual void UpdateLocalization()
-		{
-			foreach (var localizedTextElement in _textElements.Where(localizedTextElement => (localizedTextElement.text.Length > 0)))
-			{
-				LocalizationService.GetLocalizedString($"{GetType().Name}/{localizedTextElement.name}", (localizedText => localizedTextElement.text = localizedText));
-			}
-		}
 
 		protected virtual void Show()
 		{
-			UpdateLocalization();
-			Subscribe();
-
 			IsShowed = true;
 		}
 
 		protected virtual void Hide()
 		{
-			Unsubscribe();
-
 			IsShowed = false;
 		}
 
 		protected virtual void Subscribe()
 		{
-			LocalizationService.LocaleChanged += UpdateLocalization;
 		}
 
 		protected virtual void Unsubscribe()
 		{
-			LocalizationService.LocaleChanged -= UpdateLocalization;
 		}
 	}
 }

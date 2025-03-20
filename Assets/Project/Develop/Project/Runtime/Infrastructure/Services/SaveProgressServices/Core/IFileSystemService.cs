@@ -21,5 +21,11 @@ namespace Runtime.Infrastructure.Services.SaveProgressServices.Core
 		internal void Save(Byte[] data, String fullPath);
 
 		internal void Delete(String fullPath);
+
+		internal UniTask<Boolean> ExistsAsync(String fullPath);
+
+		internal UniTask<String> ReadAllTextAsync(String fullPath);
+
+		internal UniTask WriteAllTextAsync(String data, String fullPath);
 	}
 }

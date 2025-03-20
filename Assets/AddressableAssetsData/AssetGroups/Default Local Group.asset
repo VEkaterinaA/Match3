@@ -13,10 +13,32 @@ MonoBehaviour:
   m_Name: Default Local Group
   m_EditorClassIdentifier: 
   m_GroupName: Default Local Group
-  m_Data:
-    m_SerializedData: []
   m_GUID: bfe830467e275ee40868aedc1ec316f8
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: dd16e7f642d67604da985e6b2768798b
+    m_Address: ScreenPanelSettings
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PanelSetting
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1f0aa622d488d47dcbe42058bfc245f1
+    m_Address: LoadingScreenVisualTreeAsset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Screen
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 49dbae66582b6cf459c64db0e5794dbd
+    m_Address: MainMenuScreenVisualTreeAsset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Screen
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a4e998590452649efbccf94f9a4be02e
+    m_Address: SettingsScreenVisualTreeAsset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Screen
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: aa8896b0c4bb0574fbf842001f5ba793, type: 2}
   m_SchemaSet:

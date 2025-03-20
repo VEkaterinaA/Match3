@@ -39,7 +39,7 @@ namespace Runtime.Infrastructure.Services.App.Core
 
 		void IApplicationService.RequestQuit()
 		{
-			_persistentProgressService.SaveActiveProgress();
+			//_persistentProgressService.SaveActiveProgress();
 
 			RequestQuit();
 		}
@@ -52,7 +52,7 @@ namespace Runtime.Infrastructure.Services.App.Core
 
 			if ((_secondsAfterLastSave > _gameConfig.SaveCooldown) && (_persistentProgressService.ActiveProgress is not null))
 			{
-				_persistentProgressService.SaveActiveProgress();
+				//_persistentProgressService.SaveActiveProgress();
 				_secondsAfterLastSave = 0.0F;
 			}
 		}

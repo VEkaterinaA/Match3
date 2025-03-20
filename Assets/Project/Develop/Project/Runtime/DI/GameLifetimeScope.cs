@@ -1,4 +1,5 @@
 using Runtime.Attributes;
+using Runtime.Data.Configs;
 using Runtime.Data.Constants.Enums;
 using Runtime.Data.Constants.Enums.AssetReferencesTypes;
 using Runtime.DI.Core;
@@ -9,7 +10,6 @@ using Runtime.Infrastructure.Services.App;
 using Runtime.Infrastructure.Services.AssetsProvider.Containers;
 using Runtime.Infrastructure.Services.AssetsProvider.Containers.Core;
 using Runtime.Infrastructure.Services.Input;
-using Runtime.Infrastructure.Services.Localization;
 using Runtime.Infrastructure.Services.SaveProgressServices;
 using Runtime.Infrastructure.Services.UIServices;
 using Runtime.Visual.UI.UIDocumentWrappers.Screens;
@@ -36,10 +36,12 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 		[SerializeField]
 		private PrefabAssetsContainer<TemplateID, VisualTreeAsset> _templateAssetsContainer;
 		[Header("Configs")]
+		[SerializeField]
+		private ProgressConfig _progressConfig;
+		[SerializeField]
+		private GameConfig _gameConfig;
 		/*		[SerializeField]
-				private InventoryConfig _inventoryConfig;
-				[SerializeField]
-				private ProgressConfig _progressConfig;
+				private InventoryConfig _inventoryConfig;				
 				[SerializeField]
 				private LightingConfig _lightingConfig;
 				[SerializeField]
@@ -54,8 +56,6 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 				private AudioConfig _audioConfig;
 				[SerializeField]
 				private InputConfig _inputConfig;
-				[SerializeField]
-				private GameConfig _gameConfig;
 				[SerializeField]
 				private FogConfig _fogConfig;
 				[SerializeField]
@@ -84,7 +84,7 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 			containerBuilder.RegisterBuildCallback(objectResolver =>
 			{
 				objectResolver.Inject(_loadingScreen);
-				//objectResolver.Inject(_progressConfig);
+				objectResolver.Inject(_progressConfig);
 			});
 
 			RegisterAssetsContainers(containerBuilder);
@@ -127,7 +127,6 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 		private void RegisterServices(IContainerBuilder containerBuilder)
 		{
 			containerBuilder.Register<PopupsService>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(transform);
-			containerBuilder.Register<LocalizationService>(Lifetime.Singleton).AsImplementedInterfaces();
 			containerBuilder.Register<SystemRandomService>(Lifetime.Singleton).AsImplementedInterfaces();
 			containerBuilder.Register<FileSystemService>(Lifetime.Singleton).AsImplementedInterfaces();
 			containerBuilder.Register<SceneLoadService>(Lifetime.Singleton).AsImplementedInterfaces();
@@ -156,15 +155,16 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 
 		private void RegisterConfigs(IContainerBuilder containerBuilder)
 		{
+			containerBuilder.RegisterInstance(_progressConfig).AsImplementedInterfaces();
+			containerBuilder.RegisterInstance(_gameConfig).AsImplementedInterfaces();
+
 			/*			containerBuilder.RegisterInstance(_inventoryConfig).AsImplementedInterfaces();
 						containerBuilder.RegisterInstance(_lightingConfig).AsImplementedInterfaces();
-						containerBuilder.RegisterInstance(_progressConfig).AsImplementedInterfaces();
 						containerBuilder.RegisterInstance(_graphicsConfig).AsImplementedInterfaces();
 						containerBuilder.RegisterInstance(_questsConfig).AsImplementedInterfaces();
 						containerBuilder.RegisterInstance(_cameraConfig).AsImplementedInterfaces();
 						containerBuilder.RegisterInstance(_inputConfig).AsImplementedInterfaces();
 						containerBuilder.RegisterInstance(_audioConfig).AsImplementedInterfaces();
-						containerBuilder.RegisterInstance(_gameConfig).AsImplementedInterfaces();
 						containerBuilder.RegisterInstance(_fogConfig).AsImplementedInterfaces();
 						containerBuilder.RegisterInstance(_uiConfig).AsImplementedInterfaces();*/
 		}

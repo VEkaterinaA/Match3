@@ -22,8 +22,6 @@ namespace Runtime.Infrastructure.GameStateMachine.States
 		{
 			base.Enter();
 
-			_screensService.Hide<InputScreen>();
-
 			_pauseControl.RunPause();
 		}
 
@@ -31,10 +29,10 @@ namespace Runtime.Infrastructure.GameStateMachine.States
 		{
 			base.Exit();
 
-			_screensService.Show<HUDScreen>();
+/*			_screensService.Show<HUDScreen>();
 			_screensService.Show<GameScreen>();
 			_screensService.Show<InputScreen>();
-
+*/
 			_pauseControl.RunUnpause();
 		}
 	}
