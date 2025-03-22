@@ -152,6 +152,21 @@ PrefabInstance:
     - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
         type: 3}
       propertyPath: _screensInfoAssetsContainer._uiDocumentsInfosDictionary._serializedList.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _screensInfoAssetsContainer._uiDocumentsInfosDictionary._serializedList.Array.data[1].Key
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _screensInfoAssetsContainer._uiDocumentsInfosDictionary._serializedList.Array.data[0].Value._sortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _screensInfoAssetsContainer._uiDocumentsInfosDictionary._serializedList.Array.data[1].Value._sortingOrder
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
@@ -161,8 +176,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
         type: 3}
+      propertyPath: _screensInfoAssetsContainer._uiDocumentsInfosDictionary._serializedList.Array.data[1].Value._panelSettingsReference.m_AssetGUID
+      value: dd16e7f642d67604da985e6b2768798b
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
       propertyPath: _screensInfoAssetsContainer._uiDocumentsInfosDictionary._serializedList.Array.data[0].Value._visualTreeAssetReference.m_AssetGUID
       value: a4e998590452649efbccf94f9a4be02e
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _screensInfoAssetsContainer._uiDocumentsInfosDictionary._serializedList.Array.data[1].Value._visualTreeAssetReference.m_AssetGUID
+      value: 15f54a1a2ae4dd741a4c87eac714705b
       objectReference: {fileID: 0}
     - target: {fileID: 8029656556591331133, guid: cf8aa02ccea36284b815f477a028b35d,
         type: 3}

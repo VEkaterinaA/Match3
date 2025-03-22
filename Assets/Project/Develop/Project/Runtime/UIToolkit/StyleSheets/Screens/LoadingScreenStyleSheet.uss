@@ -50,7 +50,7 @@
     bottom: 0;
     background-color: rgb(0, 0, 0);
     align-items: center;
-    background-image: url("project://database/Assets/Textures/Backgrounds/background_image.png?fileID=2800000&guid=be06ef908b7eb1542954856444d1326c&type=3#background_image");
+    background-image: url("project://database/Assets/Project/Art/Textures/Backgrounds/background_image.png?fileID=2800000&guid=be06ef908b7eb1542954856444d1326c&type=3#background_image");
 }
 
 #MatchThreeLogoVisualElement {
@@ -58,6 +58,6 @@
     height: 100%;
     -unity-background-scale-mode: scale-to-fit;
     top: 10px;
-    background-image: url("project://database/Assets/Textures/LogoTexture.png?fileID=2800000&guid=ac52ec99dbf26ed4e836ad106b39d9d1&type=3#LogoTexture");
+    background-image: url("project://database/Assets/Project/Art/Textures/UI/LogoTexture.png?fileID=2800000&guid=eee62c564f1a3b744b55c62232043ce7&type=3#LogoTexture");
     position: absolute;
 }

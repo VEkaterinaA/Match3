@@ -83,6 +83,7 @@ namespace Runtime.Infrastructure.Factories
 			return uiDocumentType switch
 			{
 				ScreenType.SettingsScreen => new SettingsScreen(uiDocument),
+				ScreenType.PauseScreen => new PauseScreen(uiDocument),
 				_ => throw new NotImplementedException($"[{GetType().Name}] There is no implementation to create {typeof(TEnum)}."),
 			};
 		}

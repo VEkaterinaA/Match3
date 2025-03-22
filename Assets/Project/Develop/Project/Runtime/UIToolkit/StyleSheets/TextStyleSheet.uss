@@ -1,6 +1,6 @@
 .unity-text-element {
-    -unity-font-definition: url("project://database/Assets/UIToolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&guid=875d21ede01ef0548a2405ff029b6d34&type=3#NotInter-Regular");
+    -unity-font-definition: url("project://database/Assets/Project/Develop/Project/Runtime/UIToolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&guid=875d21ede01ef0548a2405ff029b6d34&type=3#NotInter-Regular");
     -unity-text-align: middle-center;
     color: rgb(0, 0, 0);
-    font-size: 28px;
+    font-size: 24px;
 }

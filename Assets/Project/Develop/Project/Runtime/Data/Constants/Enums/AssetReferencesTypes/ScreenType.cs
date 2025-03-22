@@ -4,5 +4,6 @@ namespace Runtime.Data.Constants.Enums.AssetReferencesTypes
 	{
 		Unknown = -1,
 		SettingsScreen = 0,
+		PauseScreen = 1,
 	}
 }

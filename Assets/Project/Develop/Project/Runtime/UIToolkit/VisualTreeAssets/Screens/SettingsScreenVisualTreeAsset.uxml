@@ -1,17 +1,18 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Project/Develop/Project/Runtime/UIToolkit/StyleSheets/Screens/SettingsScreenStyleSheet.uss?fileID=7433441132597879392&amp;guid=ec81a4bf1cca3ef4d8616777aac49a97&amp;type=3#SettingsScreenStyleSheet" />
     <engine:VisualElement name="BackgroundVisualElement" style="flex-grow: 1; top: 0; left: 0; bottom: 0; right: 0;">
         <engine:VisualElement name="SettingsItemsVisualElement" style="flex-grow: 1; justify-content: space-between; height: 420px;">
             <engine:VisualElement name="SoundItemVisualElement" style="flex-grow: 1; width: 900px; flex-direction: row; align-items: center; justify-content: space-between;">
                 <engine:VisualElement name="IconVisualElement" style="flex-grow: 1; width: 55px; height: 55px;" />
-                <engine:Label text="Label" name="SoundLabel" style="font-size: 50px;" />
-                <engine:Slider label="Slider" value="42" high-value="100" name="SoundSlider" style="width: 340px; height: 40px; justify-content: center;" />
+                <engine:Label text="Sound" name="SoundLabel" style="font-size: 50px;" />
+                <engine:Slider value="50" high-value="100" name="SoundSlider" style="width: 340px; height: 40px; justify-content: center;" />
             </engine:VisualElement>
             <engine:VisualElement name="MusicItemVisualElement" style="flex-grow: 1; width: 900px; flex-direction: row; align-items: center; justify-content: space-between;">
                 <engine:VisualElement name="IconVisualElement" style="flex-grow: 1; width: 55px; height: 55px;" />
-                <engine:Label text="Label" name="SoundLabel" style="font-size: 50px;" />
-                <engine:Slider label="Slider" value="42" high-value="100" name="MusicSlider" style="width: 340px; height: 40px; justify-content: center;" />
+                <engine:Label text="Music" name="SoundLabel" style="font-size: 50px;" />
+                <engine:Slider value="60" high-value="100" name="MusicSlider" style="width: 340px; height: 40px; justify-content: center;" />
             </engine:VisualElement>
         </engine:VisualElement>
-        <engine:Button text="Button" name="CloseButton" style="position: absolute; width: 115px; height: 100px; -unity-background-scale-mode: scale-to-fit; top: 90px; left: 90px; justify-content: center;"/>
+        <engine:Button name="CloseButton" style="border-left-color: rgba(149, 149, 149, 0); border-right-color: rgba(149, 149, 149, 0); border-top-color: rgba(149, 149, 149, 0); border-bottom-color: rgba(149, 149, 149, 0);" />
     </engine:VisualElement>
 </engine:UXML>

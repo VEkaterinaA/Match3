@@ -39,6 +39,18 @@ MonoBehaviour:
     m_SerializedLabels:
     - Screen
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 94afb3a07247a264e9e906cf2019a654
+    m_Address: CoreSceneVisualTreeAsset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Screen
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 15f54a1a2ae4dd741a4c87eac714705b
+    m_Address: PauseScreenVisualTreeAsset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Screen
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: aa8896b0c4bb0574fbf842001f5ba793, type: 2}
   m_SchemaSet:

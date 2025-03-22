@@ -97,11 +97,15 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens.Core
 		protected virtual void Show()
 		{
 			IsShowed = true;
+
+			Subscribe();
 		}
 
 		protected virtual void Hide()
 		{
 			IsShowed = false;
+
+			Unsubscribe();
 		}
 
 		protected virtual void Subscribe()

@@ -10,79 +10,82 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer;
 
-public class MainMenuController : InjectedBehaviour
+namespace Runtime.MonoBehaviours.UIControllers
 {
-	private IGameStateMachine _gameStateMachine;
-	private IScreensService _screensService;
-
-	[SerializeField]
-	private UIDocument _menuDocument;
-
-	private Button _playButton;
-	private Button _settingsButton;
-	private Button _exitButton;
-
-	[Inject]
-	internal void Construct(IGameStateMachine gameStateMachine, IScreensService screensService)
+	public class MainMenuController : InjectedBehaviour
 	{
-		_gameStateMachine = gameStateMachine;
-		_screensService = screensService;
+		private IGameStateMachine _gameStateMachine;
+		private IScreensService _screensService;
 
-		Subscribe();
-	}
+		[SerializeField]
+		private UIDocument _menuDocument;
 
-	private void Subscribe()
-	{
-		if (_menuDocument == null)
+		private Button _playButton;
+		private Button _settingsButton;
+		private Button _exitButton;
+
+		[Inject]
+		internal void Construct(IGameStateMachine gameStateMachine, IScreensService screensService)
 		{
-			Debug.LogError("UIDocument не назначен!");
-			return;
+			_gameStateMachine = gameStateMachine;
+			_screensService = screensService;
+
+			Subscribe();
 		}
 
-		var root = _menuDocument.rootVisualElement;
+		private void Subscribe()
+		{
+			if (_menuDocument == null)
+			{
+				Debug.LogError("UIDocument не назначен!");
+				return;
+			}
 
-		_playButton = root.Q<Button>("PlayButton");
-		_settingsButton = root.Q<Button>("SettingsButton");
-		_exitButton = root.Q<Button>("ExitButton");
+			var root = _menuDocument.rootVisualElement;
 
-		_playButton.clicked += OnPlayButtonClicked;
+			_playButton = root.Q<Button>("PlayButton");
+			_settingsButton = root.Q<Button>("SettingsButton");
+			_exitButton = root.Q<Button>("ExitButton");
 
-		_settingsButton.clicked += OnSettingsButtonClicked;
+			_playButton.clicked += OnPlayButtonClicked;
 
-		_exitButton.clicked += OnExitButtonClicked;
-	}
+			_settingsButton.clicked += OnSettingsButtonClicked;
 
-	private void UnSubscribe()
-	{
-		_playButton.clicked -= OnPlayButtonClicked;
+			_exitButton.clicked += OnExitButtonClicked;
+		}
 
-		_settingsButton.clicked -= OnSettingsButtonClicked;
+		private void UnSubscribe()
+		{
+			_playButton.clicked -= OnPlayButtonClicked;
 
-		_exitButton.clicked -= OnExitButtonClicked;
-	}
+			_settingsButton.clicked -= OnSettingsButtonClicked;
 
-	private void OnDestroy()
-	{
-		UnSubscribe();
-	}
+			_exitButton.clicked -= OnExitButtonClicked;
+		}
 
-	private void OnPlayButtonClicked()
-	{
-		_gameStateMachine.Get<LoadingGameState>().SceneName = SceneName.MainMenuSceneAsset;
-		_gameStateMachine.Enter<LoadingGameState>();
-	}
+		private void OnDestroy()
+		{
+			UnSubscribe();
+		}
 
-	private void OnSettingsButtonClicked()
-	{
-		_screensService.Show<SettingsScreen>();
-	}
+		private void OnPlayButtonClicked()
+		{
+			_gameStateMachine.Get<LoadingGameState>().SceneName = SceneName.CoreSceneAsset;
+			_gameStateMachine.Enter<LoadingGameState>();
+		}
 
-	private void OnExitButtonClicked()
-	{
+		private void OnSettingsButtonClicked()
+		{
+			_screensService.Show<SettingsScreen>();
+		}
+
+		private void OnExitButtonClicked()
+		{
 #if UNITY_EDITOR
-		EditorApplication.isPlaying = false;
+			EditorApplication.isPlaying = false;
 #else
             Application.Quit();
 #endif
+		}
 	}
 }
