@@ -9,7 +9,7 @@ namespace Runtime.Infrastructure.GameStateMachine.States
 		{
 			base.Enter();
 
-			GameStateMachine.Get<LoadingGameState>().SceneName = SceneName.FirstChapterSceneAsset;
+			GameStateMachine.Get<LoadingGameState>().SceneName = SceneName.MainMenuSceneAsset;
 			GameStateMachine.Enter<LoadingGameState>();
 		}
 	}

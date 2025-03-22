@@ -1,7 +1,9 @@
-﻿using Runtime.Infrastructure.Core;
+﻿using Runtime.Data.Constants.Enums.AssetReferencesTypes;
+using Runtime.Infrastructure.Core;
 using Runtime.Infrastructure.Factories.Core;
 using Runtime.Infrastructure.Services.AssetsProvider.Containers.Core;
 using Runtime.Visual.UI.UIDocumentWrappers.Core;
+using Runtime.Visual.UI.UIDocumentWrappers.Screens;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -80,6 +82,8 @@ namespace Runtime.Infrastructure.Factories
 		{
 			return uiDocumentType switch
 			{
+				ScreenType.SettingsScreen => new SettingsScreen(uiDocument),
+				ScreenType.PauseScreen => new PauseScreen(uiDocument),
 				_ => throw new NotImplementedException($"[{GetType().Name}] There is no implementation to create {typeof(TEnum)}."),
 			};
 		}

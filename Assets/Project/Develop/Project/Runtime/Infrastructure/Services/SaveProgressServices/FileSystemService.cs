@@ -147,5 +147,54 @@ namespace Runtime.Infrastructure.Services.SaveProgressServices
 
 			return null;
 		}
+
+		async UniTask<Boolean> IFileSystemService.ExistsAsync(String fullPath)
+		{
+			try
+			{
+				return await UniTask.Run(() => File.Exists(fullPath));
+			}
+			catch (Exception exception)
+			{
+				Debug.LogError($"[{GetType().Name}] Error occured when trying to check if file exists {fullPath}\n{exception}");
+				return false;
+			}
+		}
+
+		async UniTask<String> IFileSystemService.ReadAllTextAsync(String fullPath)
+		{
+			try
+			{
+				return await UniTask.Run(() => File.ReadAllText(fullPath));
+			}
+			catch (Exception exception)
+			{
+				Debug.LogError($"[{GetType().Name}] Error occured when trying to read file {fullPath}\n{exception}");
+				return null;
+			}
+		}
+
+		async UniTask IFileSystemService.WriteAllTextAsync(String data, String fullPath)
+		{
+			try
+			{
+				var directoryPath = Path.GetDirectoryName(fullPath);
+
+				if (directoryPath != null)
+				{
+					Directory.CreateDirectory(directoryPath);
+				}
+				else
+				{
+					throw new IOException($"[{GetType().Name}] Invalid directory path: {fullPath}.");
+				}
+
+				await UniTask.Run(() => File.WriteAllText(fullPath, data));
+			}
+			catch (Exception exception)
+			{
+				Debug.LogError($"[{GetType().Name}] Error occured when trying to write to file {fullPath}\n{exception}");
+			}
+		}
 	}
 }

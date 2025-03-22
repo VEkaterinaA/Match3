@@ -24,7 +24,6 @@ namespace Runtime.Infrastructure.Services.SaveProgressServices
 		private IPersistentProgress _activeProgress;
 		private IProgressFactory _progressFactory;
 		private IProgressConfig _progressConfig;
-		private ICamerasService _camerasService;
 		private IRandomService _randomService;
 		private IUserInfo _userInfo;
 
@@ -96,13 +95,13 @@ namespace Runtime.Infrastructure.Services.SaveProgressServices
 		}
 
 		[Inject]
-		internal void Construct(IFileSystemService fileSystemService, IProgressConfig progressConfig, IProgressFactory progressFactory, ICamerasService camerasService, IRandomService randomService)
+		internal void Construct(IFileSystemService fileSystemService, IProgressConfig progressConfig, IProgressFactory progressFactory, IRandomService randomService)
 		{
 			_fileSystemService = fileSystemService;
 			_progressFactory = progressFactory;
 			_progressConfig = progressConfig;
-			_camerasService = camerasService;
 			_randomService = randomService;
+			_userInfo = _progressFactory.CreateUserInfo();
 		}
 
 		async void IInitializable.Initialize()
@@ -113,128 +112,68 @@ namespace Runtime.Infrastructure.Services.SaveProgressServices
 			_initialized?.Invoke();
 		}
 
-		async UniTask IPersistentProgressService.LoadingSavedProgress(String progressName, IPersistentProgress persistentProgress)
-		{
-			LevelInfo lastActiveLevel = null;
-
-			if (_activeProgress != null)
-			{
-				Service.DeleteProgressSlot(Service.ActiveProgress);
-				lastActiveLevel = Service.ActiveProgress.SavedLevels.ActiveLevelInfo;
-			}
-
-			Service.ActiveProgress = await Service.CreateProgressSlot(progressName, persistentProgress);
-
-			if (lastActiveLevel != null)
-			{
-				if (lastActiveLevel != Service.ActiveProgress.SavedLevels.ActiveLevelInfo)
-				{
-					//load scene
-				}
-			}
-
-			//LoadGameData();
-		}
-
-		async UniTask IPersistentProgressService.LoadingActiveProgress()
-		{
-			_progressSlots.Clear();
-			await LoadGameData();
-		}
-
 		private async UniTask LoadGameData()
 		{
-			_userInfo = _fileSystemService.LoadFromJSON<UserInfo>(DataPath.UserInfo);
-
-			if (_userInfo is null)
+			try
 			{
-				_userInfo = _progressFactory.CreateUserInfo();
-				_fileSystemService.Save(_userInfo.Serialize(), DataPath.UserInfo);
-			}
-
-			for (var progressSlotIndex = 0; (progressSlotIndex < _userInfo.ProgressSlotsIDs.Count); progressSlotIndex++)
-			{
-				var progressSlotID = _userInfo.ProgressSlotsIDs[progressSlotIndex];
-				var playerProgress = _fileSystemService.LoadFromJSON<PersistentProgress>(DataPath.GetForPlayerProgressWithID(progressSlotID), _userInfo.ID);
-
-				if (playerProgress is null)
+				if (await _fileSystemService.ExistsAsync(DataPath.UserInfo))
 				{
-					_userInfo.ProgressSlotsIDs.RemoveAt(progressSlotIndex);
-					progressSlotIndex--;
+					var userInfoJson = await _fileSystemService.ReadAllTextAsync(DataPath.UserInfo);
+					_userInfo = JsonUtility.FromJson<UserInfo>(userInfoJson);
 				}
 				else
 				{
-					((IPersistentProgress) playerProgress).ScreenshotTexture2D = _fileSystemService.LoadTexture2D(Path.Combine(Application.persistentDataPath, $"{progressSlotID}.icon"));
-					_progressSlots.Add(progressSlotID, playerProgress);
+					_userInfo = _progressFactory.CreateUserInfo();
+				}
 
-					if (progressSlotID == _userInfo.ActiveProgressID)
+				foreach (var progressSlotID in _userInfo.ProgressSlotsIDs)
+				{
+					var progressPath = DataPath.GetForPlayerProgressWithID(progressSlotID);
+					if (await _fileSystemService.ExistsAsync(progressPath))
 					{
-						Service.ActiveProgress = playerProgress;
+						var progressJson = await _fileSystemService.ReadAllTextAsync(progressPath);
+						var progress = JsonUtility.FromJson<PersistentProgress>(progressJson);
+						_progressSlots.Add(progressSlotID, progress);
 					}
 				}
+
+				if (_userInfo.ActiveProgressID != null && _progressSlots.TryGetValue(_userInfo.ActiveProgressID, out var activeProgress))
+				{
+					Service.ActiveProgress = activeProgress;
+				}
+			}
+			catch (Exception e)
+			{
+				Debug.LogError($"Error loading game data: {e}");
+				_userInfo = _progressFactory.CreateUserInfo();
 			}
 		}
-		async UniTask<IPersistentProgress> IPersistentProgressService.CreateProgressSlot(String progressName, IPersistentProgress persistentProgress)
+
+		UniTask IPersistentProgressService.SaveGameData()
 		{
-			var playerProgress = (persistentProgress is null ? _progressFactory.CreatePlayerProgress() : persistentProgress.Clone());
-			playerProgress.Name = progressName;
+			return SaveGameData();
+		}
 
-			var progressSlotID = _randomService.CreateGUID(_userInfo.ProgressSlotsIDs.ToArray());
-
-			_camerasService.TakeScreenshot(texture2D =>
+		private async UniTask SaveGameData()
+		{
+			try
 			{
-				playerProgress.ScreenshotTexture2D = texture2D;
-				_fileSystemService.Save(texture2D.GetRawTextureData(), Path.Combine(Application.persistentDataPath, $"{progressSlotID}.icon"));
-			});
+				_progressSavingStarted?.Invoke();
 
-			_progressSlots.Add(progressSlotID, playerProgress);
+				var userInfoJson = JsonUtility.ToJson(_userInfo);
+				await _fileSystemService.WriteAllTextAsync(DataPath.UserInfo, userInfoJson);
 
-			playerProgress.SavedDateTime = DateTime.Now;
-			_fileSystemService.Save(playerProgress.Serialize().Encrypt(_userInfo.ID), DataPath.GetForPlayerProgressWithID(progressSlotID));
-
-			_userInfo.ProgressSlotsIDs.Add(progressSlotID);
-			_fileSystemService.Save(_userInfo.Serialize(), DataPath.UserInfo);
-
-			_progressCreated?.Invoke(playerProgress);
-
-			return playerProgress;
-		}
-
-		void IPersistentProgressService.DeleteProgressSlot(IPersistentProgress persistentProgress)
-		{
-			Service.DeleteProgressSlot(_progressSlots.First(pair => (pair.Value == persistentProgress)).Key);
-		}
-
-		void IPersistentProgressService.DeleteProgressSlot(String slotID)
-		{
-			_progressSlots.Remove(slotID);
-
-			_fileSystemService.Delete(DataPath.GetForPlayerProgressWithID(slotID));
-			_fileSystemService.Delete(Path.Combine(Application.persistentDataPath, $"{slotID}.icon"));
-		}
-
-		async UniTask IPersistentProgressService.SaveActiveProgressAsync()
-		{
-			_progressSavingStarted?.Invoke();
-
-			_activeProgress.SavedDateTime = DateTime.Now;
-			await _fileSystemService.SaveAsync(_activeProgress.Serialize().Encrypt(_userInfo.ID), DataPath.GetForPlayerProgressWithID(_userInfo.ActiveProgressID));
-
-			await _fileSystemService.SaveAsync(_userInfo.Serialize(), DataPath.UserInfo);
-		}
-
-		void IPersistentProgressService.SaveActiveProgress()
-		{
-			if (!_isAllowSaveProgress)
-			{
-				return;
+				foreach (var progressSlot in _progressSlots)
+				{
+					var progressPath = DataPath.GetForPlayerProgressWithID(progressSlot.Key);
+					var progressJson = JsonUtility.ToJson(progressSlot.Value);
+					await _fileSystemService.WriteAllTextAsync(progressPath, progressJson);
+				}
 			}
-			_progressSavingStarted?.Invoke();
-
-			_activeProgress.SavedDateTime = DateTime.Now;
-			_fileSystemService.Save(_activeProgress.Serialize().Encrypt(_userInfo.ID), DataPath.GetForPlayerProgressWithID(_userInfo.ActiveProgressID));
-
-			_fileSystemService.Save(_userInfo.Serialize(), DataPath.UserInfo);
+			catch (Exception e)
+			{
+				Debug.LogError($"Error saving game data: {e}");
+			}
 		}
 	}
 }

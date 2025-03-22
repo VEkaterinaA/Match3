@@ -23,18 +23,6 @@ namespace Runtime.Infrastructure.Services.SaveProgressServices.Core
 
 		internal IPersistentProgress ActiveProgress { get; set; }
 
-		internal UniTask<IPersistentProgress> CreateProgressSlot(String name, IPersistentProgress persistentProgress = null);
-
-		internal UniTask LoadingSavedProgress(String name, IPersistentProgress persistentProgress = null);
-
-		internal UniTask LoadingActiveProgress();
-
-		internal void DeleteProgressSlot(IPersistentProgress persistentProgress);
-
-		internal void DeleteProgressSlot(String slotID);
-
-		internal UniTask SaveActiveProgressAsync();
-
-		internal void SaveActiveProgress();
+		internal UniTask SaveGameData();
 	}
 }

@@ -1,0 +1,19 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Project/Develop/Project/Runtime/UIToolkit/StyleSheets/Screens/MainMenuScreenStyleSheet.uss?fileID=7433441132597879392&amp;guid=aa4b8a0619df5434ca8b1c25bd8d4d95&amp;type=3#MainMenuScreenStyleSheet" />
+    <Style src="project://database/Assets/Project/Develop/Project/Runtime/UIToolkit/StyleSheets/TextStyleSheet.uss?fileID=7433441132597879392&amp;guid=391606ca684ee1b4fbf1f3b0fd62fcd8&amp;type=3#TextStyleSheet" />
+    <Style src="project://database/Assets/Project/Develop/Project/Runtime/UIToolkit/StyleSheets/ButtonStyleSheet.uss?fileID=7433441132597879392&amp;guid=0424f69d5a5051848af00ba861bbe1d0&amp;type=3#ButtonStyleSheet" />
+    <engine:VisualElement name="Container" style="flex-grow: 1; top: 0; left: 0; right: 0; bottom: 0;">
+        <engine:VisualElement name="Background" style="flex-grow: 1; align-items: center; justify-content: center;">
+            <engine:VisualElement name="Container" style="flex-grow: 1; top: 0; left: 0; bottom: 0; right: 0; width: 100%; height: 100%; align-items: center;">
+                <engine:VisualElement name="Logo" style="flex-grow: 1; top: auto; position: relative; height: 40%; -unity-background-scale-mode: scale-and-crop; width: 40%;" />
+                <engine:VisualElement name="MenuContainer" style="flex-grow: 1; position: relative; height: 60%; bottom: auto; top: auto; align-items: center; justify-content: flex-start; width: 100%;">
+                    <engine:VisualElement name="MenuPanel" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Project/Art/Textures/Backgrounds/back_plate_03.png?fileID=2800000&amp;guid=3f3e704ae82ed1243bcf960b2a90e4f0&amp;type=3#back_plate_03&quot;); justify-content: center; position: absolute; width: 17%; height: 90%;">
+                        <engine:Button text="Play" name="PlayButton" class="Button unity-text-element ButtonAnimation" style="-unity-font-definition: url(&quot;project://database/Assets/Project/Develop/Project/Runtime/UIToolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&amp;guid=875d21ede01ef0548a2405ff029b6d34&amp;type=3#NotInter-Regular&quot;); margin-top: 20px;" />
+                        <engine:Button text="Setting" name="SettingsButton" class="Button unity-text-element ButtonAnimation" style="-unity-font-definition: url(&quot;project://database/Assets/Project/Develop/Project/Runtime/UIToolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&amp;guid=875d21ede01ef0548a2405ff029b6d34&amp;type=3#NotInter-Regular&quot;);" />
+                        <engine:Button text="Exit" name="ExitButton" class="Button unity-text-element ButtonAnimation" style="margin-bottom: 20px; -unity-font-definition: url(&quot;project://database/Assets/Project/Develop/Project/Runtime/UIToolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&amp;guid=875d21ede01ef0548a2405ff029b6d34&amp;type=3#NotInter-Regular&quot;);" />
+                    </engine:VisualElement>
+                </engine:VisualElement>
+            </engine:VisualElement>
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

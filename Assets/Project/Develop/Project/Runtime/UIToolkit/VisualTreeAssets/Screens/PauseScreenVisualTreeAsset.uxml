@@ -1,0 +1,12 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Project/Develop/Project/Runtime/UIToolkit/StyleSheets/ButtonStyleSheet.uss?fileID=7433441132597879392&amp;guid=0424f69d5a5051848af00ba861bbe1d0&amp;type=3#ButtonStyleSheet" />
+    <Style src="project://database/Assets/Project/Develop/Project/Runtime/UIToolkit/StyleSheets/TextStyleSheet.uss?fileID=7433441132597879392&amp;guid=391606ca684ee1b4fbf1f3b0fd62fcd8&amp;type=3#TextStyleSheet" />
+    <Style src="project://database/Assets/Project/Develop/Project/Runtime/UIToolkit/StyleSheets/Screens/PauseScreenStyleSheet.uss?fileID=7433441132597879392&amp;guid=896752557d486b54cabcc857dba00b6b&amp;type=3#PauseScreenStyleSheet" />
+    <engine:VisualElement name="Container" style="flex-grow: 1; top: 0; left: 0; right: 0; align-items: center; justify-content: center; bottom: 0; background-color: rgba(255, 255, 255, 0.27);">
+        <engine:VisualElement name="BackgroundVisualElement" style="flex-grow: 1; width: 300px; height: 700px; bottom: 0; right: 0; top: 0; left: 0; background-image: url(&quot;project://database/Assets/Project/Art/Textures/Backgrounds/back_plate_03.png?fileID=2800000&amp;guid=3f3e704ae82ed1243bcf960b2a90e4f0&amp;type=3#back_plate_03&quot;); justify-content: center;">
+            <engine:Button text="Resume" name="ResumeButton" class="Button ButtonAnimation" />
+            <engine:Button text="Restart" name="RestartButton" class="Button ButtonAnimation" />
+            <engine:Button text="Main menu" name="MainMenuButton" class="Button ButtonAnimation" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

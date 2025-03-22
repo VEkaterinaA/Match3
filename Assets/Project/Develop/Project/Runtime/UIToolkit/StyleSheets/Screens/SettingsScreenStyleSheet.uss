@@ -1,0 +1,17 @@
+#BackgroundVisualElement {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background-image: url("project://database/Assets/Project/Art/Textures/Backgrounds/back_plate_04.png?fileID=2800000&guid=a6d2033a9e3b401429766cbe4756caf2&type=3#back_plate_04");
+}
+
+#CloseButton {
+    top: 0;
+    left: 0;
+    position: absolute;
+    background-image: url("project://database/Assets/Project/Develop/Project/Runtime/UIToolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=-2236324273849735119&guid=875d21ede01ef0548a2405ff029b6d34&type=3#arrow-left@2x");
+    -unity-background-scale-mode: scale-and-crop;
+    background-color: rgba(255, 255, 255, 0);
+    width: 140px;
+    height: 140px;
+}

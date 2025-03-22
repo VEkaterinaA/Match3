@@ -1,16 +1,14 @@
-﻿using Runtime.Data.Constants.Strings;
+﻿using LitMotion;
+using Runtime.Data.Constants.Strings;
 using Runtime.Extensions.LitMotion;
 using Runtime.Extensions.System;
 using Runtime.Extensions.UnityEngine.UIElements;
-using Runtime.Infrastructure.Services.Localization.Core;
 using Runtime.Infrastructure.Services.UIServices.Core;
 using Runtime.Visual.UI.UIDocumentWrappers.Core;
-using LitMotion;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
-using VContainer;
 
 namespace Runtime.Visual.UI.UIDocumentWrappers.Popups.Core
 {
@@ -36,8 +34,6 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Popups.Core
 
 		protected List<Button> CloseButtons { get; }
 
-		protected ILocalizationService LocalizationService { get; private set; }
-
 		protected IPopupsService PopupsService { get; private set; }
 
 		protected Popup(UIDocument uiDocument, Boolean canOverlapOtherPopups) : base(uiDocument)
@@ -53,10 +49,8 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Popups.Core
 			RootStyle.display = DisplayStyle.None;
 		}
 
-		[Inject]
-		internal void Construct(ILocalizationService localizationService, IPopupsService popupsService)
+		internal void Construct(IPopupsService popupsService)
 		{
-			LocalizationService = localizationService;
 			PopupsService = popupsService;
 		}
 
