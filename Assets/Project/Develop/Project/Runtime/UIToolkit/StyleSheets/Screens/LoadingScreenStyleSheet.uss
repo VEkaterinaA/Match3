@@ -32,10 +32,10 @@
 }
 
 #LoadingProgressBar {
-    width: 80%;
+    width: 70%;
     height: 20px;
     align-self: center;
-    bottom: 8px;
+    bottom: 18px;
     top: auto;
     left: auto;
     right: auto;

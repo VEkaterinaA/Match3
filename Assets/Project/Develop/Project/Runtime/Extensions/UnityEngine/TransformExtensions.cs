@@ -64,10 +64,10 @@ namespace Runtime.Extensions.UnityEngine
 
 		internal static MotionHandle BindToPosition(this (Transform Transform, MotionBuilder<Single, NoOptions, FloatMotionAdapter> MotionBuilder) builder, Axis axis)
 		{
-			return builder.MotionBuilder.BindWithState(builder.Transform, (localEulerAngle, transform) =>
+			return builder.MotionBuilder.BindWithState(builder.Transform, (localPosition, transform) =>
 			{
 				var targetPosition = transform.position;
-				targetPosition[(Int32) axis] = localEulerAngle;
+				targetPosition[(Int32) axis] = localPosition;
 
 				transform.position = targetPosition;
 			});
@@ -75,12 +75,20 @@ namespace Runtime.Extensions.UnityEngine
 
 		internal static MotionHandle BindToLocalPosition(this (Transform Transform, MotionBuilder<Single, NoOptions, FloatMotionAdapter> MotionBuilder) builder, Axis axis)
 		{
-			return builder.MotionBuilder.BindWithState(builder.Transform, (localEulerAngle, transform) =>
+			return builder.MotionBuilder.BindWithState(builder.Transform, (localPosition, transform) =>
 			{
 				var targetPosition = transform.position;
-				targetPosition[(Int32) axis] = localEulerAngle;
+				targetPosition[(Int32) axis] = localPosition;
 
 				transform.localPosition = targetPosition;
+			});
+		}
+
+		internal static MotionHandle BindToAnchoredPosition(this (RectTransform Transform, MotionBuilder<Vector2, NoOptions, Vector2MotionAdapter> MotionBuilder) builder)
+		{
+			return builder.MotionBuilder.BindWithState(builder.Transform, (localPosition, transform) =>
+			{
+				transform.localPosition = localPosition;
 			});
 		}
 
