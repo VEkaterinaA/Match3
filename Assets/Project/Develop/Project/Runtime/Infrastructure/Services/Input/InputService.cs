@@ -24,6 +24,8 @@ namespace Runtime.Infrastructure.Services.Input
 
 		private IInputService Service => this;
 
+		Vector2 IInputService.PointerPosition => (_isEnabled ? _inputSystem.Player.Position.ReadValue<Vector2>() : Vector2.zero);
+
 		Boolean IInputService.IsEnabled
 		{
 			get => _isEnabled;
@@ -36,15 +38,17 @@ namespace Runtime.Infrastructure.Services.Input
 
 				_isEnabled = value;
 
+				_selectActionWrapper.IsEnabled = _isEnabled;
+				_swipeActionWrapper.IsEnabled = _isEnabled;
+				_dragActionWrapper.IsEnabled = _isEnabled;
+
 				if (_isEnabled)
 				{
 					_inputSystem.Enable();
-					Subscribe();
 				}
 				else
 				{
 					_inputSystem.Disable();
-					Unsubscribe();
 				}
 			}
 		}
@@ -70,6 +74,10 @@ namespace Runtime.Infrastructure.Services.Input
 
 		void IInitializable.Initialize()
 		{
+			_selectActionWrapper = new ActionWrapper(_inputSystem.Player.Select);
+			_swipeActionWrapper = new ActionWrapper(_inputSystem.Player.EndDrag);
+			_dragActionWrapper = new ActionWrapper(_inputSystem.Player.DragDelta);
+
 			Service.IsEnabled = true;
 		}
 
@@ -78,90 +86,6 @@ namespace Runtime.Infrastructure.Services.Input
 			_inputSystem.Dispose();
 		}
 
-		private void Subscribe()
-		{
-			_selectActionWrapper = new ActionWrapper(_inputSystem.Player.Select);
-			_swipeActionWrapper = new ActionWrapper(_inputSystem.Player.EndDrag);
-			_dragActionWrapper = new ActionWrapper(_inputSystem.Player.DragDelta);
-
-			_selectActionWrapper.Started += HandleSelectStarted;
-			_selectActionWrapper.Performed += HandleSelectPerformed;
-
-			_swipeActionWrapper.Started += HandleSwipeStarted;
-			_swipeActionWrapper.Performed += HandleSwipePerformed;
-
-			_dragActionWrapper.Started += HandleDragStarted;
-			_dragActionWrapper.Performed += HandleDragPerformed;
-
-			_selectActionWrapper.IsEnabled = true;
-			_swipeActionWrapper.IsEnabled = true;
-			_dragActionWrapper.IsEnabled = true;
-		}
-
-		private void Unsubscribe()
-		{
-			_selectActionWrapper.Started -= HandleSelectStarted;
-			_selectActionWrapper.Performed -= HandleSelectPerformed;
-
-			_swipeActionWrapper.Started -= HandleSwipeStarted;
-			_swipeActionWrapper.Performed -= HandleSwipePerformed;
-
-			_dragActionWrapper.Started -= HandleDragStarted;
-			_dragActionWrapper.Performed -= HandleDragPerformed;
-		}
-
-		private void HandleSelectStarted()
-		{
-			_isDragging = true;
-			_startPosition = _inputSystem.Player.Position.ReadValue<Vector2>();
-			OnSelectPerformed?.Invoke(_startPosition);
-		}
-
-		private void HandleSelectPerformed()
-		{
-			// Дополнительная логика при завершении нажатия, если нужна
-		}
-
-		private void HandleSwipeStarted()
-		{
-			// Логика начала свайпа, если нужна
-		}
-
-		private void HandleSwipePerformed()
-		{
-			if (!_isDragging) return;
-
-			_isDragging = false;
-			var endPosition = _inputSystem.Player.Position.ReadValue<Vector2>();
-			var dragVector = endPosition - _startPosition;
-
-			if (dragVector.magnitude >= MinSwipeDistance)
-			{
-				var direction = GetMainDragDirection(dragVector);
-				OnSwipePerformed?.Invoke(direction);
-			}
-		}
-
-		private void HandleDragStarted()
-		{
-			// Логика начала перетаскивания, если нужна
-		}
-
-		private void HandleDragPerformed()
-		{
-			if (!_isDragging) return;
-
-			var currentPosition = _inputSystem.Player.Position.ReadValue<Vector2>();
-			OnDragPerformed?.Invoke(currentPosition);
-		}
-
-		private Vector2 GetMainDragDirection(Vector2 dragVector)
-		{
-			dragVector.Normalize();
-			return Mathf.Abs(dragVector.x) > Mathf.Abs(dragVector.y)
-				? new Vector2(Mathf.Sign(dragVector.x), 0)
-				: new Vector2(0, Mathf.Sign(dragVector.y));
-		}
 
 		private sealed class ActionWrapper : IDisposable
 		{

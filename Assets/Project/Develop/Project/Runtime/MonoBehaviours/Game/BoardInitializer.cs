@@ -1,15 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using System;
 
 namespace Runtime.MonoBehaviours.Game
 {
 	public class BoardInitializer : MonoBehaviour
 	{
 		[Header("Board Settings")]
-		[SerializeField] private int _width = 8;
-		[SerializeField] private int _height = 8;
-		[SerializeField] private float _cellSize = 100f;
+		[SerializeField] private Int32 _width = 8;
+		[SerializeField] private Int32 _height = 8;
+		[SerializeField] private Single _cellSize = 100f;
 
 		[Header("Prefabs")]
 		[SerializeField] private GameObject[] _gemPrefabs;
@@ -17,9 +18,23 @@ namespace Runtime.MonoBehaviours.Game
 
 		private Gem[,] _board;
 
+		public Int32 Width => _width;
+		public Int32 Height => _height;
+
+		public Single CellSize => _cellSize;
+
 		private void Start()
 		{
 			InitializeBoard();
+		}
+
+		internal Gem GetGem(Int32 x, Int32 y)
+		{
+			if (x >= 0 && x < _width && y >= 0 && y < _height)
+			{
+				return _board[x, y];
+			}
+			return null;
 		}
 
 		private void InitializeBoard()
@@ -70,7 +85,7 @@ namespace Runtime.MonoBehaviours.Game
 		private int GetRandomValidGemType(int x, int y)
 		{
 			var availableTypes = GetAvailableGemTypes(x, y);
-			return availableTypes[Random.Range(0, availableTypes.Count)];
+			return availableTypes[UnityEngine.Random.Range(0, availableTypes.Count)];
 		}
 
 		private List<int> GetAvailableGemTypes(int x, int y)
@@ -111,5 +126,6 @@ namespace Runtime.MonoBehaviours.Game
 				   _board[x - 1, y]?.Type == type && _board[x + 1, y]?.Type == type &&
 				   _board[x, y - 1]?.Type == type && _board[x, y + 1]?.Type == type;
 		}
+
 	}
 }

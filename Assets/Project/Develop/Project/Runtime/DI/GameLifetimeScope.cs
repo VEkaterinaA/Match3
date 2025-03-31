@@ -1,23 +1,23 @@
+using VContainer;
+using UnityEngine;
+using Runtime.DI.Core;
+using VContainer.Unity;
 using Runtime.Attributes;
 using Runtime.Data.Configs;
+using UnityEngine.UIElements;
+using UnityEngine.EventSystems;
 using Runtime.Data.Constants.Enums;
-using Runtime.Data.Constants.Enums.AssetReferencesTypes;
-using Runtime.DI.Core;
-using Runtime.Infrastructure.Factories;
-using Runtime.Infrastructure.Factories.Core;
 using Runtime.Infrastructure.Services;
+using Runtime.Infrastructure.Factories;
 using Runtime.Infrastructure.Services.App;
-using Runtime.Infrastructure.Services.AssetsProvider.Containers;
-using Runtime.Infrastructure.Services.AssetsProvider.Containers.Core;
 using Runtime.Infrastructure.Services.Input;
-using Runtime.Infrastructure.Services.SaveProgressServices;
+using Runtime.Infrastructure.Factories.Core;
 using Runtime.Infrastructure.Services.UIServices;
 using Runtime.Visual.UI.UIDocumentWrappers.Screens;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
-using VContainer;
-using VContainer.Unity;
+using Runtime.Data.Constants.Enums.AssetReferencesTypes;
+using Runtime.Infrastructure.Services.SaveProgressServices;
+using Runtime.Infrastructure.Services.AssetsProvider.Containers;
+using Runtime.Infrastructure.Services.AssetsProvider.Containers.Core;
 
 namespace Runtime.MonoBehaviours.LifetimeScopes
 {
@@ -133,7 +133,6 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 			containerBuilder.Register<Pauseable>(Lifetime.Singleton).AsImplementedInterfaces();
 
 			containerBuilder.RegisterComponent(_loopsService).AsImplementedInterfaces();
-			//containerBuilder.RegisterComponent(_timerManager).AsImplementedInterfaces();
 			containerBuilder.UseEntryPoints(ConfigureEntryPoints);
 
 			return;
@@ -157,16 +156,6 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 		{
 			containerBuilder.RegisterInstance(_progressConfig).AsImplementedInterfaces();
 			containerBuilder.RegisterInstance(_gameConfig).AsImplementedInterfaces();
-
-			/*			containerBuilder.RegisterInstance(_inventoryConfig).AsImplementedInterfaces();
-						containerBuilder.RegisterInstance(_lightingConfig).AsImplementedInterfaces();
-						containerBuilder.RegisterInstance(_graphicsConfig).AsImplementedInterfaces();
-						containerBuilder.RegisterInstance(_questsConfig).AsImplementedInterfaces();
-						containerBuilder.RegisterInstance(_cameraConfig).AsImplementedInterfaces();
-						containerBuilder.RegisterInstance(_inputConfig).AsImplementedInterfaces();
-						containerBuilder.RegisterInstance(_audioConfig).AsImplementedInterfaces();
-						containerBuilder.RegisterInstance(_fogConfig).AsImplementedInterfaces();
-						containerBuilder.RegisterInstance(_uiConfig).AsImplementedInterfaces();*/
 		}
 	}
 }

@@ -54,7 +54,37 @@ MonoBehaviour:
   _injectableComponents: []
   _screensInfoAssetsContainer:
     _uiDocumentsInfosDictionary:
-      _serializedList: []
+      _serializedList:
+      - Key: 0
+        Value:
+          _visualTreeAssetReference:
+            m_AssetGUID: a4e998590452649efbccf94f9a4be02e
+            m_SubObjectName: 
+            m_SubObjectGUID: 
+            m_SubObjectType: 
+            m_EditorAssetChanged: 0
+          _panelSettingsReference:
+            m_AssetGUID: dd16e7f642d67604da985e6b2768798b
+            m_SubObjectName: 
+            m_SubObjectGUID: 
+            m_SubObjectType: 
+            m_EditorAssetChanged: 0
+          _sortingOrder: 1
+      - Key: 1
+        Value:
+          _visualTreeAssetReference:
+            m_AssetGUID: 15f54a1a2ae4dd741a4c87eac714705b
+            m_SubObjectName: 
+            m_SubObjectGUID: 
+            m_SubObjectType: 
+            m_EditorAssetChanged: 0
+          _panelSettingsReference:
+            m_AssetGUID: dd16e7f642d67604da985e6b2768798b
+            m_SubObjectName: 
+            m_SubObjectGUID: 
+            m_SubObjectType: 
+            m_EditorAssetChanged: 0
+          _sortingOrder: 1
   _popupsInfoAssetsContainer:
     _uiDocumentsInfosDictionary:
       _serializedList: []
@@ -67,6 +97,8 @@ MonoBehaviour:
   _templateAssetsContainer:
     _prefabsAssetsReferencesDictionary:
       _serializedList: []
+  _progressConfig: {fileID: 11400000, guid: ae68d1032fa26c747b05df5788c2795b, type: 2}
+  _gameConfig: {fileID: 11400000, guid: 28856e442485a94498ce103d15b7ffdf, type: 2}
   _loadingScreenUIDocument: {fileID: 8029656556591331133}
   _loopsService: {fileID: 1709317517889402668}
   _eventSystem: {fileID: 63184350791074214}
@@ -215,7 +247,8 @@ MonoBehaviour:
   m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_PanelSettings: {fileID: 0}
+  m_PanelSettings: {fileID: 11400000, guid: dd16e7f642d67604da985e6b2768798b, type: 2}
   m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: 1f0aa622d488d47dcbe42058bfc245f1,
+    type: 3}
   m_SortingOrder: 0
