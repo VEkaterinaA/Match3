@@ -63,7 +63,6 @@ namespace Runtime.MonoBehaviours.Game
 			if (dragDelta.magnitude >= _minSwipeDistance)
 			{
 				TrySwapGems(dragDelta);
-				_selectedGem = null;
 			}
 		}
 
@@ -80,7 +79,9 @@ namespace Runtime.MonoBehaviours.Game
 				var targetGem = _boardInitializer.GetGem(newX, newY);
 				if (targetGem != null)
 				{
-					_selectedGem.SwapWith(targetGem, _boardInitializer.CellSize);
+					_selectedGem.SwapWith(targetGem, _boardInitializer);
+					_selectedGem = null;
+
 				}
 			}
 		}
@@ -109,7 +110,12 @@ namespace Runtime.MonoBehaviours.Game
 			{
 				return new Vector2Int(direction.x > 0 ? 1 : -1, 0);
 			}
-			return new Vector2Int(0, direction.y > 0 ? 1 : -1);
+			else if(Mathf.Abs(direction.x) < Mathf.Abs(direction.y))
+			{
+				return new Vector2Int(0, direction.y > 0 ? -1 : 1);
+			}
+
+			return Vector2Int.zero;
 		}
 
 		private bool IsValidPosition(int x, int y)

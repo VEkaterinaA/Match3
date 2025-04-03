@@ -42,31 +42,23 @@ namespace Runtime.MonoBehaviours.Game
 			_сompositeMotionHandle.Add(handle.BindToAnchoredPosition());
 		}
 
-		public void MoveToCell(int newX, int newY, float cellSize)
+		public void MoveToCell(int newX, int newY, float cellSize, Vector2 offset, Single height)
 		{
-			var newPosition = new Vector2(
-				newX * cellSize,
-				newY * cellSize
-			);
 
-			X = newX;
-			Y = newY;
+			var position = new Vector2(
+							newX * cellSize + offset.x,
+							(height - 1 - newY) * cellSize + offset.y
+);
 
-			MoveTo(newPosition);
+			MoveTo(position);
 		}
 
-		public void SwapWith(Gem otherGem, float cellSize)
+		public void SwapWith(Gem otherGem, BoardInitializer boardInitializer)
 		{
-			var tempX = X;
-			var tempY = Y;
+			boardInitializer.SwapGemsInBoard(this, otherGem);
 
-			X = otherGem.X;
-			Y = otherGem.Y;
-			otherGem.X = tempX;
-			otherGem.Y = tempY;
-
-			MoveToCell(X, Y, cellSize);
-			otherGem.MoveToCell(otherGem.X, otherGem.Y, cellSize);
+			MoveToCell(X, Y, boardInitializer.CellSize, boardInitializer.GetBoardOffset(), boardInitializer.Height);
+			otherGem.MoveToCell(otherGem.X, otherGem.Y, boardInitializer.CellSize, boardInitializer.GetBoardOffset(), boardInitializer.Height);
 		}
 
 		public void PlayMatchAnimation()

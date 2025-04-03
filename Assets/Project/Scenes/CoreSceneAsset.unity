@@ -806,7 +806,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db6fd507186852548a102254bb8673c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _minSwipeDistance: 1
+  _minSwipeDistance: 30
   raycaster: {fileID: 51788794}
   _boardInitializer: {fileID: 844053856}
 --- !u!4 &1968364134

@@ -37,6 +37,14 @@ namespace Runtime.MonoBehaviours.Game
 			return null;
 		}
 
+		internal void SwapGemsInBoard(Gem gem1, Gem gem2)
+		{
+			(_board[gem1.X, gem1.Y], _board[gem2.X, gem2.Y]) = (_board[gem2.X, gem2.Y], _board[gem1.X, gem1.Y]);
+
+			(gem1.X, gem2.X) = (gem2.X, gem1.X);
+			(gem1.Y, gem2.Y) = (gem2.Y, gem1.Y);
+		}
+
 		private void InitializeBoard()
 		{
 			_board = new Gem[_width, _height];
@@ -51,7 +59,7 @@ namespace Runtime.MonoBehaviours.Game
 			}
 		}
 
-		private Vector2 GetBoardOffset()
+		internal Vector2 GetBoardOffset()
 		{
 			return new Vector2(
 				-(_width * _cellSize) / 2 + _cellSize / 2,
@@ -63,7 +71,7 @@ namespace Runtime.MonoBehaviours.Game
 		{
 			var position = new Vector2(
 				x * _cellSize + offset.x,
-				y * _cellSize + offset.y
+				(_height - 1 - y) * _cellSize + offset.y
 			);
 
 			var randomGemType = UnityEngine.Random.Range(0, _gemPrefabs.Length);
