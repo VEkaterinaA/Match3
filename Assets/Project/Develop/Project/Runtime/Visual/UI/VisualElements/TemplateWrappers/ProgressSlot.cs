@@ -102,7 +102,7 @@ namespace Runtime.Visual.UI.VisualElements.TemplateWrappers
 
 		internal void Delete()
 		{
-			TemplateContainer.style.CreateMotion(1.0F, 0.0F, _motionDuration).InvokeAfterCompletion(() => TemplateContainer.parent.Remove(TemplateContainer)).BindToOpacity();
+			TemplateContainer.style.CreateMotion(1.0F, 0.0F, _motionDuration).WithOnComplete(() => TemplateContainer.parent.Remove(TemplateContainer)).BindToOpacity();
 
 			Unsubscribe();
 		}

@@ -1,4 +1,6 @@
+using Cysharp.Threading.Tasks;
 using LitMotion;
+using UnityEngine;
 
 namespace Runtime.Extensions.LitMotion
 {
@@ -10,6 +12,17 @@ namespace Runtime.Extensions.LitMotion
 			{
 				motionHandle.Cancel();
 			}
+		}
+
+		internal static void AddAutoRemove(this CompositeMotionHandle composite, MotionHandle motion)
+		{
+			composite.Add(motion);
+
+			motion.ToUniTask()
+				  .ContinueWith(() =>
+				  {
+					  composite.Remove(motion);
+				  }).Forget();
 		}
 	}
 }

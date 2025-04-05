@@ -66,8 +66,8 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Popups.Core
 			CompositeMotionHandle.Cancel();
 
 			var builder = PanelVisualElement.style.CreateMotion((Vector2) PanelVisualElement.style.scale.value.value, Vector2.one, MotionDuration);
-			builder.InvokeAfterCompletion(completionAction);
-			builder.InvokeAfterCompletion(Hided);
+			builder.WithOnComplete(completionAction);
+			builder.WithOnComplete(Hided);
 			builder.AddEase(_ease);
 
 			builder.BindToScale().AddTo(CompositeMotionHandle);
@@ -87,9 +87,9 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Popups.Core
 			CompositeMotionHandle.Cancel();
 
 			var builder = PanelVisualElement.style.CreateMotion((Vector2) PanelVisualElement.style.scale.value.value, Vector2.zero, MotionDuration);
-			builder.InvokeAfterCompletion(() => RootStyle.display = DisplayStyle.None);
-			builder.InvokeAfterCompletion(completionAction);
-			builder.InvokeAfterCompletion(Hided);
+			builder.WithOnComplete(() => RootStyle.display = DisplayStyle.None);
+			builder.WithOnComplete(completionAction);
+			builder.WithOnComplete(Hided);
 			builder.AddEase(_ease);
 
 			builder.BindToScale().AddTo(CompositeMotionHandle);

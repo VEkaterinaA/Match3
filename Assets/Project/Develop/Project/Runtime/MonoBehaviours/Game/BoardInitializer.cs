@@ -1,7 +1,6 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Cysharp.Threading.Tasks;
-using System;
 
 namespace Runtime.MonoBehaviours.Game
 {
@@ -47,17 +46,23 @@ namespace Runtime.MonoBehaviours.Game
 
 		private void InitializeBoard()
 		{
-			_board = new Gem[_width, _height];
-			var offset = GetBoardOffset();
-
-			for (var x = 0; x < _width; x++)
+			do
 			{
-				for (var y = 0; y < _height; y++)
+				ClearBoard();
+				_board = new Gem[_width, _height];
+				var offset = GetBoardOffset();
+
+				for (var x = 0; x < _width; x++)
 				{
-					CreateGem(x, y, offset);
+					for (var y = 0; y < _height; y++)
+					{
+						CreateGem(x, y, offset);
+					}
 				}
 			}
+			while (!HasAnyPossibleMove());
 		}
+
 
 		internal Vector2 GetBoardOffset()
 		{
@@ -74,14 +79,14 @@ namespace Runtime.MonoBehaviours.Game
 				(_height - 1 - y) * _cellSize + offset.y
 			);
 
-			var randomGemType = UnityEngine.Random.Range(0, _gemPrefabs.Length);
-			var gemObject = Instantiate(_gemPrefabs[randomGemType], _boardParent);
-			
+			var gemType = GetRandomValidGemType(x, y);
+			var gemObject = Instantiate(_gemPrefabs[gemType], _boardParent);
+
 			var rectTransform = gemObject.GetComponent<RectTransform>();
 			rectTransform.anchoredPosition = position;
-			
+
 			var gem = gemObject.GetComponent<Gem>();
-			gem.Type = randomGemType;
+			gem.Type = gemType;
 			gem.X = x;
 			gem.Y = y;
 
@@ -111,21 +116,28 @@ namespace Runtime.MonoBehaviours.Game
 			return availableTypes.Count > 0 ? availableTypes : new List<int>(_gemPrefabs.Length);
 		}
 
-		private bool IsValidGemPlacement(int x, int y, int type)
+		internal bool IsValidGemPlacement(int x, int y, int type)
 		{
 			return !(HasMatchingHorizontalPair(x, y, type) ||
 					 HasMatchingVerticalPair(x, y, type) ||
 					 IsSurroundedBySameType(x, y, type));
 		}
+		internal bool IsValidGemPlacement(Gem gem)
+		{
+			return !(HasMatchingHorizontalPair(gem.X, gem.Y, gem.Type) ||
+					 HasMatchingVerticalPair(gem.X, gem.Y, gem.Type) ||
+					 IsSurroundedBySameType(gem.X, gem.Y, gem.Type));
+		}
+
 
 		private bool HasMatchingHorizontalPair(int x, int y, int type)
 		{
-			return x >= 2 && _board[x - 1, y]?.Type == type && _board[x - 2, y]?.Type == type;
+			return (x >= 2 && (_board[x - 1, y]?.Type == type && _board[x - 2, y]?.Type == type) || (x <= _width - 3 && _board[x + 1, y]?.Type == type && _board[x + 2, y]?.Type == type));
 		}
 
 		private bool HasMatchingVerticalPair(int x, int y, int type)
 		{
-			return y >= 2 && _board[x, y - 1]?.Type == type && _board[x, y - 2]?.Type == type;
+			return (y >= 2 && (_board[x, y - 1]?.Type == type && _board[x, y - 2]?.Type == type) || (y <= _height - 3 && _board[x, y + 1]?.Type == type && _board[x, y + 2]?.Type == type));
 		}
 
 		private bool IsSurroundedBySameType(int x, int y, int type)
@@ -134,6 +146,102 @@ namespace Runtime.MonoBehaviours.Game
 				   _board[x - 1, y]?.Type == type && _board[x + 1, y]?.Type == type &&
 				   _board[x, y - 1]?.Type == type && _board[x, y + 1]?.Type == type;
 		}
+
+		private void ClearBoard()
+		{
+			if (_board == null)
+			{
+				return;
+			}
+
+			foreach (var gem in _board)
+			{
+				if (gem != null)
+				{
+					DestroyImmediate(gem.gameObject);
+				}
+			}
+		}
+
+		private bool HasAnyPossibleMove()
+		{
+			for (var x = 0; x < _width; x++)
+			{
+				for (var y = 0; y < _height; y++)
+				{
+					if (CanSwapFormMatch(x, y, x + 1, y) || CanSwapFormMatch(x, y, x, y + 1))
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		private bool CanSwapFormMatch(int x1, int y1, int x2, int y2)
+		{
+			if (!IsInsideBoard(x2, y2))
+			{
+				return false;
+			}
+
+			var gem1 = _board[x1, y1];
+			var gem2 = _board[x2, y2];
+
+			if (gem1 == null || gem2 == null)
+			{
+				return false;
+			}
+
+			(_board[x1, y1], _board[x2, y2]) = (_board[x2, y2], _board[x1, y1]);
+
+			var match = HasMatchAt(x1, y1) || HasMatchAt(x2, y2);
+
+			(_board[x1, y1], _board[x2, y2]) = (_board[x2, y2], _board[x1, y1]);
+
+			return match;
+		}
+
+		private bool HasMatchAt(int x, int y)
+		{
+			var type = _board[x, y].Type;
+
+			var horizontalMatch = 1;
+			for (var i = x - 1; i >= 0 && _board[i, y]?.Type == type; i--)
+			{
+				horizontalMatch++;
+			}
+
+			for (var i = x + 1; i < _width && _board[i, y]?.Type == type; i++)
+			{
+				horizontalMatch++;
+			}
+
+			if (horizontalMatch >= 3)
+			{
+				return true;
+			}
+
+			var verticalMatch = 1;
+			for (var i = y - 1; i >= 0 && _board[x, i]?.Type == type; i--)
+			{
+				verticalMatch++;
+			}
+
+			for (var i = y + 1; i < _height && _board[x, i]?.Type == type; i++)
+			{
+				verticalMatch++;
+			}
+
+			return verticalMatch >= 3;
+		}
+
+		private bool IsInsideBoard(int x, int y)
+		{
+			return x >= 0 && x < _width && y >= 0 && y < _height;
+		}
+
 
 	}
 }

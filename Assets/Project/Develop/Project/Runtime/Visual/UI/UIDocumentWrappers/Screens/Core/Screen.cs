@@ -61,7 +61,7 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens.Core
 			RootStyle.visibility = Visibility.Visible;
 
 			var builder = RootStyle.CreateMotion(RootStyle.opacity.value, 1.0F, _fadeDuration);
-			builder.InvokeAfterCompletion(completionAction);
+			builder.WithOnComplete(completionAction);
 
 			_fadeMotionHandle.CancelIfActive();
 			_fadeMotionHandle = builder.BindToOpacity();
@@ -79,8 +79,8 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens.Core
 		void IScreen.Hide(Action completionAction)
 		{
 			var builder = RootStyle.CreateMotion(RootStyle.opacity.value, 0.0F, _fadeDuration);
-			builder.InvokeAfterCompletion(() => RootStyle.visibility = Visibility.Hidden);
-			builder.InvokeAfterCompletion(completionAction);
+			builder.WithOnComplete(() => RootStyle.visibility = Visibility.Hidden);
+			builder.WithOnComplete(completionAction);
 
 			_fadeMotionHandle.CancelIfActive();
 			_fadeMotionHandle = builder.BindToOpacity();

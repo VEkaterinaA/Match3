@@ -12,7 +12,7 @@ namespace Runtime.Extensions.LitMotion
 			return builder;
 		}
 
-		internal static (TObject SystemObject, MotionBuilder<TValue, TOptions, TAdapter> MotionBuilder) InvokeAfterCompletion<TObject, TValue, TOptions, TAdapter>(this (TObject SystemObject, MotionBuilder<TValue, TOptions, TAdapter> MotionBuilder) builder, Action completionAction) where TValue : unmanaged where TOptions : unmanaged, IMotionOptions where TAdapter : unmanaged, IMotionAdapter<TValue, TOptions>
+		internal static (TObject SystemObject, MotionBuilder<TValue, TOptions, TAdapter> MotionBuilder) WithOnComplete<TObject, TValue, TOptions, TAdapter>(this (TObject SystemObject, MotionBuilder<TValue, TOptions, TAdapter> MotionBuilder) builder, Action completionAction) where TValue : unmanaged where TOptions : unmanaged, IMotionOptions where TAdapter : unmanaged, IMotionAdapter<TValue, TOptions>
 		{
 			builder.MotionBuilder.WithOnComplete(completionAction);
 
@@ -22,12 +22,6 @@ namespace Runtime.Extensions.LitMotion
 		internal static (TObject SystemObject, MotionBuilder<TValue, TOptions, TAdapter> MotionBuilder) AddEase<TObject, TValue, TOptions, TAdapter>(this (TObject SystemObject, MotionBuilder<TValue, TOptions, TAdapter> MotionBuilder) builder, Ease ease) where TValue : unmanaged where TOptions : unmanaged, IMotionOptions where TAdapter : unmanaged, IMotionAdapter<TValue, TOptions>
 		{
 			builder.MotionBuilder.WithEase(ease);
-
-			return builder;
-		}
-		internal static (TObject SystemObject, MotionBuilder<TValue, TOptions, TAdapter> MotionBuilder) WithOnComplete<TObject, TValue, TOptions, TAdapter>(this (TObject SystemObject, MotionBuilder<TValue, TOptions, TAdapter> MotionBuilder) builder, Action completionAction) where TValue : unmanaged where TOptions : unmanaged, IMotionOptions where TAdapter : unmanaged, IMotionAdapter<TValue, TOptions>
-		{
-			builder.MotionBuilder.WithOnComplete(completionAction);
 
 			return builder;
 		}

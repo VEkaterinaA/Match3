@@ -32,17 +32,17 @@ namespace Runtime.MonoBehaviours.Game
 			Y = y;
 		}
 
-		public void MoveTo(Vector2 newPosition)
+		public void MoveTo(Vector2 newPosition, Action action)
 		{
-			var handle = _rectTransform.CreateMotion(
+			var motion = _rectTransform.CreateMotion(
 				_rectTransform.anchoredPosition,
 				newPosition,
-				_moveDuration);
+				_moveDuration).WithOnComplete(action);
 
-			_сompositeMotionHandle.Add(handle.BindToAnchoredPosition());
+			_сompositeMotionHandle.AddAutoRemove(motion.BindToAnchoredPosition());
 		}
 
-		public void MoveToCell(int newX, int newY, float cellSize, Vector2 offset, Single height)
+		public void MoveToCell(int newX, int newY, float cellSize, Vector2 offset, Single height, Action action = null)
 		{
 
 			var position = new Vector2(
@@ -50,24 +50,40 @@ namespace Runtime.MonoBehaviours.Game
 							(height - 1 - newY) * cellSize + offset.y
 );
 
-			MoveTo(position);
+			MoveTo(position, action);
 		}
 
 		public void SwapWith(Gem otherGem, BoardInitializer boardInitializer)
 		{
+			if(_сompositeMotionHandle.Count != 0)
+			{
+				return;
+			}
+
 			boardInitializer.SwapGemsInBoard(this, otherGem);
 
 			MoveToCell(X, Y, boardInitializer.CellSize, boardInitializer.GetBoardOffset(), boardInitializer.Height);
-			otherGem.MoveToCell(otherGem.X, otherGem.Y, boardInitializer.CellSize, boardInitializer.GetBoardOffset(), boardInitializer.Height);
+			otherGem.MoveToCell(otherGem.X, otherGem.Y, boardInitializer.CellSize, boardInitializer.GetBoardOffset(), boardInitializer.Height, () => TrySwapOrRevert(otherGem, boardInitializer));
+		}
+
+		private void TrySwapOrRevert(Gem otherGem, BoardInitializer boardInitializer)
+		{
+			if (boardInitializer.IsValidGemPlacement(this) && boardInitializer.IsValidGemPlacement(otherGem))
+			{
+				boardInitializer.SwapGemsInBoard(this, otherGem);
+
+				MoveToCell(X, Y, boardInitializer.CellSize, boardInitializer.GetBoardOffset(), boardInitializer.Height);
+				otherGem.MoveToCell(otherGem.X, otherGem.Y, boardInitializer.CellSize, boardInitializer.GetBoardOffset(), boardInitializer.Height, () => _сompositeMotionHandle.Clear());
+			}
 		}
 
 		public void PlayMatchAnimation()
 		{
 			var handle = transform.CreateMotion(transform.localScale, Vector3.zero, 0.2f);
 			handle.AddEase(Ease.InBack);
-			handle.WithOnComplete(() => gameObject.SetActive(false));
+			handle.WithOnComplete(() =>gameObject.SetActive(false));
 
-			_сompositeMotionHandle.Add(handle.BindToLocalScale());
+			_сompositeMotionHandle.AddAutoRemove(handle.BindToLocalScale());
 
 		}
 
@@ -80,7 +96,7 @@ namespace Runtime.MonoBehaviours.Game
 				0.2f);
 			handle.AddEase(Ease.OutBack);
 
-			_сompositeMotionHandle.Add(handle.BindToLocalScale());
+			_сompositeMotionHandle.AddAutoRemove(handle.BindToLocalScale());
 		}
 
 		private void OnDestroy()
