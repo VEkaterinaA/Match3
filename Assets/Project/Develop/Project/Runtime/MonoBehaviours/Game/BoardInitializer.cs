@@ -155,19 +155,21 @@ namespace Runtime.MonoBehaviours.Game
 
 		private bool HasMatchingHorizontalPair(int x, int y, int type)
 		{
-			return (x >= 2 && (_board[x - 1, y]?.Type == type && _board[x - 2, y]?.Type == type) || (x <= _width - 3 && _board[x + 1, y]?.Type == type && _board[x + 2, y]?.Type == type));
+			return (x >= 2 && (_board[x - 1, y]?.Type == type && _board[x - 2, y]?.Type == type) || 
+				   (x <= _width - 3 && _board[x + 1, y]?.Type == type && _board[x + 2, y]?.Type == type));
 		}
 
 		private bool HasMatchingVerticalPair(int x, int y, int type)
 		{
-			return (y >= 2 && (_board[x, y - 1]?.Type == type && _board[x, y - 2]?.Type == type) || (y <= _height - 3 && _board[x, y + 1]?.Type == type && _board[x, y + 2]?.Type == type));
+			return ((y >= 2) && (_board[x, y - 1]?.Type == type) && (_board[x, y - 2]?.Type == type) || 
+				   (y <= _height - 3) && (_board[x, y + 1]?.Type == type) && (_board[x, y + 2]?.Type == type));
 		}
 
 		private bool IsSurroundedBySameType(int x, int y, int type)
 		{
 			return x > 0 && y > 0 && x < _width - 1 && y < _height - 1 &&
-				   _board[x - 1, y]?.Type == type && _board[x + 1, y]?.Type == type &&
-				   _board[x, y - 1]?.Type == type && _board[x, y + 1]?.Type == type;
+				  ( _board[x - 1, y]?.Type == type && _board[x + 1, y]?.Type == type ||
+				   _board[x, y - 1]?.Type == type && _board[x, y + 1]?.Type == type);
 		}
 
 		private void ClearBoard()

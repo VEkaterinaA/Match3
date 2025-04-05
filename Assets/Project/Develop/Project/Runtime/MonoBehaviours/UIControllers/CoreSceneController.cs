@@ -52,7 +52,6 @@ namespace Runtime.MonoBehaviours.UIControllers
 
         private void OnMainMenuButtonClicked()
         {
-            Time.timeScale = 0f;
             _screensService.Show<PauseScreen>();
         }
     }

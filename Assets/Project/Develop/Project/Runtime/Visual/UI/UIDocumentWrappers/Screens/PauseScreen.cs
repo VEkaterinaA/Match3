@@ -33,12 +33,16 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 		{
 			base.Show();
 			_gameStateMachine.Enter<PausedGameState>();
+
+			Time.timeScale = 0f;
 		}
 
 		protected override void Hide()
 		{
 			base.Hide();
 			_gameStateMachine.Enter<LoopsGameState>();
+
+			Time.timeScale = 1f;
 		}
 
 		protected override void Subscribe()
