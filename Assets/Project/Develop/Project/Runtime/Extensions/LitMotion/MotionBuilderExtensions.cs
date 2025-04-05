@@ -33,5 +33,10 @@ namespace Runtime.Extensions.LitMotion
 			return builder;
 		}
 
+		internal static void WithScheduler<TObject, TValue, TOptions, TAdapter>(this (TObject SystemObject, MotionBuilder<TValue, TOptions, TAdapter> MotionBuilder) builder, IMotionScheduler motionScheduler) where TValue : unmanaged where TOptions : unmanaged, IMotionOptions where TAdapter : unmanaged, IMotionAdapter<TValue, TOptions>
+		{
+			builder.MotionBuilder.WithScheduler(motionScheduler);
+		}
+
 	}
 }

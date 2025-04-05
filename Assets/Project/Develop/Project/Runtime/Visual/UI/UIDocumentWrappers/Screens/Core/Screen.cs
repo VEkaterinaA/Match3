@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer;
+using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 
 namespace Runtime.Visual.UI.UIDocumentWrappers.Screens.Core
 {
@@ -61,6 +62,7 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens.Core
 			RootStyle.visibility = Visibility.Visible;
 
 			var builder = RootStyle.CreateMotion(RootStyle.opacity.value, 1.0F, _fadeDuration);
+			builder.WithScheduler(MotionScheduler.InitializationIgnoreTimeScale);
 			builder.WithOnComplete(completionAction);
 
 			_fadeMotionHandle.CancelIfActive();
@@ -79,6 +81,7 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens.Core
 		void IScreen.Hide(Action completionAction)
 		{
 			var builder = RootStyle.CreateMotion(RootStyle.opacity.value, 0.0F, _fadeDuration);
+			builder.WithScheduler(MotionScheduler.InitializationIgnoreTimeScale);
 			builder.WithOnComplete(() => RootStyle.visibility = Visibility.Hidden);
 			builder.WithOnComplete(completionAction);
 

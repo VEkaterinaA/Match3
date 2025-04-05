@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Runtime.Infrastructure.Services.Input.Core;
 using System.Collections.Generic;
 using UnityEngine;
@@ -80,6 +81,7 @@ namespace Runtime.MonoBehaviours.Game
 				if (targetGem != null)
 				{
 					_selectedGem.SwapWith(targetGem, _boardInitializer);
+
 					_selectedGem = null;
 
 				}

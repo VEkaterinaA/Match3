@@ -14,7 +14,11 @@ namespace Runtime.MonoBehaviours.Game
 		public int X { get; set; }
 		public int Y { get; set; }
 
-		[SerializeField] private float _moveDuration = 0.3f; // длительность анимации
+		[SerializeField] private float _moveDuration = 0.3f;
+		[SerializeField] private float _spawnAnimationDuration = 0.2f;
+		[SerializeField] private float _destroyAnimationDuration = 0.8f;
+
+		internal Action<Gem> GemDestroyComplete;
 
 		private RectTransform _rectTransform;
 		private CompositeMotionHandle _сompositeMotionHandle;
@@ -55,7 +59,7 @@ namespace Runtime.MonoBehaviours.Game
 
 		public void SwapWith(Gem otherGem, BoardInitializer boardInitializer)
 		{
-			if(_сompositeMotionHandle.Count != 0)
+			if (_сompositeMotionHandle.Count != 0)
 			{
 				return;
 			}
@@ -75,13 +79,22 @@ namespace Runtime.MonoBehaviours.Game
 				MoveToCell(X, Y, boardInitializer.CellSize, boardInitializer.GetBoardOffset(), boardInitializer.Height);
 				otherGem.MoveToCell(otherGem.X, otherGem.Y, boardInitializer.CellSize, boardInitializer.GetBoardOffset(), boardInitializer.Height, () => _сompositeMotionHandle.Clear());
 			}
+			else
+			{
+				boardInitializer.HandleMatchesAfterSwap();
+			}
 		}
 
-		public void PlayMatchAnimation()
+		public void PlayDestroyAnimation()
 		{
-			var handle = transform.CreateMotion(transform.localScale, Vector3.zero, 0.2f);
-			handle.AddEase(Ease.InBack);
-			handle.WithOnComplete(() =>gameObject.SetActive(false));
+			var handle = transform
+				.CreateMotion(transform.localScale, Vector3.zero, _destroyAnimationDuration)
+				.AddEase(Ease.InBack)
+				.WithOnComplete(() =>
+					{
+						DestroyGem();
+						GemDestroyComplete?.Invoke(this);
+					});
 
 			_сompositeMotionHandle.AddAutoRemove(handle.BindToLocalScale());
 
@@ -90,13 +103,16 @@ namespace Runtime.MonoBehaviours.Game
 		public void PlaySpawnAnimation()
 		{
 			transform.localScale = Vector3.zero;
-			var handle = transform.CreateMotion(
-				Vector3.zero,
-				Vector3.one,
-				0.2f);
-			handle.AddEase(Ease.OutBack);
+			var handle = transform
+				.CreateMotion(Vector3.zero, Vector3.one, _spawnAnimationDuration)
+				.AddEase(Ease.OutBack);
 
 			_сompositeMotionHandle.AddAutoRemove(handle.BindToLocalScale());
+		}
+
+		private void DestroyGem()
+		{
+			Destroy(this);
 		}
 
 		private void OnDestroy()
