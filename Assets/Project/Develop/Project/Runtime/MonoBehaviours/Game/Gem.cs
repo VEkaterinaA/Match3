@@ -1,4 +1,5 @@
 ﻿using LitMotion;
+using Runtime.Data.Constants.Enums.AssetReferencesTypes;
 using Runtime.Extensions.LitMotion;
 using Runtime.Extensions.System;
 using Runtime.Extensions.UnityEngine;
@@ -10,10 +11,11 @@ namespace Runtime.MonoBehaviours.Game
 {
 	internal class Gem : MonoBehaviour
 	{
-		public int Type { get; set; }
 		public int X { get; set; }
 		public int Y { get; set; }
+		public GemType GemType => _gemType;
 
+		[SerializeField] private GemType _gemType;
 		[SerializeField] private float _moveDuration = 0.3f;
 		[SerializeField] private float _spawnAnimationDuration = 0.2f;
 		[SerializeField] private float _destroyAnimationDuration = 0.8f;
@@ -29,9 +31,8 @@ namespace Runtime.MonoBehaviours.Game
 			_сompositeMotionHandle = new CompositeMotionHandle();
 		}
 
-		internal void Initialize(Int32 type, Int32 x, Int32 y)
+		internal void Initialize(Int32 x, Int32 y)
 		{
-			Type = type;
 			X = x;
 			Y = y;
 		}

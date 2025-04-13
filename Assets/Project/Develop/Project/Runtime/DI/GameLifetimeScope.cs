@@ -142,6 +142,7 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 				entryPointsBuilder.Add<ScreensService>().WithParameter(_loadingScreen).WithParameter(transform);
 				entryPointsBuilder.Add<PersistentProgressService>();
 				entryPointsBuilder.Add<InputService>();
+				entryPointsBuilder.Add<BoardService>();
 				entryPointsBuilder.Add<GameService>();
 
 #if UNITY_EDITOR
