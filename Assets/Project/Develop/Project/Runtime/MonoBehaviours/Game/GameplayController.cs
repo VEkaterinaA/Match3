@@ -1,4 +1,9 @@
 using Cysharp.Threading.Tasks;
+using Runtime.Data.Configs;
+using Runtime.Data.Configs.Core;
+using Runtime.Infrastructure.Services.Game;
+using Runtime.Infrastructure.Services.Game.Core;
+using Runtime.Infrastructure.Services.Game.Helper;
 using Runtime.Infrastructure.Services.Input.Core;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,8 +15,10 @@ namespace Runtime.MonoBehaviours.Game
 {
 	internal class GameplayController : InjectedBehaviour
 	{
-
+		private StoneAnimation _stoneAnimation;
 		private IInputService _inputService;
+		private IBoardService _boardService;
+		private IGameConfig _gameConfig;
 
 		private EventSystem _eventSystem;
 		private PointerEventData _pointerData;
@@ -20,19 +27,27 @@ namespace Runtime.MonoBehaviours.Game
 
 		[SerializeField] private GraphicRaycaster raycaster;
 
-		[SerializeField] private BoardInitializer _boardInitializer;
+		[SerializeField] private Transform _boardParent;
 
-		private Gem _selectedGem;
+		private Stone _selectedGem;
 		private Vector2 _dragStartPosition;
 
 		[Inject]
-		private void Construct(IInputService inputService)
+		private void Construct(IInputService inputService, IBoardService boardService, IGameConfig gameConfig, StoneAnimation stoneAnimation)
 		{
+			_stoneAnimation = stoneAnimation;
 			_inputService = inputService;
+			_boardService = boardService;
+			_gameConfig = gameConfig;
 
 			_eventSystem = EventSystem.current;
 
 			SubscribeToEvents();
+		}
+
+		private void Start()
+		{
+			_boardService.InitializeBoard(_boardParent);
 		}
 
 		private void OnDisable()
@@ -77,10 +92,10 @@ namespace Runtime.MonoBehaviours.Game
 
 			if (IsValidPosition(newX, newY))
 			{
-				var targetGem = _boardInitializer.GetGem(newX, newY);
+				var targetGem = _boardService.GetStone(newX, newY);
 				if (targetGem != null)
 				{
-					_selectedGem.SwapWith(targetGem, _boardInitializer);
+					_stoneAnimation.SwapWith(_selectedGem, targetGem);
 
 					_selectedGem = null;
 
@@ -88,7 +103,7 @@ namespace Runtime.MonoBehaviours.Game
 			}
 		}
 
-		private Gem GetGemAtPosition(Vector2 position)
+		private Stone GetGemAtPosition(Vector2 position)
 		{
 			_pointerData = new PointerEventData(_eventSystem)
 			{
@@ -100,7 +115,7 @@ namespace Runtime.MonoBehaviours.Game
 
 			if(results.Count > 0)
 			{
-				return results[0].gameObject.GetComponent<Gem>();
+				return results[0].gameObject.GetComponent<Stone>();
 			}
 
 			return null;
@@ -122,8 +137,8 @@ namespace Runtime.MonoBehaviours.Game
 
 		private bool IsValidPosition(int x, int y)
 		{
-			return x >= 0 && x < _boardInitializer.Width &&
-				   y >= 0 && y < _boardInitializer.Height;
+			return x >= 0 && x < _gameConfig.Width &&
+				   y >= 0 && y < _gameConfig.Height;
 		}
 
 		private void SubscribeToEvents()

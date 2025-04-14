@@ -14,59 +14,57 @@ namespace Runtime.Infrastructure.Services.Game
 {
 	internal class BoardService : IBoardService
 	{
-		private MatchChecker _matchChecker;
-		private GemCreator _gemCreator;
+		private Stone[,] _board;
+		private List<StoneType> _gemTypes;
+		private readonly HashSet<Stone> _gemsToDestroy = new();
 
-		private IGameConfig _gameConfig;
+		private Int32 _countOfGemsDestroyed;
+		private Int32 _countOfGemsToBeDestroy;
 
+		private Transform _boardParent;
+		private IBoardService Service => this;
 
+		internal MatchChecker MatchChecker { get; set; }
 
-		private Gem[,] _board;
-		private List<GemType> _gemTypes;
+		internal StoneCreator StoneCreator { get; set; }
 
-		Gem[,] IBoardService.Board => _board;
+		internal IGameConfig GameConfig { get; set; }
 
-		List<GemType> IBoardService.GemTypes => _gemTypes;
+		Stone[,] IBoardService.Board => _board;
+
+		List<StoneType> IBoardService.GemTypes => _gemTypes;
 
 		[Inject]
-		private void Construct(IGameConfig gameConfig, GemCreator gemCreator, MatchChecker matchChecker)
+		private void Construct(IGameConfig gameConfig, StoneCreator gemCreator, MatchChecker matchChecker)
 		{
-			_matchChecker = matchChecker;
-			_gameConfig = gameConfig;
-			_gemCreator = gemCreator;
+			MatchChecker = matchChecker;
+			GameConfig = gameConfig;
+			StoneCreator = gemCreator;
 
-			_gemTypes = new List<GemType>((GemType[]) Enum.GetValues(typeof(GemType)));
+			_gemTypes = new List<StoneType>((StoneType[]) Enum.GetValues(typeof(StoneType)));
 		}
 
 		async UniTask IBoardService.InitializeBoard(Transform boardParent)
 		{
+			_boardParent = boardParent;
 			do
 			{
 				ClearBoard();
-				_board = new Gem[_gameConfig.Width, _gameConfig.Height];
-				var offset = GetBoardOffset();
+				_board = new Stone[GameConfig.Width, GameConfig.Height];
+				var offset = Service.GetBoardOffset();
 
-				for (var x = 0; x < _gameConfig.Width; x++)
+				for (var x = 0; x < GameConfig.Width; x++)
 				{
-					for (var y = 0; y < _gameConfig.Height; y++)
+					for (var y = 0; y < GameConfig.Height; y++)
 					{
-						_board[x, y] = await _gemCreator.CreateGem(x,y, offset, boardParent);
+						_board[x, y] = await StoneCreator.CreateStone(x,y, offset, boardParent);
 					}
 				}
 			}
-			while (!_matchChecker.HasAnyPossibleMove());
+			while (!MatchChecker.HasAnyPossibleMove());
 		}
 
-		internal Gem GetGem(Int32 x, Int32 y)
-		{
-			if (x >= 0 && x < _gameConfig.Width && y >= 0 && y < _gameConfig.Height)
-			{
-				return _board[x, y];
-			}
-			return null;
-		}
-
-		internal void SwapGemsInBoard(Gem gem1, Gem gem2)
+		void IBoardService.SwapGemsInBoard(Stone gem1, Stone gem2)
 		{
 			(_board[gem1.X, gem1.Y], _board[gem2.X, gem2.Y]) = (_board[gem2.X, gem2.Y], _board[gem1.X, gem1.Y]);
 
@@ -74,12 +72,163 @@ namespace Runtime.Infrastructure.Services.Game
 			(gem1.Y, gem2.Y) = (gem2.Y, gem1.Y);
 		}
 
-		internal Vector2 GetBoardOffset()
+		Vector2 IBoardService.GetBoardOffset()
 		{
 			return new Vector2(
-				-(_gameConfig.Width * _gameConfig.CellSize) / 2 + _gameConfig.CellSize / 2,
-				-(_gameConfig.Height * _gameConfig.CellSize) / 2 + _gameConfig.CellSize / 2
+				-(GameConfig.Width * GameConfig.CellSize) / 2 + GameConfig.CellSize / 2,
+				-(GameConfig.Height * GameConfig.CellSize) / 2 + GameConfig.CellSize / 2
 			);
+		}
+
+		void IBoardService.HandleMatchesAfterSwap()
+		{
+			var matches = FindAllMatches();
+			if (matches.Count > 0)
+			{
+				DestroyMatches(matches);
+			}
+		}
+
+		Stone IBoardService.GetStone(Int32 x, Int32 y)
+		{
+			if (x >= 0 && x < GameConfig.Width && y >= 0 && y < GameConfig.Height)
+			{
+				return _board[x, y];
+			}
+			return null;
+		}
+
+		private HashSet<Stone> FindAllMatches()
+		{
+			_gemsToDestroy.Clear();
+
+			for (var x = 0; x < GameConfig.Width; x++)
+			{
+				for (var y = 0; y < GameConfig.Height; y++)
+				{
+					var gem = _board[x, y];
+					if (gem == null) continue;
+
+					var horizontalMatch = GetLineMatch(gem, Vector2Int.right);
+					if (horizontalMatch.Count >= 3)
+					{
+						foreach (var matchGem in horizontalMatch)
+							_gemsToDestroy.Add(matchGem);
+					}
+
+					var verticalMatch = GetLineMatch(gem, Vector2Int.up);
+					if (verticalMatch.Count >= 3)
+					{
+						foreach (var matchGem in verticalMatch)
+							_gemsToDestroy.Add(matchGem);
+					}
+				}
+			}
+
+			return new HashSet<Stone>(_gemsToDestroy);
+		}
+
+		private List<Stone> GetLineMatch(Stone startGem, Vector2Int direction)
+		{
+			List<Stone> match = new() { startGem };
+			var x = startGem.X + direction.x;
+			var y = startGem.Y + direction.y;
+
+			while (MatchChecker.IsInsideBoard(x, y))
+			{
+				var nextGem = _board[x, y];
+				if (nextGem == null || nextGem.StoneType != startGem.StoneType) break;
+
+				match.Add(nextGem);
+				x += direction.x;
+				y += direction.y;
+			}
+
+			return match;
+		}
+
+		private void DestroyMatches(HashSet<Stone> matchedGems)
+		{
+			_countOfGemsToBeDestroy = matchedGems.Count;
+
+			foreach (var gem in matchedGems)
+			{
+				_board[gem.X, gem.Y] = null;
+				gem.GemDestroyComplete += CheckAndHandleGemsDestruction;
+				gem.PlayDestroyAnimation();
+			}
+		}
+		private void CheckAndHandleGemsDestruction(Stone gem)
+		{
+			gem.GemDestroyComplete -= CheckAndHandleGemsDestruction;
+
+			_countOfGemsDestroyed++;
+
+			if (_countOfGemsToBeDestroy == _countOfGemsDestroyed)
+			{
+				_countOfGemsToBeDestroy = 0;
+				_countOfGemsDestroyed = 0;
+
+				CollapseAndRefillBoard();
+			}
+		}
+
+		private void CollapseAndRefillBoard()
+		{
+			CollapseBoard();
+			FillBoard();
+			Service.HandleMatchesAfterSwap();
+		}
+
+		private void CollapseBoard()
+		{
+			for (var x = 0; x < GameConfig.Width; x++)
+			{
+				var emptyCount = 0;
+				for (var y = GameConfig.Height - 1; y >= 0; y--)
+				{
+					if (_board[x, y] == null)
+					{
+						emptyCount++;
+					}
+					else if (emptyCount > 0)
+					{
+						var gem = _board[x, y];
+						_board[x, y + emptyCount] = gem;
+						_board[x, y] = null;
+
+						gem.Y = y + emptyCount;
+
+						var newPos = GetGemPosition(gem.X, gem.Y);
+						gem.GetComponent<RectTransform>().anchoredPosition = newPos;
+					}
+				}
+			}
+		}
+
+		private Vector2 GetGemPosition(int x, int y)
+		{
+			var offset = Service.GetBoardOffset();
+			return new Vector2(
+				x * GameConfig.CellSize + offset.x,
+				(GameConfig.Height - 1 - y) * GameConfig.CellSize + offset.y
+			);
+		}
+
+		private void FillBoard()
+		{
+			var offset = Service.GetBoardOffset();
+
+			for (var x = 0; x < GameConfig.Width; x++)
+			{
+				for (var y = 0; y < GameConfig.Height; y++)
+				{
+					if (_board[x, y] == null)
+					{
+						StoneCreator.CreateStone(x, y, offset, _boardParent);
+					}
+				}
+			}
 		}
 
 		private void ClearBoard()

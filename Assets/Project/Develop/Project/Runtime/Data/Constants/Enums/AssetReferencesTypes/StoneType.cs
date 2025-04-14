@@ -1,6 +1,6 @@
 ﻿namespace Runtime.Data.Constants.Enums.AssetReferencesTypes
 {
-	internal enum GemType
+	internal enum StoneType
 	{
 		GemBlue = 0,
 		GemYellow = 1,

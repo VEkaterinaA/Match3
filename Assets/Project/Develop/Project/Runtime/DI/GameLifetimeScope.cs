@@ -18,6 +18,7 @@ using Runtime.Data.Constants.Enums.AssetReferencesTypes;
 using Runtime.Infrastructure.Services.SaveProgressServices;
 using Runtime.Infrastructure.Services.AssetsProvider.Containers;
 using Runtime.Infrastructure.Services.AssetsProvider.Containers.Core;
+using Runtime.Infrastructure.Services.Game;
 
 namespace Runtime.MonoBehaviours.LifetimeScopes
 {

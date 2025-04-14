@@ -12,10 +12,18 @@ namespace Runtime.Infrastructure.Services.Game.Core
 {
 	internal interface IBoardService
 	{
-		internal Gem[,] Board { get; }
+		internal Stone[,] Board { get; }
 
-		internal List<GemType> GemTypes { get; }
+		internal List<StoneType> GemTypes { get; }
 
 		internal UniTask InitializeBoard(Transform boardParent);
+
+		internal void SwapGemsInBoard(Stone gem1, Stone gem2);
+
+		internal Stone GetStone(Int32 x, Int32 y);
+
+		internal void HandleMatchesAfterSwap();
+
+		internal Vector2 GetBoardOffset();
 	}
 }
