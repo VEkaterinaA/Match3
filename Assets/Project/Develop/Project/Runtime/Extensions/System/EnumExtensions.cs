@@ -1,3 +1,4 @@
+using Runtime.Data.Constants.Enums.AssetReferencesTypes;
 using System;
 
 namespace Runtime.Extensions.System
@@ -13,6 +14,23 @@ namespace Runtime.Extensions.System
 			{
 				_ => throw new NotImplementedException($"[{nameof(ConvertToType)}] There is not implementation to convert [{targetEnum.GetType().Name}].{targetEnum} to type.")
 			};
+		}
+
+		internal static PrefabType ConvertToPrefabType(StoneType oldStatus)
+		{
+			switch (oldStatus)
+			{
+				case StoneType.RedStone:
+					return PrefabType.RedStone;
+				case StoneType.BlueStone:
+					return PrefabType.BlueStone;
+				case StoneType.GreenStone:
+					return PrefabType.GreenStone;
+				case StoneType.YellowStone:
+					return PrefabType.YellowStone;
+				default: 
+					return PrefabType.Unknown;
+			}
 		}
 
 		internal static T GetRandomValue<T>() where T : Enum

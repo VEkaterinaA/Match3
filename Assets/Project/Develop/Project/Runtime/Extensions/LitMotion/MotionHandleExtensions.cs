@@ -1,6 +1,5 @@
 using Cysharp.Threading.Tasks;
 using LitMotion;
-using UnityEngine;
 
 namespace Runtime.Extensions.LitMotion
 {
@@ -21,7 +20,8 @@ namespace Runtime.Extensions.LitMotion
 			motion.ToUniTask()
 				  .ContinueWith(() =>
 				  {
-					  composite.Remove(motion);
+					  if (composite != null && motion != null)
+						  composite.Remove(motion);
 				  }).Forget();
 		}
 	}

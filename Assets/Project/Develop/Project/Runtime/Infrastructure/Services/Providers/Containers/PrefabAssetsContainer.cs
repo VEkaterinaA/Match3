@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using AYellowpaper.SerializedCollections;
 using Cysharp.Threading.Tasks;
-using Runtime.Infrastructure.Services.AssetsProvider.Containers.Core;
+using Runtime.Infrastructure.Services.Providers.Containers.Core;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-namespace Runtime.Infrastructure.Services.AssetsProvider.Containers
+namespace Runtime.Infrastructure.Services.Providers.Containers
 {
 	[Serializable]
 	internal sealed class PrefabAssetsContainer<TEnum, TType> : IDisposable, IAsyncAssetsContainer<TEnum, TType> where TType : UnityEngine.Object

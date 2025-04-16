@@ -11,19 +11,19 @@ namespace Runtime.MonoBehaviours.Game
 {
 	internal class Stone : MonoBehaviour
 	{
-		public int X { get; set; }
-		public int Y { get; set; }
-		public StoneType StoneType => _stoneType;
-
 		[SerializeField] private StoneType _stoneType;
-		[SerializeField] private float _moveDuration = 0.3f;
-		[SerializeField] private float _spawnAnimationDuration = 0.2f;
-		[SerializeField] private float _destroyAnimationDuration = 0.8f;
+
+		internal int X { get; set; }
+		internal int Y { get; set; }
+		internal StoneType StoneType => _stoneType;
 
 		internal Action<Stone> GemDestroyComplete;
 
 		private RectTransform _rectTransform;
 		private CompositeMotionHandle _сompositeMotionHandle;
+
+		internal RectTransform RectTransform => _rectTransform;
+
 
 		private void Awake()
 		{
@@ -35,12 +35,14 @@ namespace Runtime.MonoBehaviours.Game
 		{
 			X = x;
 			Y = y;
+
+			_rectTransform.localScale = Vector3.zero;
 		}
 
 
-		private void DestroyGem()
+		internal void DestroyGem()
 		{
-			Destroy(this);
+			Destroy(gameObject);
 		}
 
 		private void OnDestroy()

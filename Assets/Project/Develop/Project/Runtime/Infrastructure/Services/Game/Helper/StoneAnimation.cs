@@ -1,13 +1,11 @@
 ﻿using LitMotion;
-using Runtime.Data.Configs;
 using Runtime.Data.Configs.Core;
-using Runtime.Infrastructure.Services.Game.Core;
+using Runtime.Extensions.LitMotion;
+using Runtime.Extensions.System;
+using Runtime.Extensions.UnityEngine;
+using Runtime.Infrastructure.Services.Providers;
 using Runtime.MonoBehaviours.Game;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using VContainer;
 
@@ -15,90 +13,79 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 {
 	internal class StoneAnimation
 	{
-		private IBoardService _boardService;
-		private MatchChecker _matchChecker;
+		private BoardProvider _boardProvider;
 		private IGameConfig _gameConfig;
 
 		private CompositeMotionHandle _сompositeMotionHandle;
 
 		[Inject]
-		private void Construct(IBoardService boardService, IGameConfig gameConfig, MatchChecker matchChecker)
+		private void Construct(BoardProvider boardProvider, IGameConfig gameConfig)
 		{
-			_boardService = boardService;
-			_matchChecker = matchChecker;
+			_boardProvider = boardProvider;
 			_gameConfig = gameConfig;
+
+			_сompositeMotionHandle = new();
 		}
-		public void MoveTo(Vector2 newPosition, Action action)
+		public void MoveTo(Stone stone, Vector2 newPosition, Action action)
 		{
-			var motion = _rectTransform.CreateMotion(
-			_rectTransform.anchoredPosition,
+			var motion = stone.RectTransform.CreateMotion(
+			stone.RectTransform.anchoredPosition,
 				newPosition,
-				_moveDuration).WithOnComplete(action);
+				_gameConfig.MoveDuration).WithOnComplete(()=>
+				{
+					action?.Invoke();
+					_сompositeMotionHandle.Clear();
+					});
 
 			_сompositeMotionHandle.AddAutoRemove(motion.BindToAnchoredPosition());
 		}
 
-		public void MoveToCell(int newX, int newY, float cellSize, Vector2 offset, Single height, Action action = null)
+		public void MoveToCell(Stone stone, Action action = null)
 		{
+			var offset = _boardProvider.GetBoardOffset();
 
 			var position = new Vector2(
-							newX * cellSize + offset.x,
-							(height - 1 - newY) * cellSize + offset.y
-);
-			MoveTo(position, action);
+							stone.X * _gameConfig.CellSize + offset.x,
+							(_gameConfig.Height - 1 - stone.Y) * _gameConfig.CellSize + offset.y);
+			MoveTo(stone, position, action);
 		}
 
-		public void SwapWith(Stone stoneOne, Stone stoneTwo)
+		public void SwapWith(Stone stoneOne, Stone stoneTwo, Action action = null)
 		{
 			if (_сompositeMotionHandle.Count != 0)
 			{
 				return;
 			}
 
-			_boardService.SwapGemsInBoard(stoneOne, stoneTwo);
-
-			MoveToCell(stoneOne.X, stoneOne.Y, _gameConfig.CellSize, _boardService.GetBoardOffset(), _gameConfig.Height);
-			MoveToCell(stoneTwo.X, stoneTwo.Y, _gameConfig.CellSize, _boardService.GetBoardOffset(), _gameConfig.Height, () => TrySwapOrRevert(stoneOne,stoneTwo));
+			MoveToCell(stoneOne);
+			MoveToCell(stoneTwo, action);
 		}
 
-		private void TrySwapOrRevert(Stone stoneOne, Stone stoneTwo)
+		public void PlayDestroyAnimation(Stone stone)
 		{
-			if (_matchChecker.IsValidGemPlacement(stoneOne) && _matchChecker.IsValidGemPlacement(stoneTwo))
-			{
-				_boardService.SwapGemsInBoard(stoneOne, stoneTwo);
-
-				MoveToCell(stoneOne.X, stoneOne.Y, _gameConfig.CellSize, _boardService.GetBoardOffset(), _gameConfig.Height);
-				MoveToCell(stoneTwo.X, stoneTwo.Y, _gameConfig.CellSize, _boardService.GetBoardOffset(), _gameConfig.Height, () => _сompositeMotionHandle.Clear());
-			}
-			else
-			{
-				_boardService.HandleMatchesAfterSwap();
-			}
-		}
-
-		public void PlayDestroyAnimation()
-		{
-			var handle = transform
-				.CreateMotion(transform.localScale, Vector3.zero, _destroyAnimationDuration)
+			var handle = stone.transform
+				.CreateMotion(stone.RectTransform.localScale, Vector3.zero, _gameConfig.DestroyAnimationDuration)
 				.AddEase(Ease.InBack)
 			.WithOnComplete(() =>
 			{
-					DestroyGem();
-					GemDestroyComplete?.Invoke(this);
-				});
+				stone.DestroyGem();
+				stone.GemDestroyComplete?.Invoke(stone);
+			});
 
 			_сompositeMotionHandle.AddAutoRemove(handle.BindToLocalScale());
-
 		}
 
 		public void PlaySpawnAnimation(Stone stone)
 		{
-			transform.localScale = Vector3.zero;
-			var handle = transform
-				.CreateMotion(Vector3.zero, Vector3.one, _spawnAnimationDuration)
-				.AddEase(Ease.OutBack);
+			var delay = UnityEngine.Random.Range(0f, 0.3f);
+
+			var handle = stone.RectTransform
+				.CreateMotion(Vector3.zero, Vector3.one, _gameConfig.SpawnAnimationDuration)
+				.AddEase(Ease.OutBack)
+				.AddDelay(delay);
 
 			_сompositeMotionHandle.AddAutoRemove(handle.BindToLocalScale());
 		}
+
 	}
 }

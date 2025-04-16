@@ -468,59 +468,6 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 0
---- !u!1 &844053855
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 844053857}
-  - component: {fileID: 844053856}
-  m_Layer: 0
-  m_Name: BoardInitializer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &844053856
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 844053855}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ea4e935ca333c44baa673b85c1da5ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _width: 8
-  _height: 8
-  _cellSize: 100
-  _gemPrefabs:
-  - {fileID: 6243020830798792119, guid: 8ff8ba2c928639d44aeb2f60a3f88db7, type: 3}
-  - {fileID: 7040049741135840860, guid: da247d7066a9dd641bdfc8c25f95578e, type: 3}
-  - {fileID: 5643589182426164076, guid: 3e07c021ef300344ebbe51763e140de2, type: 3}
-  - {fileID: 6729342716442742988, guid: 2a90c3fe12873ff4581387e670346f29, type: 3}
-  _boardParent: {fileID: 1143127386}
---- !u!4 &844053857
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 844053855}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1143127385
 GameObject:
   m_ObjectHideFlags: 0
@@ -808,7 +755,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _minSwipeDistance: 30
   raycaster: {fileID: 51788794}
-  _boardInitializer: {fileID: 844053856}
+  _boardParent: {fileID: 1143127386}
 --- !u!4 &1968364134
 Transform:
   m_ObjectHideFlags: 0
@@ -907,6 +854,5 @@ SceneRoots:
   - {fileID: 1169396818}
   - {fileID: 341727292}
   - {fileID: 691992998}
-  - {fileID: 844053857}
   - {fileID: 1968364134}
   - {fileID: 51788797}

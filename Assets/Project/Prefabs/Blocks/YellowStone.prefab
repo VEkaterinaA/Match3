@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 8455149901972045096}
   - component: {fileID: 2013641329776848732}
   - component: {fileID: 2747907617294217018}
-  - component: {fileID: 2930908488688450043}
+  - component: {fileID: 1273122807593471936}
   m_Layer: 5
-  m_Name: GemYellow
+  m_Name: YellowStone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -73,7 +73,7 @@ MonoBehaviour:
     y: 0
     width: 0.8
     height: 1
---- !u!114 &2930908488688450043
+--- !u!114 &1273122807593471936
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -82,7 +82,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6729342716442742988}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f25a73f6db934b4dbf55123f434ab73, type: 3}
+  m_Script: {fileID: 11500000, guid: ba9ee9bb995caa94c8af4755ec9d0f79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveDuration: 0.3
+  _stoneType: 3

@@ -1,7 +1,7 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace Runtime.Infrastructure.Services.AssetsProvider.Containers.Core
+namespace Runtime.Infrastructure.Services.Providers.Containers.Core
 {
 	internal interface IAssetsContainer<TEnum>
 	{

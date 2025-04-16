@@ -16,9 +16,12 @@ using Runtime.Infrastructure.Services.UIServices;
 using Runtime.Visual.UI.UIDocumentWrappers.Screens;
 using Runtime.Data.Constants.Enums.AssetReferencesTypes;
 using Runtime.Infrastructure.Services.SaveProgressServices;
-using Runtime.Infrastructure.Services.AssetsProvider.Containers;
-using Runtime.Infrastructure.Services.AssetsProvider.Containers.Core;
+using Runtime.Infrastructure.Services.Providers.Containers;
+using Runtime.Infrastructure.Services.Providers.Containers.Core;
 using Runtime.Infrastructure.Services.Game;
+using Runtime.Infrastructure.Services.Game.Helper;
+using FlyingBears.Runtime.Infrastructure.Factories.PrefabsAssets;
+using Runtime.Infrastructure.Services.Providers;
 
 namespace Runtime.MonoBehaviours.LifetimeScopes
 {
@@ -119,9 +122,7 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 
 			void ConfigureEntryPoints(EntryPointsBuilder entryPointsBuilder)
 			{
-				/*				entryPointsBuilder.Add<PrefabsFactory<PrefabType, GameObject>>();
-								entryPointsBuilder.Add<PrefabsFactory<VFXType, GameObject>>();
-				*/
+				entryPointsBuilder.Add<PrefabsFactory<PrefabType, GameObject>>();
 			}
 		}
 
@@ -132,6 +133,10 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 			containerBuilder.Register<FileSystemService>(Lifetime.Singleton).AsImplementedInterfaces();
 			containerBuilder.Register<SceneLoadService>(Lifetime.Singleton).AsImplementedInterfaces();
 			containerBuilder.Register<Pauseable>(Lifetime.Singleton).AsImplementedInterfaces();
+			containerBuilder.Register<BoardProvider>(Lifetime.Singleton);
+			containerBuilder.Register<StoneAnimation>(Lifetime.Singleton);
+			containerBuilder.Register<StoneCreator>(Lifetime.Singleton);
+			containerBuilder.Register<MatchChecker>(Lifetime.Singleton);
 
 			containerBuilder.RegisterComponent(_loopsService).AsImplementedInterfaces();
 			containerBuilder.UseEntryPoints(ConfigureEntryPoints);

@@ -1,6 +1,6 @@
 using UnityEngine.UIElements;
 
-namespace Runtime.Infrastructure.Services.AssetsProvider.Containers.Core
+namespace Runtime.Infrastructure.Services.Providers.Containers.Core
 {
 	internal interface ITemplateAssetsContainer<TEnum> : IAssetsContainer<TEnum>
 	{

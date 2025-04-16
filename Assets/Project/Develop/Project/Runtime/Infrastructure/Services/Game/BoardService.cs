@@ -1,9 +1,9 @@
 ﻿using Cysharp.Threading.Tasks;
-using NUnit.Framework;
 using Runtime.Data.Configs.Core;
 using Runtime.Data.Constants.Enums.AssetReferencesTypes;
 using Runtime.Infrastructure.Services.Game.Core;
 using Runtime.Infrastructure.Services.Game.Helper;
+using Runtime.Infrastructure.Services.Providers;
 using Runtime.MonoBehaviours.Game;
 using System;
 using System.Collections.Generic;
@@ -14,6 +14,15 @@ namespace Runtime.Infrastructure.Services.Game
 {
 	internal class BoardService : IBoardService
 	{
+		private StoneAnimation _stoneAnimation;
+		private BoardProvider _boardProvider;
+		private MatchChecker _matchChecker;
+
+		private StoneCreator _stoneCreator;
+
+		private IGameConfig _gameConfig;
+
+
 		private Stone[,] _board;
 		private List<StoneType> _gemTypes;
 		private readonly HashSet<Stone> _gemsToDestroy = new();
@@ -22,26 +31,20 @@ namespace Runtime.Infrastructure.Services.Game
 		private Int32 _countOfGemsToBeDestroy;
 
 		private Transform _boardParent;
+
 		private IBoardService Service => this;
-
-		internal MatchChecker MatchChecker { get; set; }
-
-		internal StoneCreator StoneCreator { get; set; }
-
-		internal IGameConfig GameConfig { get; set; }
 
 		Stone[,] IBoardService.Board => _board;
 
-		List<StoneType> IBoardService.GemTypes => _gemTypes;
 
 		[Inject]
-		private void Construct(IGameConfig gameConfig, StoneCreator gemCreator, MatchChecker matchChecker)
+		private void Construct(IGameConfig gameConfig, StoneCreator gemCreator, MatchChecker matchChecker, StoneAnimation stoneAnimation, BoardProvider boardProvider)
 		{
-			MatchChecker = matchChecker;
-			GameConfig = gameConfig;
-			StoneCreator = gemCreator;
-
-			_gemTypes = new List<StoneType>((StoneType[]) Enum.GetValues(typeof(StoneType)));
+			_stoneAnimation = stoneAnimation;
+			_boardProvider = boardProvider;
+			_matchChecker = matchChecker;
+			_stoneCreator = gemCreator;
+			_gameConfig = gameConfig;
 		}
 
 		async UniTask IBoardService.InitializeBoard(Transform boardParent)
@@ -50,18 +53,26 @@ namespace Runtime.Infrastructure.Services.Game
 			do
 			{
 				ClearBoard();
-				_board = new Stone[GameConfig.Width, GameConfig.Height];
-				var offset = Service.GetBoardOffset();
+				_board = new Stone[_gameConfig.Width, _gameConfig.Height];
+				var offset = _boardProvider.GetBoardOffset();
 
-				for (var x = 0; x < GameConfig.Width; x++)
+				for (var x = 0; x < _gameConfig.Width; x++)
 				{
-					for (var y = 0; y < GameConfig.Height; y++)
+					for (var y = 0; y < _gameConfig.Height; y++)
 					{
-						_board[x, y] = await StoneCreator.CreateStone(x,y, offset, boardParent);
+						_board[x, y] = await _stoneCreator.CreateStone(_board, x, y, offset, boardParent);
+					}
+				}
+
+				for (var x = 0; x < _gameConfig.Width; x++)
+				{
+					for (var y = 0; y < _gameConfig.Height; y++)
+					{
+						_stoneAnimation.PlaySpawnAnimation(_board[x, y]);
 					}
 				}
 			}
-			while (!MatchChecker.HasAnyPossibleMove());
+			while (!_matchChecker.HasAnyPossibleMove(_board));
 		}
 
 		void IBoardService.SwapGemsInBoard(Stone gem1, Stone gem2)
@@ -72,13 +83,6 @@ namespace Runtime.Infrastructure.Services.Game
 			(gem1.Y, gem2.Y) = (gem2.Y, gem1.Y);
 		}
 
-		Vector2 IBoardService.GetBoardOffset()
-		{
-			return new Vector2(
-				-(GameConfig.Width * GameConfig.CellSize) / 2 + GameConfig.CellSize / 2,
-				-(GameConfig.Height * GameConfig.CellSize) / 2 + GameConfig.CellSize / 2
-			);
-		}
 
 		void IBoardService.HandleMatchesAfterSwap()
 		{
@@ -89,9 +93,23 @@ namespace Runtime.Infrastructure.Services.Game
 			}
 		}
 
+		void IBoardService.TrySwapOrRevert(Stone stoneOne, Stone stoneTwo)
+		{
+			if (_matchChecker.IsValidGemPlacement(_board, stoneOne) && _matchChecker.IsValidGemPlacement(_board, stoneTwo))
+			{
+				Service.SwapGemsInBoard(stoneOne, stoneTwo);
+
+				_stoneAnimation.SwapWith(stoneOne, stoneTwo);
+			}
+			else
+			{
+				Service.HandleMatchesAfterSwap();
+			}
+		}
+
 		Stone IBoardService.GetStone(Int32 x, Int32 y)
 		{
-			if (x >= 0 && x < GameConfig.Width && y >= 0 && y < GameConfig.Height)
+			if (x >= 0 && x < _gameConfig.Width && y >= 0 && y < _gameConfig.Height)
 			{
 				return _board[x, y];
 			}
@@ -102,9 +120,9 @@ namespace Runtime.Infrastructure.Services.Game
 		{
 			_gemsToDestroy.Clear();
 
-			for (var x = 0; x < GameConfig.Width; x++)
+			for (var x = 0; x < _gameConfig.Width; x++)
 			{
-				for (var y = 0; y < GameConfig.Height; y++)
+				for (var y = 0; y < _gameConfig.Height; y++)
 				{
 					var gem = _board[x, y];
 					if (gem == null) continue;
@@ -134,7 +152,7 @@ namespace Runtime.Infrastructure.Services.Game
 			var x = startGem.X + direction.x;
 			var y = startGem.Y + direction.y;
 
-			while (MatchChecker.IsInsideBoard(x, y))
+			while (_matchChecker.IsInsideBoard(x, y))
 			{
 				var nextGem = _board[x, y];
 				if (nextGem == null || nextGem.StoneType != startGem.StoneType) break;
@@ -155,7 +173,8 @@ namespace Runtime.Infrastructure.Services.Game
 			{
 				_board[gem.X, gem.Y] = null;
 				gem.GemDestroyComplete += CheckAndHandleGemsDestruction;
-				gem.PlayDestroyAnimation();
+
+				_stoneAnimation.PlayDestroyAnimation(gem);
 			}
 		}
 		private void CheckAndHandleGemsDestruction(Stone gem)
@@ -182,10 +201,10 @@ namespace Runtime.Infrastructure.Services.Game
 
 		private void CollapseBoard()
 		{
-			for (var x = 0; x < GameConfig.Width; x++)
+			for (var x = 0; x < _gameConfig.Width; x++)
 			{
 				var emptyCount = 0;
-				for (var y = GameConfig.Height - 1; y >= 0; y--)
+				for (var y = _gameConfig.Height - 1; y >= 0; y--)
 				{
 					if (_board[x, y] == null)
 					{
@@ -208,24 +227,25 @@ namespace Runtime.Infrastructure.Services.Game
 
 		private Vector2 GetGemPosition(int x, int y)
 		{
-			var offset = Service.GetBoardOffset();
+			var offset = _boardProvider.GetBoardOffset();
 			return new Vector2(
-				x * GameConfig.CellSize + offset.x,
-				(GameConfig.Height - 1 - y) * GameConfig.CellSize + offset.y
+				x * _gameConfig.CellSize + offset.x,
+				(_gameConfig.Height - 1 - y) * _gameConfig.CellSize + offset.y
 			);
 		}
 
-		private void FillBoard()
+		private async UniTask FillBoard()
 		{
-			var offset = Service.GetBoardOffset();
+			var offset = _boardProvider.GetBoardOffset();
 
-			for (var x = 0; x < GameConfig.Width; x++)
+			for (var x = 0; x < _gameConfig.Width; x++)
 			{
-				for (var y = 0; y < GameConfig.Height; y++)
+				for (var y = 0; y < _gameConfig.Height; y++)
 				{
 					if (_board[x, y] == null)
 					{
-						StoneCreator.CreateStone(x, y, offset, _boardParent);
+						_board[x, y] = await _stoneCreator.CreateStone(_board, x, y, offset, _boardParent);
+						_stoneAnimation.PlaySpawnAnimation(_board[x, y]);
 					}
 				}
 			}
@@ -242,7 +262,7 @@ namespace Runtime.Infrastructure.Services.Game
 			{
 				if (gem != null)
 				{
-                    UnityEngine.Object.DestroyImmediate(gem.gameObject);
+					UnityEngine.Object.DestroyImmediate(gem.gameObject);
 				}
 			}
 		}

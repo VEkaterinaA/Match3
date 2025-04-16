@@ -95,10 +95,14 @@ namespace Runtime.MonoBehaviours.Game
 				var targetGem = _boardService.GetStone(newX, newY);
 				if (targetGem != null)
 				{
-					_stoneAnimation.SwapWith(_selectedGem, targetGem);
+					var selectedStone = _selectedGem;
+					_boardService.SwapGemsInBoard(selectedStone, targetGem);
+					_stoneAnimation.SwapWith(selectedStone, targetGem, () =>
+					{
+						_boardService.TrySwapOrRevert(selectedStone, targetGem);
+					});
 
 					_selectedGem = null;
-
 				}
 			}
 		}

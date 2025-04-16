@@ -1,7 +1,7 @@
 using Cysharp.Threading.Tasks;
 using FlyingBears.Runtime.Infrastructure.Factories.PrefabsAssets.Core;
 using Runtime.Infrastructure.Core;
-using Runtime.Infrastructure.Services.AssetsProvider.Containers.Core;
+using Runtime.Infrastructure.Services.Providers.Containers.Core;
 using System;
 using UnityEngine;
 using VContainer;

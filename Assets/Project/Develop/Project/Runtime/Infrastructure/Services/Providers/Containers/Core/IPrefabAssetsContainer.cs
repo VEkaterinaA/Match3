@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Runtime.Infrastructure.Services.AssetsProvider.Containers.Core
+namespace Runtime.Infrastructure.Services.Providers.Containers.Core
 {
 	internal interface IPrefabAssetsContainer<TEnum, TType> : IAsyncAssetsContainer<TEnum, TType> where TType : Object
 	{

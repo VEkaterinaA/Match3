@@ -5,7 +5,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UIElements;
 
-namespace Runtime.Infrastructure.Services.AssetsProvider.Assets
+namespace Runtime.Infrastructure.Services.Providers.Assets
 {
 	[Serializable]
 	internal sealed class UIDocumentInfo

@@ -1,20 +1,11 @@
-﻿using Codice.Client.BaseCommands.Merge.Xml;
-using Cysharp.Threading.Tasks;
-using FlyingBears.Runtime.Infrastructure.Factories.PrefabsAssets;
+﻿using Cysharp.Threading.Tasks;
 using FlyingBears.Runtime.Infrastructure.Factories.PrefabsAssets.Core;
-using Runtime.Data.Configs;
 using Runtime.Data.Configs.Core;
 using Runtime.Data.Constants.Enums.AssetReferencesTypes;
 using Runtime.Extensions.System;
-using Runtime.Infrastructure.Services.AssetsProvider.Containers.Core;
-using Runtime.Infrastructure.Services.Game.Core;
+using Runtime.Infrastructure.Services.Providers;
 using Runtime.MonoBehaviours.Game;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 using VContainer;
 
@@ -22,65 +13,61 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 {
 	internal class StoneCreator
 	{
-		private IPrefabsFactory<StoneType, GameObject> _prefabsFactory;
-		private StoneAnimation _stoneAnimation;
-		private IBoardService _boardService;
+		private IPrefabsFactory<PrefabType, GameObject> _prefabsFactory;
+		private BoardProvider _stoneTypeProvider;
 		private MatchChecker _matchChecker;
 		private IGameConfig _gameConfig;
 
 
 		[Inject]
-		private void Construct(IGameConfig gameConfig, IPrefabsFactory<StoneType, GameObject> prefabsFactory, IBoardService boardService, MatchChecker matchChecker, StoneAnimation stoneAnimation)
+		private void Construct(IGameConfig gameConfig, IPrefabsFactory<PrefabType, GameObject> prefabsFactory, MatchChecker matchChecker, BoardProvider stoneTypeProvider)
 		{
+			_stoneTypeProvider = stoneTypeProvider;
 			_prefabsFactory = prefabsFactory;
-			_stoneAnimation = stoneAnimation;
-			_boardService = boardService;
 			_matchChecker = matchChecker;
 			_gameConfig = gameConfig;
 		}
 
 
-		internal async UniTask<Stone> CreateStone(int x, int y, Vector2 offset, Transform boardParent)
+		internal async UniTask<Stone> CreateStone(Stone[,] stones, int x, int y, Vector2 offset, Transform boardParent)
 		{
 			var position = new Vector2(
 				x * _gameConfig.CellSize + offset.x,
 				(_gameConfig.Height - 1 - y) * _gameConfig.CellSize + offset.y
 			);
 
-			var stoneType = GetRandomValidStoneType(x, y);
-			var stoneObject = await _prefabsFactory.CreateGameObjectAsync(stoneType, boardParent);
+			var stoneType = GetRandomValidStoneType(stones, x, y);
+			var stoneObject = await _prefabsFactory.CreateGameObjectAsync(EnumExtensions.ConvertToPrefabType(stoneType), boardParent);
 
 			var rectTransform = stoneObject.GetComponent<RectTransform>();
 			rectTransform.anchoredPosition = position;
 
 			var stone = stoneObject.GetComponent<Stone>();
-			stone.Initialize(x,y);
-
-			_stoneAnimation.PlaySpawnAnimation(stone);
+			stone.Initialize(x, y);
 
 			return stone;
 		}
 
 
-		private StoneType GetRandomValidStoneType(int x, int y)
+		private StoneType GetRandomValidStoneType(Stone[,] stones, int x, int y)
 		{
-			var availableTypes = GetAvailableStoneTypes(x, y);
+			var availableTypes = GetAvailableStoneTypes(stones, x, y);
 			return availableTypes[UnityEngine.Random.Range(0, availableTypes.Count)];
 		}
 
-		private List<StoneType> GetAvailableStoneTypes(int x, int y)
+		private List<StoneType> GetAvailableStoneTypes(Stone[,] stones, int x, int y)
 		{
 			var availableTypes = new List<StoneType>();
 
-			foreach (var type in _boardService.GemTypes)
+			foreach (var type in _stoneTypeProvider.StoneTypes)
 			{
-				if (_matchChecker.IsValidGemPlacement(x, y, type))
+				if (_matchChecker.IsValidGemPlacement(stones, x, y, type))
 				{
 					availableTypes.Add(type);
 				}
 			}
 
-			return availableTypes.Count > 0 ? availableTypes : _boardService.GemTypes;
-		}		
+			return availableTypes.Count > 0 ? availableTypes : _stoneTypeProvider.StoneTypes;
+		}
 	}
 }

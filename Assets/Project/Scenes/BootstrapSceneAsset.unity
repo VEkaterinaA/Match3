@@ -132,6 +132,51 @@ PrefabInstance:
       propertyPath: m_Name
       value: LifetimeScope
       objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _prefabAssetsContainer._prefabsAssetsReferencesDictionary._serializedList.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _prefabAssetsContainer._prefabsAssetsReferencesDictionary._serializedList.Array.data[0].Key
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _prefabAssetsContainer._prefabsAssetsReferencesDictionary._serializedList.Array.data[1].Key
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _prefabAssetsContainer._prefabsAssetsReferencesDictionary._serializedList.Array.data[2].Key
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _prefabAssetsContainer._prefabsAssetsReferencesDictionary._serializedList.Array.data[3].Key
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _prefabAssetsContainer._prefabsAssetsReferencesDictionary._serializedList.Array.data[0].Value.m_AssetGUID
+      value: 3e07c021ef300344ebbe51763e140de2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _prefabAssetsContainer._prefabsAssetsReferencesDictionary._serializedList.Array.data[1].Value.m_AssetGUID
+      value: 8ff8ba2c928639d44aeb2f60a3f88db7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _prefabAssetsContainer._prefabsAssetsReferencesDictionary._serializedList.Array.data[2].Value.m_AssetGUID
+      value: da247d7066a9dd641bdfc8c25f95578e
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _prefabAssetsContainer._prefabsAssetsReferencesDictionary._serializedList.Array.data[3].Value.m_AssetGUID
+      value: 2a90c3fe12873ff4581387e670346f29
+      objectReference: {fileID: 0}
     - target: {fileID: 8458401065805826530, guid: cf8aa02ccea36284b815f477a028b35d,
         type: 3}
       propertyPath: m_LocalPosition.x
