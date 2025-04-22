@@ -1,0 +1,27 @@
+#PopupBackground {
+}
+
+#PopupContainer {
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+}
+
+.unity-base-slider__text-field {
+    width: 60px;
+}
+
+.unity-base-popup-field__input {
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+}
+
+.unity-text-element {
+    -unity-font-definition: url("project://database/Library/unity%20default%20resources?fileID=10102&guid=0000000000000000e000000000000000&type=0#LegacyRuntime");
+    -unity-text-align: middle-left;
+    color: rgb(0, 0, 0);
+    font-size: 32px;
+}
