@@ -52,28 +52,40 @@ MonoBehaviour:
     - Screen
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8ff8ba2c928639d44aeb2f60a3f88db7
-    m_Address: Assets/Project/Prefabs/Blocks/BlueStone.prefab
+    m_Address: BlueStone
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefab
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: da247d7066a9dd641bdfc8c25f95578e
-    m_Address: Assets/Project/Prefabs/Blocks/GreenStone.prefab
+    m_Address: GreenStone
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefab
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3e07c021ef300344ebbe51763e140de2
-    m_Address: Assets/Project/Prefabs/Blocks/RedStone.prefab
+    m_Address: RedStone
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefab
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2a90c3fe12873ff4581387e670346f29
-    m_Address: Assets/Project/Prefabs/Blocks/YellowStone.prefab
+    m_Address: YellowStone
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0877af9586ff8e34e9c6945d9389b2aa
+    m_Address: LevelEditorPopupVisualTreeAsset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Popup
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c4496b7f66a804ffc90695c3f3ac2685
+    m_Address: PopupPanelSettings
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PanelSetting
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: aa8896b0c4bb0574fbf842001f5ba793, type: 2}

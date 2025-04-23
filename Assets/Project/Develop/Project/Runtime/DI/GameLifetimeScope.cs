@@ -128,7 +128,6 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 
 		private void RegisterServices(IContainerBuilder containerBuilder)
 		{
-			containerBuilder.Register<PopupsService>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(transform);
 			containerBuilder.Register<SystemRandomService>(Lifetime.Singleton).AsImplementedInterfaces();
 			containerBuilder.Register<FileSystemService>(Lifetime.Singleton).AsImplementedInterfaces();
 			containerBuilder.Register<SceneLoadService>(Lifetime.Singleton).AsImplementedInterfaces();
@@ -146,6 +145,7 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 			void ConfigureEntryPoints(EntryPointsBuilder entryPointsBuilder)
 			{
 				entryPointsBuilder.Add<ScreensService>().WithParameter(_loadingScreen).WithParameter(transform);
+				entryPointsBuilder.Add<PopupsService>().WithParameter(transform);
 				entryPointsBuilder.Add<PersistentProgressService>();
 				entryPointsBuilder.Add<InputService>();
 				entryPointsBuilder.Add<BoardService>();

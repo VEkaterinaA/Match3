@@ -134,6 +134,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
         type: 3}
+      propertyPath: _popupsInfoAssetsContainer._uiDocumentsInfosDictionary._serializedList.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
       propertyPath: _prefabAssetsContainer._prefabsAssetsReferencesDictionary._serializedList.Array.size
       value: 4
       objectReference: {fileID: 0}
@@ -176,6 +181,16 @@ PrefabInstance:
         type: 3}
       propertyPath: _prefabAssetsContainer._prefabsAssetsReferencesDictionary._serializedList.Array.data[3].Value.m_AssetGUID
       value: 2a90c3fe12873ff4581387e670346f29
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _popupsInfoAssetsContainer._uiDocumentsInfosDictionary._serializedList.Array.data[0].Value._panelSettingsReference.m_AssetGUID
+      value: c4496b7f66a804ffc90695c3f3ac2685
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _popupsInfoAssetsContainer._uiDocumentsInfosDictionary._serializedList.Array.data[0].Value._visualTreeAssetReference.m_AssetGUID
+      value: 0877af9586ff8e34e9c6945d9389b2aa
       objectReference: {fileID: 0}
     - target: {fileID: 8458401065805826530, guid: cf8aa02ccea36284b815f477a028b35d,
         type: 3}

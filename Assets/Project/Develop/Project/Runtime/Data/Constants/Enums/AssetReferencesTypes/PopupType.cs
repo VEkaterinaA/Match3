@@ -3,5 +3,6 @@
 	internal enum PopupType
 	{
 		Unknown = -1,
+		LevelEditorPopup = 0,
 	}
 }

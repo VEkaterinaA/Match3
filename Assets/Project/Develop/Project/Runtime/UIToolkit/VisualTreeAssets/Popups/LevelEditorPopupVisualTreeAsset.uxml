@@ -1,22 +1,28 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/Project/Develop/Project/Runtime/UIToolkit/StyleSheets/Popups/LevelEditorPopupStyleSheets.uss?fileID=7433441132597879392&amp;guid=5ce8897351df1eb499a4e61ba40033de&amp;type=3#LevelEditorPopupStyleSheets" />
-    <engine:VisualElement name="PopupBackground">
-        <engine:VisualElement name="PopupContainer" style="flex-grow: 1;">
-            <engine:Label text="Level editor" name="Title" style="align-items: center; width: 200px; align-self: center;" />
-            <engine:VisualElement name="Container" style="flex-grow: 1;">
-                <engine:SliderInt label="Field width (5-10)" value="8" high-value="10" low-value="5" show-input-field="true" name="FieldWidthValue" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                <engine:SliderInt label="Field hight (5-10)" value="8" high-value="10" low-value="5" show-input-field="true" name="FieldHeightValue" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                <engine:VisualElement name="MoveLimitContainer" style="flex-grow: 1; margin-top: 7px; margin-bottom: 7px;">
-                    <engine:Toggle label="Move limit" name="MoveLimitToggle" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                    <engine:SliderInt label="Number of moves" value="25" high-value="99" low-value="12" show-input-field="true" direction="Horizontal" inverted="false" page-size="0" name="MoveLimitValue" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                </engine:VisualElement>
-                <engine:VisualElement name="TargetSelectionContainer" style="flex-grow: 1; margin-top: 7px; margin-bottom: 7px; align-items: stretch;">
-                    <engine:DropdownField label="Target" index="0" choices="Score points,Red gems,Blue gems,Green gems,Yellow gems,Activate boosters" name="TargetDropdown" style="margin-top: 0; margin-right: 0; margin-bottom: 5px; margin-left: 0;" />
-                    <engine:IntegerField label="Quantity" value="10" name="TargetQuantity" max-length="3" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; width: 280px;" />
-                </engine:VisualElement>
-                <engine:VisualElement name="TimeLimitContainer" style="flex-grow: 1;">
-                    <engine:Toggle label="Time limit" name="TimeLimitToggle" />
-                    <engine:SliderInt label="Select time limit" value="42" high-value="99" low-value="15" show-input-field="true" name="TimeLimitValue" />
+    <engine:VisualElement name="PanelVisualElement" class="PopupPanel" style="flex-grow: 1;">
+        <engine:VisualElement name="PopupBackground" style="border-top-left-radius: 25px; border-top-right-radius: 25px; border-bottom-right-radius: 25px; border-bottom-left-radius: 25px;">
+            <engine:VisualElement name="PopupContainer" class="PopupPanel" style="flex-grow: 1;">
+                <engine:Label text="Level editor" name="Title" style="align-items: center; width: 200px; align-self: center;" />
+                <engine:Button name="CloseButton" class="CloseButton" style="position: absolute; top: 0; right: 0; width: 35px; height: 35px; background-image: url(&quot;project://database/Assets/Project/Art/Textures/UI/Close.png?fileID=2800000&amp;guid=b579b5ddc95780647bb3063f980d9e68&amp;type=3#Close&quot;); -unity-background-scale-mode: scale-and-crop; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; background-color: rgba(188, 188, 188, 0); -unity-background-image-tint-color: rgb(0, 0, 0);" />
+                <engine:VisualElement name="Container" style="flex-grow: 1; top: 15px; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px;">
+                    <engine:SliderInt label="Field width (5-10)" value="8" high-value="10" low-value="5" show-input-field="true" name="FieldWidthValue" style="margin-top: 0; margin-right: 0; margin-bottom: 10px; margin-left: 0;" />
+                    <engine:SliderInt label="Field hight (5-10)" value="8" high-value="10" low-value="5" show-input-field="true" name="FieldHeightValue" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                    <engine:VisualElement name="MoveLimitContainer" style="flex-grow: 1; margin-top: 7px; margin-bottom: 0;">
+                        <engine:Toggle label="Move limit" name="MoveLimitToggle" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                        <engine:SliderInt label="Number of moves" value="25" high-value="99" low-value="12" show-input-field="true" direction="Horizontal" inverted="false" page-size="0" name="MoveLimitValue" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                    </engine:VisualElement>
+                    <engine:VisualElement name="TargetSelectionContainer" style="flex-grow: 1; margin-top: 7px; margin-bottom: 7px; align-items: stretch;">
+                        <engine:DropdownField label="Target" index="0" choices="Score points,Red gems,Blue gems,Green gems,Yellow gems,Activate boosters" name="TargetDropdown" class="unity-text-element" style="margin-top: 0; margin-right: 0; margin-bottom: 5px; margin-left: 0; -unity-text-align: upper-left;" />
+                        <engine:IntegerField label="Quantity" value="10" name="TargetQuantity" max-length="3" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; width: 280px;" />
+                    </engine:VisualElement>
+                    <engine:VisualElement name="TimeLimitContainer" style="flex-grow: 1;">
+                        <engine:Toggle label="Time limit" name="TimeLimitToggle" />
+                        <engine:SliderInt label="Select time limit (sec)" value="42" high-value="99" low-value="15" show-input-field="true" name="TimeLimitValue" />
+                    </engine:VisualElement>
+                    <engine:VisualElement name="PlayContainer" style="flex-grow: 1; align-items: center;">
+                        <engine:Button text="Play" name="PlayButton" style="background-color: rgb(255, 255, 255); border-top-left-radius: 15px; border-top-right-radius: 15px; border-bottom-right-radius: 15px; border-bottom-left-radius: 15px; margin-top: 25px; width: 200px; height: 70px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px;" />
+                    </engine:VisualElement>
                 </engine:VisualElement>
             </engine:VisualElement>
         </engine:VisualElement>

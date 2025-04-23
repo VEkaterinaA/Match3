@@ -2,8 +2,10 @@ using Runtime.Data.Constants.Enums;
 using Runtime.Infrastructure.GameStateMachine.Core;
 using Runtime.Infrastructure.GameStateMachine.States;
 using Runtime.Infrastructure.Services.Core;
+using Runtime.Infrastructure.Services.UIServices;
 using Runtime.Infrastructure.Services.UIServices.Core;
 using Runtime.MonoBehaviours;
+using Runtime.Visual.UI.UIDocumentWrappers.Popups;
 using Runtime.Visual.UI.UIDocumentWrappers.Screens;
 using UnityEditor;
 using UnityEngine;
@@ -16,6 +18,7 @@ namespace Runtime.MonoBehaviours.UIControllers
 	{
 		private IGameStateMachine _gameStateMachine;
 		private IScreensService _screensService;
+		private IPopupsService _popupsService;
 
 		[SerializeField]
 		private UIDocument _menuDocument;
@@ -25,10 +28,11 @@ namespace Runtime.MonoBehaviours.UIControllers
 		private Button _exitButton;
 
 		[Inject]
-		internal void Construct(IGameStateMachine gameStateMachine, IScreensService screensService)
+		internal void Construct(IGameStateMachine gameStateMachine, IScreensService screensService, IPopupsService popupsService)
 		{
 			_gameStateMachine = gameStateMachine;
 			_screensService = screensService;
+			_popupsService = popupsService;
 
 			Subscribe();
 		}
@@ -70,8 +74,10 @@ namespace Runtime.MonoBehaviours.UIControllers
 
 		private void OnPlayButtonClicked()
 		{
-			_gameStateMachine.Get<LoadingGameState>().SceneName = SceneName.CoreSceneAsset;
+			_popupsService.Show<LevelEditorPopup>();
+/*			_gameStateMachine.Get<LoadingGameState>().SceneName = SceneName.CoreSceneAsset;
 			_gameStateMachine.Enter<LoadingGameState>();
+*/
 		}
 
 		private void OnSettingsButtonClicked()

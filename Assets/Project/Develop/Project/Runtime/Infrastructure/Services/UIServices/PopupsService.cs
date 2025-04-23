@@ -14,7 +14,7 @@ namespace Runtime.Infrastructure.Services.UIServices
 {
 	internal sealed class PopupsService : IPopupsService, IInitializationInformer, IDisposable
 	{
-		private readonly IUIDocumentsFactory<PopupType> _uiDocumentsFactory;
+		private IUIDocumentsFactory<PopupType> _uiDocumentsFactory;
 
 		private readonly Queue<QueuedPopupAction> _queuedPopupActions = new Queue<QueuedPopupAction>();
 		private readonly Dictionary<Type, Popup> _popups = new Dictionary<Type, Popup>();
@@ -35,13 +35,18 @@ namespace Runtime.Infrastructure.Services.UIServices
 
 		private IPopupsService Service => this;
 
-		[Inject]
-		internal PopupsService(Transform popupsParentTransform, IUIDocumentsFactory<PopupType> uiDocumentsFactory)
+		internal PopupsService(Transform popupsParentTransform)
 		{
 			_popupsParentTransform = popupsParentTransform;
+		}
+
+		[Inject]
+		internal void Construct(IUIDocumentsFactory<PopupType> uiDocumentsFactory)
+		{
 			_uiDocumentsFactory = uiDocumentsFactory;
 
 			uiDocumentsFactory.InvokeAfterInitialization(Initialize);
+
 		}
 
 		void IPopupsService.Show<TPopup>(Action completionAction)

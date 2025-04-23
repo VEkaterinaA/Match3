@@ -3,6 +3,7 @@ using Runtime.Infrastructure.Core;
 using Runtime.Infrastructure.Factories.Core;
 using Runtime.Infrastructure.Services.Providers.Containers.Core;
 using Runtime.Visual.UI.UIDocumentWrappers.Core;
+using Runtime.Visual.UI.UIDocumentWrappers.Popups;
 using Runtime.Visual.UI.UIDocumentWrappers.Screens;
 using System;
 using System.Collections.Generic;
@@ -84,6 +85,7 @@ namespace Runtime.Infrastructure.Factories
 			{
 				ScreenType.SettingsScreen => new SettingsScreen(uiDocument),
 				ScreenType.PauseScreen => new PauseScreen(uiDocument),
+				PopupType.LevelEditorPopup => new LevelEditorPopup(uiDocument, true),
 				_ => throw new NotImplementedException($"[{GetType().Name}] There is no implementation to create {typeof(TEnum)}."),
 			};
 		}
