@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using VContainer;
 
 namespace Runtime.Visual.UI.UIDocumentWrappers.Popups.Core
 {
@@ -49,6 +50,7 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Popups.Core
 			RootStyle.display = DisplayStyle.None;
 		}
 
+		[Inject]
 		internal void Construct(IPopupsService popupsService)
 		{
 			PopupsService = popupsService;

@@ -19,10 +19,12 @@ namespace Runtime.Infrastructure.Factories
 
 		IPersistentProgress IProgressFactory.CreatePlayerProgress()
 		{
-			var playerProgress = _progressConfig.ProgressPrototype.Clone();
-			_objectResolver.Inject(playerProgress);
+			/*			var playerProgress = _progressConfig.ProgressPrototype.Clone();
+						_objectResolver.Inject(playerProgress);
 
-			return playerProgress;
+						return playerProgress;
+			*/
+			return new PersistentProgress();
 		}
 
 		IUserInfo IProgressFactory.CreateUserInfo()

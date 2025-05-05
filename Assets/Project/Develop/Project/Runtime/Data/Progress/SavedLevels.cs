@@ -33,8 +33,9 @@ namespace Runtime.Data.Progress
 		{
 			var savedLevels = new SavedLevels();
 
-			var dictionary = _levelInfosDictionary.ToDictionary(pair => pair.Key, pair => ((IPrototype<LevelInfo>)pair.Value).Clone());
-			savedLevels._levelInfosDictionary = new SerializedDictionary<String, LevelInfo>(dictionary);
+			//var dictionary = _levelInfosDictionary.ToDictionary(pair => pair.Key, pair => ((IPrototype<LevelInfo>)pair.Value).Clone());
+			//savedLevels._levelInfosDictionary = new SerializedDictionary<String, LevelInfo>(dictionary);
+			savedLevels._levelInfosDictionary = new SerializedDictionary<String, LevelInfo>();
 
 			return savedLevels;
 		}

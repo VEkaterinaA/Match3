@@ -86,10 +86,10 @@ namespace Runtime.Visual.UI.VisualElements.TemplateWrappers
 
 		internal async void UpdateView()
 		{
-			DateTimeLabel.text = $"{Progress.SavedDateTime:d} {Progress.SavedDateTime:T}";
+/*			DateTimeLabel.text = $"{Progress.SavedDateTime:d} {Progress.SavedDateTime:T}";
 			ScreenshotVisualElement.style.backgroundImage = new StyleBackground(Progress.ScreenshotTexture2D);
 			NameTextField.value = Progress.Name;
-
+*/
 			TemplateContainer.style.height = 135.0F;
 			TemplateContainer.style.width = 645.0F;
 
@@ -133,7 +133,7 @@ namespace Runtime.Visual.UI.VisualElements.TemplateWrappers
 
 		private void UpdateProgressName(ChangeEvent<String> changeEvent)
 		{
-			Progress.Name = changeEvent.newValue;
+			//Progress.Name = changeEvent.newValue;
 		}
 	}
 }

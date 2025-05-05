@@ -147,6 +147,7 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 				entryPointsBuilder.Add<ScreensService>().WithParameter(_loadingScreen).WithParameter(transform);
 				entryPointsBuilder.Add<PopupsService>().WithParameter(transform);
 				entryPointsBuilder.Add<PersistentProgressService>();
+				entryPointsBuilder.Add<LevelInfoService>();
 				entryPointsBuilder.Add<InputService>();
 				entryPointsBuilder.Add<BoardService>();
 				entryPointsBuilder.Add<GameService>();

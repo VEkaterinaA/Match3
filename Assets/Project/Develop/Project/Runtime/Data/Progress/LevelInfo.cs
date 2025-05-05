@@ -1,4 +1,5 @@
-﻿using Runtime.Infrastructure.Core;
+﻿using Runtime.Data.Constants.Enums;
+using Runtime.Infrastructure.Core;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,58 +7,23 @@ using UnityEngine;
 namespace Runtime.Data.Progress
 {
 	[Serializable]
-	internal sealed class LevelInfo : IPrototype<LevelInfo>
+	internal sealed class LevelInfo
 	{
-/*		[SerializeField]
-		private List<String> _collectedInventoryItemsBehavioursIDs;
+		private Int32 _widthOfBoard;
+		private Int32 _heightOfBoard;
 
-		[SerializeField]
-		private SerializableVector3 _playerPosition;
-		[SerializeField]
-		private Byte _environmentID;
+		private Int32 _moveLimit;
 
-		[SerializeField]
-		private LightningPresetType _lightningPresetType;
-		[SerializeField]
-		private FogType _fogType;
+		private TargetType _targetType;
+		private Int32 _quantity;
 
-		internal List<String> CollectedInventoryItemsBehavioursIDs => _collectedInventoryItemsBehavioursIDs;
+		private Int32 _timeLimit;
 
-		internal EnvironmentBehaviour ActiveEnvironmentBehaviour { get; set; }
-
-		internal LightningPresetType LightningPresetType
-		{
-			get => _lightningPresetType;
-			set => _lightningPresetType = value;
-		}
-		internal FogType FogPresetType
-		{
-			get => _fogType;
-			set => _fogType = value;
-		}
-
-		internal Vector3 PlayerPosition
-		{
-			get => _playerPosition;
-			set => _playerPosition = value;
-		}
-
-		internal Byte EnvironmentID
-		{
-			get => _environmentID;
-			set => _environmentID = value;
-		}*/
-
-		LevelInfo IPrototype<LevelInfo>.Clone()
-		{
-			var levelInfo = new LevelInfo();
-
-/*			levelInfo._collectedInventoryItemsBehavioursIDs = new List<String>(_collectedInventoryItemsBehavioursIDs);
-			levelInfo._lightningPresetType = _lightningPresetType;
-			levelInfo._playerPosition = _playerPosition;
-			levelInfo._environmentID = _environmentID;*/
-
-			return levelInfo;
-		}
-	}
+        internal Int32 WidthOfBoard { get => _widthOfBoard; set => _widthOfBoard = value; }
+        internal Int32 HeightOfBoard { get => _heightOfBoard; set => _heightOfBoard = value; }
+        internal Int32 MoveLimit { get => _moveLimit; set => _moveLimit = value; }
+        internal Int32 Quantity { get => _quantity; set => _quantity = value; }
+        internal Int32 TimeLimit { get => _timeLimit; set => _timeLimit = value; }
+        internal TargetType TargetType { get => _targetType; set => _targetType = value; }
+    }
 }
