@@ -1,10 +1,9 @@
-using Cysharp.Threading.Tasks;
-using Runtime.Data.Configs;
-using Runtime.Data.Configs.Core;
-using Runtime.Infrastructure.Services.Game;
 using Runtime.Infrastructure.Services.Game.Core;
 using Runtime.Infrastructure.Services.Game.Helper;
 using Runtime.Infrastructure.Services.Input.Core;
+using Runtime.Infrastructure.Services.UIServices;
+using Runtime.Infrastructure.Services.UIServices.Core;
+using Runtime.Visual.UI.UIDocumentWrappers.Screens;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -15,10 +14,11 @@ namespace Runtime.MonoBehaviours.Game
 {
 	internal class GameplayController : InjectedBehaviour
 	{
+		private ILevelInfoService _levelInfoService;
 		private StoneAnimation _stoneAnimation;
+		private IScreensService _screensService;
 		private IInputService _inputService;
 		private IBoardService _boardService;
-		private IGameConfig _gameConfig;
 
 		private EventSystem _eventSystem;
 		private PointerEventData _pointerData;
@@ -33,12 +33,13 @@ namespace Runtime.MonoBehaviours.Game
 		private Vector2 _dragStartPosition;
 
 		[Inject]
-		private void Construct(IInputService inputService, IBoardService boardService, IGameConfig gameConfig, StoneAnimation stoneAnimation)
+		private void Construct(IInputService inputService, IBoardService boardService, StoneAnimation stoneAnimation, ILevelInfoService levelInfoService, IScreensService screensService)
 		{
+			_levelInfoService = levelInfoService;
 			_stoneAnimation = stoneAnimation;
+			_screensService = screensService;
 			_inputService = inputService;
 			_boardService = boardService;
-			_gameConfig = gameConfig;
 
 			_eventSystem = EventSystem.current;
 
@@ -47,6 +48,7 @@ namespace Runtime.MonoBehaviours.Game
 
 		private void Start()
 		{
+			_screensService.Show<GameScreen>();
 			_boardService.InitializeBoard(_boardParent);
 		}
 
@@ -117,7 +119,7 @@ namespace Runtime.MonoBehaviours.Game
 			var results = new List<RaycastResult>();
 			raycaster.Raycast(_pointerData, results);
 
-			if(results.Count > 0)
+			if (results.Count > 0)
 			{
 				return results[0].gameObject.GetComponent<Stone>();
 			}
@@ -131,7 +133,7 @@ namespace Runtime.MonoBehaviours.Game
 			{
 				return new Vector2Int(direction.x > 0 ? 1 : -1, 0);
 			}
-			else if(Mathf.Abs(direction.x) < Mathf.Abs(direction.y))
+			else if (Mathf.Abs(direction.x) < Mathf.Abs(direction.y))
 			{
 				return new Vector2Int(0, direction.y > 0 ? -1 : 1);
 			}
@@ -141,8 +143,8 @@ namespace Runtime.MonoBehaviours.Game
 
 		private bool IsValidPosition(int x, int y)
 		{
-			return x >= 0 && x < _gameConfig.Width &&
-				   y >= 0 && y < _gameConfig.Height;
+			return x >= 0 && x < _levelInfoService.LevelInfo.WidthOfBoard &&
+				   y >= 0 && y < _levelInfoService.LevelInfo.HeightOfBoard;
 		}
 
 		private void SubscribeToEvents()

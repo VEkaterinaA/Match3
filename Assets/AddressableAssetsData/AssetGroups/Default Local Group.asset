@@ -87,6 +87,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - PanelSetting
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1711562a081c803498b7b1b2247c3a60
+    m_Address: GameScreenVosualTreeAsset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Screen
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: aa8896b0c4bb0574fbf842001f5ba793, type: 2}
   m_SchemaSet:

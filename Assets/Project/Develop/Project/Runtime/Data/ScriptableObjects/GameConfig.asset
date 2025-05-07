@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: GameConfig
   m_EditorClassIdentifier: 
   _saveCooldown: 0
-  _width: 8
-  _height: 8
   _cellSize: 100
   _moveDuration: 0.2
   _spawnAnimationDuration: 0.2

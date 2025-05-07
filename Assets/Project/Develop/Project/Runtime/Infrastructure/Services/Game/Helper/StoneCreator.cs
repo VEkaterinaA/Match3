@@ -3,6 +3,7 @@ using FlyingBears.Runtime.Infrastructure.Factories.PrefabsAssets.Core;
 using Runtime.Data.Configs.Core;
 using Runtime.Data.Constants.Enums.AssetReferencesTypes;
 using Runtime.Extensions.System;
+using Runtime.Infrastructure.Services.Game.Core;
 using Runtime.Infrastructure.Services.Providers;
 using Runtime.MonoBehaviours.Game;
 using System.Collections.Generic;
@@ -14,15 +15,18 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 	internal class StoneCreator
 	{
 		private IPrefabsFactory<PrefabType, GameObject> _prefabsFactory;
+		private ILevelInfoService _levelInfoService;
 		private BoardProvider _stoneTypeProvider;
 		private MatchChecker _matchChecker;
 		private IGameConfig _gameConfig;
 
 
 		[Inject]
-		private void Construct(IGameConfig gameConfig, IPrefabsFactory<PrefabType, GameObject> prefabsFactory, MatchChecker matchChecker, BoardProvider stoneTypeProvider)
+		private void Construct(IGameConfig gameConfig, IPrefabsFactory<PrefabType, GameObject> prefabsFactory, MatchChecker matchChecker, BoardProvider stoneTypeProvider,
+								ILevelInfoService levelInfoService)
 		{
 			_stoneTypeProvider = stoneTypeProvider;
+			_levelInfoService = levelInfoService;
 			_prefabsFactory = prefabsFactory;
 			_matchChecker = matchChecker;
 			_gameConfig = gameConfig;
@@ -33,7 +37,7 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 		{
 			var position = new Vector2(
 				x * _gameConfig.CellSize + offset.x,
-				(_gameConfig.Height - 1 - y) * _gameConfig.CellSize + offset.y
+				(_levelInfoService.LevelInfo.HeightOfBoard - 1 - y) * _gameConfig.CellSize + offset.y
 			);
 
 			var stoneType = GetRandomValidStoneType(stones, x, y);

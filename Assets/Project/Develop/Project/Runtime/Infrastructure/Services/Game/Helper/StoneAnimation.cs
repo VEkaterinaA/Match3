@@ -3,6 +3,7 @@ using Runtime.Data.Configs.Core;
 using Runtime.Extensions.LitMotion;
 using Runtime.Extensions.System;
 using Runtime.Extensions.UnityEngine;
+using Runtime.Infrastructure.Services.Game.Core;
 using Runtime.Infrastructure.Services.Providers;
 using Runtime.MonoBehaviours.Game;
 using System;
@@ -13,14 +14,16 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 {
 	internal class StoneAnimation
 	{
+		private ILevelInfoService _levelInfoService;
 		private BoardProvider _boardProvider;
 		private IGameConfig _gameConfig;
 
 		private CompositeMotionHandle _сompositeMotionHandle;
 
 		[Inject]
-		private void Construct(BoardProvider boardProvider, IGameConfig gameConfig)
+		private void Construct(BoardProvider boardProvider, IGameConfig gameConfig, ILevelInfoService levelInfoService)
 		{
+			_levelInfoService = levelInfoService;
 			_boardProvider = boardProvider;
 			_gameConfig = gameConfig;
 
@@ -46,7 +49,7 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 
 			var position = new Vector2(
 							stone.X * _gameConfig.CellSize + offset.x,
-							(_gameConfig.Height - 1 - stone.Y) * _gameConfig.CellSize + offset.y);
+							(_levelInfoService.LevelInfo.HeightOfBoard - 1 - stone.Y) * _gameConfig.CellSize + offset.y);
 			MoveTo(stone, position, action);
 		}
 

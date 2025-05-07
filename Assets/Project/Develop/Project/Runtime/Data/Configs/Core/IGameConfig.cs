@@ -10,7 +10,5 @@ namespace Runtime.Data.Configs.Core
 
 		internal Single SaveCooldown { get; }
 		internal Single CellSize { get; }
-		internal Int32 Height { get; }
-		internal Int32 Width { get; }
 	}
 }

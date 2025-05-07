@@ -1,5 +1,6 @@
 ﻿using Runtime.Data.Configs.Core;
 using Runtime.Data.Constants.Enums.AssetReferencesTypes;
+using Runtime.Infrastructure.Services.Game.Core;
 using Runtime.MonoBehaviours.Game;
 using VContainer;
 
@@ -7,19 +8,19 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 {
 	internal class MatchChecker
 	{
-		private IGameConfig _gameConfig;
+		private ILevelInfoService _levelInfoService;
 
 		[Inject]
-		private void Construct(IGameConfig gameConfig)
+		private void Construct(ILevelInfoService levelInfoService)
 		{
-			_gameConfig = gameConfig;
+			_levelInfoService = levelInfoService;
 		}
 
 		internal bool HasAnyPossibleMove(Stone[,] stones)
 		{
-			for (var x = 0; x < _gameConfig.Width; x++)
+			for (var x = 0; x < _levelInfoService.LevelInfo.WidthOfBoard; x++)
 			{
-				for (var y = 0; y < _gameConfig.Height; y++)
+				for (var y = 0; y < _levelInfoService.LevelInfo.HeightOfBoard; y++)
 				{
 					if (CanSwapFormMatch(stones, x, y, x + 1, y) || CanSwapFormMatch(stones, x, y, x, y + 1))
 					{
@@ -33,7 +34,7 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 
 		internal bool IsInsideBoard(int x, int y)
 		{
-			return x >= 0 && x < _gameConfig.Width && y >= 0 && y < _gameConfig.Height;
+			return x >= 0 && x < _levelInfoService.LevelInfo.WidthOfBoard && y >= 0 && y < _levelInfoService.LevelInfo.HeightOfBoard;
 		}
 
 		private bool CanSwapFormMatch(Stone[,] stones, int x1, int y1, int x2, int y2)
@@ -70,7 +71,7 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 				horizontalMatch++;
 			}
 
-			for (var i = x + 1; i < _gameConfig.Width && stones[i, y]?.StoneType == type; i++)
+			for (var i = x + 1; i < _levelInfoService.LevelInfo.WidthOfBoard && stones[i, y]?.StoneType == type; i++)
 			{
 				horizontalMatch++;
 			}
@@ -86,7 +87,7 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 				verticalMatch++;
 			}
 
-			for (var i = y + 1; i < _gameConfig.Height && stones[x, i]?.StoneType == type; i++)
+			for (var i = y + 1; i < _levelInfoService.LevelInfo.HeightOfBoard && stones[x, i]?.StoneType == type; i++)
 			{
 				verticalMatch++;
 			}
@@ -111,18 +112,18 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 		private bool HasMatchingHorizontalPair(Stone[,] stones, int x, int y, StoneType type)
 		{
 			return (x >= 2 && (stones[x - 1, y]?.StoneType == type && stones[x - 2, y]?.StoneType == type) ||
-				   (x <= _gameConfig.Width - 3 && stones[x + 1, y]?.StoneType == type && stones[x + 2, y]?.StoneType == type));
+				   (x <= _levelInfoService.LevelInfo.WidthOfBoard - 3 && stones[x + 1, y]?.StoneType == type && stones[x + 2, y]?.StoneType == type));
 		}
 
 		private bool HasMatchingVerticalPair(Stone[,] stones, int x, int y, StoneType type)
 		{
 			return ((y >= 2) && (stones[x, y - 1]?.StoneType == type) && (stones[x, y - 2]?.StoneType == type) ||
-				   (y <= _gameConfig.Height - 3) && (stones[x, y + 1]?.StoneType == type) && (stones[x, y + 2]?.StoneType == type));
+				   (y <= _levelInfoService.LevelInfo.HeightOfBoard - 3) && (stones[x, y + 1]?.StoneType == type) && (stones[x, y + 2]?.StoneType == type));
 		}
 
 		private bool IsSurroundedBySameType(Stone[,] stones, int x, int y, StoneType type)
 		{
-			return x > 0 && y > 0 && x < _gameConfig.Width - 1 && y < _gameConfig.Height - 1 &&
+			return x > 0 && y > 0 && x < _levelInfoService.LevelInfo.WidthOfBoard - 1 && y < _levelInfoService.LevelInfo.HeightOfBoard - 1 &&
 				  (stones[x - 1, y]?.StoneType == type && stones[x + 1, y]?.StoneType == type ||
 				   stones[x, y - 1]?.StoneType == type && stones[x, y + 1]?.StoneType == type);
 		}

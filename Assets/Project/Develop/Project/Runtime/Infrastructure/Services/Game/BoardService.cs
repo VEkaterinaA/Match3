@@ -14,14 +14,12 @@ namespace Runtime.Infrastructure.Services.Game
 {
 	internal class BoardService : IBoardService
 	{
+		private ILevelInfoService _levelInfoService;
+		private IGameConfig _gameConfig;
 		private StoneAnimation _stoneAnimation;
 		private BoardProvider _boardProvider;
 		private MatchChecker _matchChecker;
-
 		private StoneCreator _stoneCreator;
-
-		private IGameConfig _gameConfig;
-
 
 		private Stone[,] _board;
 		private List<StoneType> _gemTypes;
@@ -38,8 +36,9 @@ namespace Runtime.Infrastructure.Services.Game
 
 
 		[Inject]
-		private void Construct(IGameConfig gameConfig, StoneCreator gemCreator, MatchChecker matchChecker, StoneAnimation stoneAnimation, BoardProvider boardProvider)
+		private void Construct(IGameConfig gameConfig, StoneCreator gemCreator, MatchChecker matchChecker, StoneAnimation stoneAnimation, BoardProvider boardProvider, ILevelInfoService levelInfoService)
 		{
+			_levelInfoService = levelInfoService;
 			_stoneAnimation = stoneAnimation;
 			_boardProvider = boardProvider;
 			_matchChecker = matchChecker;
@@ -52,21 +51,23 @@ namespace Runtime.Infrastructure.Services.Game
 			_boardParent = boardParent;
 			do
 			{
+				var width = _levelInfoService.LevelInfo.WidthOfBoard;
+				var height = _levelInfoService.LevelInfo.HeightOfBoard;
 				ClearBoard();
-				_board = new Stone[_gameConfig.Width, _gameConfig.Height];
+				_board = new Stone[width,height];
 				var offset = _boardProvider.GetBoardOffset();
 
-				for (var x = 0; x < _gameConfig.Width; x++)
+				for (var x = 0; x < width; x++)
 				{
-					for (var y = 0; y < _gameConfig.Height; y++)
+					for (var y = 0; y < height; y++)
 					{
 						_board[x, y] = await _stoneCreator.CreateStone(_board, x, y, offset, boardParent);
 					}
 				}
 
-				for (var x = 0; x < _gameConfig.Width; x++)
+				for (var x = 0; x < width; x++)
 				{
-					for (var y = 0; y < _gameConfig.Height; y++)
+					for (var y = 0; y < height; y++)
 					{
 						_stoneAnimation.PlaySpawnAnimation(_board[x, y]);
 					}
@@ -109,7 +110,7 @@ namespace Runtime.Infrastructure.Services.Game
 
 		Stone IBoardService.GetStone(Int32 x, Int32 y)
 		{
-			if (x >= 0 && x < _gameConfig.Width && y >= 0 && y < _gameConfig.Height)
+			if (x >= 0 && x < _levelInfoService.LevelInfo.WidthOfBoard && y >= 0 && y < _levelInfoService.LevelInfo.HeightOfBoard)
 			{
 				return _board[x, y];
 			}
@@ -120,9 +121,9 @@ namespace Runtime.Infrastructure.Services.Game
 		{
 			_gemsToDestroy.Clear();
 
-			for (var x = 0; x < _gameConfig.Width; x++)
+			for (var x = 0; x < _levelInfoService.LevelInfo.WidthOfBoard; x++)
 			{
-				for (var y = 0; y < _gameConfig.Height; y++)
+				for (var y = 0; y < _levelInfoService.LevelInfo.HeightOfBoard; y++)
 				{
 					var gem = _board[x, y];
 					if (gem == null) continue;
@@ -201,10 +202,10 @@ namespace Runtime.Infrastructure.Services.Game
 
 		private void CollapseBoard()
 		{
-			for (var x = 0; x < _gameConfig.Width; x++)
+			for (var x = 0; x < _levelInfoService.LevelInfo.WidthOfBoard; x++)
 			{
 				var emptyCount = 0;
-				for (var y = _gameConfig.Height - 1; y >= 0; y--)
+				for (var y = _levelInfoService.LevelInfo.HeightOfBoard - 1; y >= 0; y--)
 				{
 					if (_board[x, y] == null)
 					{
@@ -230,7 +231,7 @@ namespace Runtime.Infrastructure.Services.Game
 			var offset = _boardProvider.GetBoardOffset();
 			return new Vector2(
 				x * _gameConfig.CellSize + offset.x,
-				(_gameConfig.Height - 1 - y) * _gameConfig.CellSize + offset.y
+				(_levelInfoService.LevelInfo.HeightOfBoard - 1 - y) * _gameConfig.CellSize + offset.y
 			);
 		}
 
@@ -238,9 +239,9 @@ namespace Runtime.Infrastructure.Services.Game
 		{
 			var offset = _boardProvider.GetBoardOffset();
 
-			for (var x = 0; x < _gameConfig.Width; x++)
+			for (var x = 0; x < _levelInfoService.LevelInfo.WidthOfBoard; x++)
 			{
-				for (var y = 0; y < _gameConfig.Height; y++)
+				for (var y = 0; y < _levelInfoService.LevelInfo.HeightOfBoard; y++)
 				{
 					if (_board[x, y] == null)
 					{

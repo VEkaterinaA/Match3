@@ -75,9 +75,6 @@ namespace Runtime.MonoBehaviours.UIControllers
 		private void OnPlayButtonClicked()
 		{
 			_popupsService.Show<LevelEditorPopup>();
-/*			_gameStateMachine.Get<LoadingGameState>().SceneName = SceneName.CoreSceneAsset;
-			_gameStateMachine.Enter<LoadingGameState>();
-*/
 		}
 
 		private void OnSettingsButtonClicked()

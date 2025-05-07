@@ -1,6 +1,11 @@
 ﻿using Runtime.Data.Constants.Enums;
+using Runtime.Extensions.System;
+using Runtime.Infrastructure.GameStateMachine.Core;
+using Runtime.Infrastructure.GameStateMachine.States;
 using Runtime.Infrastructure.Services.Game.Core;
+using Runtime.Infrastructure.Services.UIServices;
 using Runtime.Visual.UI.UIDocumentWrappers.Popups.Core;
+using Runtime.Visual.UI.UIDocumentWrappers.Screens;
 using System;
 using UnityEngine.UIElements;
 using VContainer;
@@ -10,9 +15,10 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Popups
     internal class LevelEditorPopup : Popup
     {
         private ILevelInfoService _levelInfoService;
+		private IGameStateMachine _gameStateMachine;
 
 
-        private SliderInt _widthBoard;
+		private SliderInt _widthBoard;
         private SliderInt _heightBoard;
         private VisualElement _moveLimitContainer;
         private VisualElement _targetSelectionContainer;
@@ -59,20 +65,36 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Popups
         }
 
         [Inject]
-        private void Construct(ILevelInfoService levelInfoService)
+        private void Construct(ILevelInfoService levelInfoService, IGameStateMachine gameStateMachine)
         {
             _levelInfoService = levelInfoService;
+            _gameStateMachine = gameStateMachine;
 
-        }
+
+		}
 
         private void OnPlayBttonClick()
         {
             Enum.TryParse(_targetDropdown.value, out TargetType targetType);
 
-            _levelInfoService.SetLevelInfo(_widthBoard.value, _heightBoard.value, targetType, _moveLimitSlider.value, _targetQuantity.value, _timeLimitSlider.value);
-        }
+            _levelInfoService.SetLevelInfo(
+                _widthBoard.value, 
+                _heightBoard.value, 
+                targetType, 
+                _moveLimitToggle.value ? _moveLimitSlider.value : 0, 
+                _targetQuantity.value,
+                _timeLimitToggle.value ? _timeLimitSlider.value : 0);
 
-        private void OnTargetDropdownChanged(ChangeEvent<String> evt)
+            _levelInfoService.InvokeAfterInitialization(() =>
+            {
+                PopupsService.Hide<LevelEditorPopup>();
+				_gameStateMachine.Get<LoadingGameState>().SceneName = SceneName.CoreSceneAsset;
+                _gameStateMachine.Enter<LoadingGameState>();
+            });
+
+		}
+
+		private void OnTargetDropdownChanged(ChangeEvent<String> evt)
         {
             UpdateTargetQuantityVisibility(_targetDropdown.index);
         }

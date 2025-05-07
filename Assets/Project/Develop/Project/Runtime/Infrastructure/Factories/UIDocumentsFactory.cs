@@ -85,6 +85,7 @@ namespace Runtime.Infrastructure.Factories
 			{
 				ScreenType.SettingsScreen => new SettingsScreen(uiDocument),
 				ScreenType.PauseScreen => new PauseScreen(uiDocument),
+				ScreenType.GameScreen => new GameScreen(uiDocument),
 				PopupType.LevelEditorPopup => new LevelEditorPopup(uiDocument, true),
 				_ => throw new NotImplementedException($"[{GetType().Name}] There is no implementation to create {typeof(TEnum)}."),
 			};
