@@ -1,18 +1,22 @@
 ﻿using Cysharp.Threading.Tasks;
 using Runtime.Data.Configs.Core;
 using Runtime.Data.Constants.Enums.AssetReferencesTypes;
+using Runtime.Extensions.System;
+using Runtime.Infrastructure.Core;
 using Runtime.Infrastructure.Services.Game.Core;
 using Runtime.Infrastructure.Services.Game.Helper;
 using Runtime.Infrastructure.Services.Providers;
 using Runtime.MonoBehaviours.Game;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 using VContainer;
 
 namespace Runtime.Infrastructure.Services.Game
 {
-	internal class BoardService : IBoardService
+	internal class BoardService : IBoardService, IInitializationInformer
 	{
 		private ILevelInfoService _levelInfoService;
 		private IGameConfig _gameConfig;
@@ -30,19 +34,29 @@ namespace Runtime.Infrastructure.Services.Game
 
 		private Transform _boardParent;
 
+		private Boolean _isInitialized;
+		private Action _initialized;
+
 		private IBoardService Service => this;
 
 		Stone[,] IBoardService.Board => _board;
 
+		Boolean IInitializationInformer.IsInitialized => _isInitialized;
+
+		event Action IInitializationInformer.Initialized
+		{
+			add => _initialized += value;
+			remove => _initialized -= value;
+		}
 
 		[Inject]
-		private void Construct(IGameConfig gameConfig, StoneCreator gemCreator, MatchChecker matchChecker, StoneAnimation stoneAnimation, BoardProvider boardProvider, ILevelInfoService levelInfoService)
+		private void Construct(IGameConfig gameConfig, StoneCreator stoneCreator, MatchChecker matchChecker, StoneAnimation stoneAnimation, BoardProvider boardProvider, ILevelInfoService levelInfoService)
 		{
 			_levelInfoService = levelInfoService;
 			_stoneAnimation = stoneAnimation;
 			_boardProvider = boardProvider;
 			_matchChecker = matchChecker;
-			_stoneCreator = gemCreator;
+			_stoneCreator = stoneCreator;
 			_gameConfig = gameConfig;
 		}
 
@@ -74,6 +88,9 @@ namespace Runtime.Infrastructure.Services.Game
 				}
 			}
 			while (!_matchChecker.HasAnyPossibleMove(_board));
+
+			_isInitialized = true;
+			_initialized?.Invoke();
 		}
 
 		void IBoardService.SwapGemsInBoard(Stone gem1, Stone gem2)
@@ -87,7 +104,9 @@ namespace Runtime.Infrastructure.Services.Game
 
 		void IBoardService.HandleMatchesAfterSwap()
 		{
+			
 			var matches = FindAllMatches();
+
 			if (matches.Count > 0)
 			{
 				DestroyMatches(matches);
@@ -96,7 +115,7 @@ namespace Runtime.Infrastructure.Services.Game
 
 		void IBoardService.TrySwapOrRevert(Stone stoneOne, Stone stoneTwo)
 		{
-			if (_matchChecker.IsValidGemPlacement(_board, stoneOne) && _matchChecker.IsValidGemPlacement(_board, stoneTwo))
+			if (_matchChecker.IsMatchFreePlacement(_board, stoneOne) && _matchChecker.IsMatchFreePlacement(_board, stoneTwo))
 			{
 				Service.SwapGemsInBoard(stoneOne, stoneTwo);
 
@@ -104,6 +123,7 @@ namespace Runtime.Infrastructure.Services.Game
 			}
 			else
 			{
+				_levelInfoService.SubsctractFromMoveLimit();
 				Service.HandleMatchesAfterSwap();
 			}
 		}
@@ -166,16 +186,26 @@ namespace Runtime.Infrastructure.Services.Game
 			return match;
 		}
 
-		private void DestroyMatches(HashSet<Stone> matchedGems)
+		private void DestroyMatches(HashSet<Stone> matchedStones)
 		{
-			_countOfGemsToBeDestroy = matchedGems.Count;
+			_countOfGemsToBeDestroy = matchedStones.Count;
 
-			foreach (var gem in matchedGems)
+			var targetType = _levelInfoService.LevelInfo.TargetType;
+
+			var stoneType = EnumExtensions.ConvertToTargetType(matchedStones.First().StoneType);
+
+			foreach (var stone in matchedStones)
 			{
-				_board[gem.X, gem.Y] = null;
-				gem.GemDestroyComplete += CheckAndHandleGemsDestruction;
+				_board[stone.X, stone.Y] = null;
 
-				_stoneAnimation.PlayDestroyAnimation(gem);
+				if(stoneType == targetType)
+				{
+					_levelInfoService.SubsctractFromGoalQuantity();
+				}
+
+				stone.GemDestroyComplete += CheckAndHandleGemsDestruction;
+
+				_stoneAnimation.PlayDestroyAnimation(stone);
 			}
 		}
 		private void CheckAndHandleGemsDestruction(Stone gem)

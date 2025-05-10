@@ -1,6 +1,5 @@
 using Runtime.Extensions.System;
 using Runtime.Infrastructure.Services.Game.Core;
-using System;
 using UnityEngine.UIElements;
 using VContainer;
 using Screen = Runtime.Visual.UI.UIDocumentWrappers.Screens.Core.Screen;
@@ -10,8 +9,9 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 	internal sealed class GameScreen : Screen
 	{
 		private ILevelInfoService _levelInfoService;
+		private IBoardService _boardService;
 
-		private Label TargetLabel { get;}
+		private Label TargetLabel { get; }
 		private Label QuantityLabel { get; }
 		private Label MoveLimitLabel { get; }
 		private Label TimeLimitLabel { get; }
@@ -31,35 +31,28 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 
 
 		[Inject]
-		internal void Construct(ILevelInfoService levelInfoService)
+		internal void Construct(ILevelInfoService levelInfoService, IBoardService boardService)
 		{
 			_levelInfoService = levelInfoService;
+			_boardService = boardService;
 
-			_levelInfoService.InvokeAfterInitialization(UpdateSettingsGameScreen);
+			_levelInfoService.InvokeAfterInitialization(InitSettingsGameScreen);
 		}
 
-		private void UpdateSettingsGameScreen()
+		private void InitSettingsGameScreen()
 		{
 			TargetLabel.text = _levelInfoService.LevelInfo.TargetType.ToString();
 
-			if(_levelInfoService.LevelInfo.TargetType == Data.Constants.Enums.TargetType.ScorePoints)
+			if (_levelInfoService.LevelInfo.TargetType == Data.Constants.Enums.TargetType.ScorePoints)
 			{
 				QuantityLabel.style.display = DisplayStyle.None;
 			}
 			else
 			{
 				QuantityLabel.style.display = DisplayStyle.Flex;
-				QuantityLabel.text = _levelInfoService.LevelInfo.Quantity.ToString();
-			}
+				UpdateQuantityLabel();
 
-			if(_levelInfoService.LevelInfo.MoveLimit == 0)
-			{
-				MoveLimitLabel.style.display = DisplayStyle.None;
-			}
-			else
-			{
-				MoveLimitLabel.style.display = DisplayStyle.Flex;
-				MoveLimitLabel.text = _levelInfoService.LevelInfo.MoveLimit.ToString();
+				_levelInfoService.GoalQuantityChanged += UpdateQuantityLabel;
 			}
 
 			if (_levelInfoService.LevelInfo.MoveLimit == 0)
@@ -69,7 +62,9 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 			else
 			{
 				MoveContainer.style.display = DisplayStyle.Flex;
-				MoveLimitLabel.text = _levelInfoService.LevelInfo.MoveLimit.ToString();
+				UpdateMoveLimitLabel();
+
+				_levelInfoService.MoveCompleted += UpdateMoveLimitLabel;
 			}
 
 			if (_levelInfoService.LevelInfo.TimeLimit == 0)
@@ -79,9 +74,36 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 			else
 			{
 				TimeContainer.style.display = DisplayStyle.Flex;
-				TimeLimitLabel.text = _levelInfoService.LevelInfo.TimeLimit.ToString();
+				UpdateTimeLimit();
+
+				_levelInfoService.TimeChanged += UpdateTimeLimit;
 			}
 
 		}
+
+		private void UpdateTimeLimit()
+		{
+			TimeLimitLabel.text = _levelInfoService.LevelInfo.TimeLimit.ToString();
+		}
+
+		private void UpdateQuantityLabel()
+		{
+			QuantityLabel.text = _levelInfoService.LevelInfo.GoalQuantity.ToString();
+		}
+
+		private void UpdateMoveLimitLabel()
+		{
+			MoveLimitLabel.text = _levelInfoService.LevelInfo.MoveLimit.ToString();
+		}
+
+		protected override void Unsubscribe()
+		{
+			base.Unsubscribe();
+
+			_levelInfoService.TimeChanged -= UpdateTimeLimit;
+			_levelInfoService.MoveCompleted -= UpdateMoveLimitLabel;
+			_levelInfoService.GoalQuantityChanged -= UpdateQuantityLabel;
+		}
+
 	}
 }

@@ -13,7 +13,7 @@
                         <engine:SliderInt label="Number of moves" value="25" high-value="99" low-value="12" show-input-field="true" direction="Horizontal" inverted="false" page-size="0" name="MoveLimitValue" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
                     </engine:VisualElement>
                     <engine:VisualElement name="TargetSelectionContainer" style="flex-grow: 1; margin-top: 7px; margin-bottom: 7px; align-items: stretch;">
-                        <engine:DropdownField label="Target" index="0" choices="Score points,Red gems,Blue gems,Green gems,Yellow gems,Activate boosters" name="TargetDropdown" class="unity-text-element" style="margin-top: 0; margin-right: 0; margin-bottom: 5px; margin-left: 0; -unity-text-align: upper-left;" />
+                        <engine:DropdownField label="Target" index="0" name="TargetDropdown" class="unity-text-element" style="margin-top: 0; margin-right: 0; margin-bottom: 5px; margin-left: 0; -unity-text-align: upper-left;" />
                         <engine:IntegerField label="Quantity" value="10" name="TargetQuantity" max-length="3" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; width: 280px;" />
                     </engine:VisualElement>
                     <engine:VisualElement name="TimeLimitContainer" style="flex-grow: 1;">

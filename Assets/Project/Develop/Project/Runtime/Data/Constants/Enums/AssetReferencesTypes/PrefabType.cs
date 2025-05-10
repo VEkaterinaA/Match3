@@ -6,8 +6,10 @@ namespace Runtime.Data.Constants.Enums.AssetReferencesTypes
 		RedStone,
 		BlueStone,
 		GreenStone,
-		YellowStone
-
+		YellowStone,
+		HorizontalBomb,
+		VerticalBomb,
+		RadiusBomb,
 	}
 
 }

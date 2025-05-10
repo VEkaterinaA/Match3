@@ -10,8 +10,21 @@ namespace Runtime.Infrastructure.Services.Game.Core
 {
     internal interface ILevelInfoService
     {
-        internal LevelInfo LevelInfo { get; }
+        internal event Action TimeChanged;
 
-        internal void SetLevelInfo(Int32 widthOfBoard, Int32 heightOfBoard, TargetType targetType, Int32 moveLimit = default, Int32 quantity = default, Int32 timeLimit = default);
-    }
+        internal event Action MoveCompleted;
+
+        internal event Action GoalQuantityChanged;
+
+		internal LevelInfo LevelInfo { get; }
+
+        internal void SetLevelInfo(Int32 widthOfBoard, Int32 heightOfBoard, TargetType targetType, Int32? moveLimit = null, Int32? goalQuantity = null, Int32? timeLimit = null);
+
+        internal void SubsctractFromMoveLimit();
+
+        internal void SubsctractFromTimeLimit();
+
+        internal void SubsctractFromGoalQuantity();
+
+	}
 }

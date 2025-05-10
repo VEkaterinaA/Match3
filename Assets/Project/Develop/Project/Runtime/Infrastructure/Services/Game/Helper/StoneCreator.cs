@@ -65,7 +65,7 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 
 			foreach (var type in _stoneTypeProvider.StoneTypes)
 			{
-				if (_matchChecker.IsValidGemPlacement(stones, x, y, type))
+				if (_matchChecker.IsMatchFreePlacement(stones, x, y, type))
 				{
 					availableTypes.Add(type);
 				}

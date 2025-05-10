@@ -7,6 +7,8 @@ using Runtime.Infrastructure.Services.UIServices;
 using Runtime.Visual.UI.UIDocumentWrappers.Popups.Core;
 using Runtime.Visual.UI.UIDocumentWrappers.Screens;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.UIElements;
 using VContainer;
 
@@ -28,7 +30,7 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Popups
         private SliderInt _moveLimitSlider;
 
         private DropdownField _targetDropdown;
-        private IntegerField _targetQuantity;
+        private IntegerField _goalQuantity;
 
         private Toggle _timeLimitToggle;
         private SliderInt _timeLimitSlider;
@@ -46,7 +48,7 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Popups
 
             _targetSelectionContainer = RootVisualElement.Q<VisualElement>("TargetSelectionContainer");
             _targetDropdown = _targetSelectionContainer.Q<DropdownField>("TargetDropdown");
-            _targetQuantity = _targetSelectionContainer.Q<IntegerField>("TargetQuantity");
+            _goalQuantity = _targetSelectionContainer.Q<IntegerField>("TargetQuantity");
 
             _timeLimitContainer = RootVisualElement.Q<VisualElement>("TimeLimitContainer");
             _timeLimitToggle = _timeLimitContainer.Q<Toggle>("TimeLimitToggle");
@@ -62,7 +64,13 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Popups
             UpdateMoveLimitVisibility(_moveLimitToggle.value);
             UpdateTimeLimitVisibility(_timeLimitToggle.value);
             UpdateTargetQuantityVisibility(_targetDropdown.index);
-        }
+
+            var targetNames = TargetTypeDisplayNames.TargetNames.Values.ToList();
+
+			_targetDropdown.choices = targetNames;
+            _targetDropdown.value = targetNames[0];
+
+		}
 
         [Inject]
         private void Construct(ILevelInfoService levelInfoService, IGameStateMachine gameStateMachine)
@@ -75,14 +83,14 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Popups
 
         private void OnPlayBttonClick()
         {
-            Enum.TryParse(_targetDropdown.value, out TargetType targetType);
+			var targetType = TargetTypeDisplayNames.TargetNames.FirstOrDefault(pair => pair.Value == _targetDropdown.value).Key;
 
             _levelInfoService.SetLevelInfo(
                 _widthBoard.value, 
                 _heightBoard.value, 
                 targetType, 
                 _moveLimitToggle.value ? _moveLimitSlider.value : 0, 
-                _targetQuantity.value,
+                _goalQuantity.value,
                 _timeLimitToggle.value ? _timeLimitSlider.value : 0);
 
             _levelInfoService.InvokeAfterInitialization(() =>
@@ -103,11 +111,11 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Popups
         {
             if (selectedIndex == 0)
             {
-                _targetQuantity.style.display = DisplayStyle.None;
+                _goalQuantity.style.display = DisplayStyle.None;
                 return;
             }
 
-            _targetQuantity.style.display = DisplayStyle.Flex;
+            _goalQuantity.style.display = DisplayStyle.Flex;
         }
 
         private void OnMoveLimitToggleChanged(ChangeEvent<bool> evt)

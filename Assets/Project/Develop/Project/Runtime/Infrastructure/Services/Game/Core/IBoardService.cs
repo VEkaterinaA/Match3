@@ -7,6 +7,7 @@ namespace Runtime.Infrastructure.Services.Game.Core
 {
 	internal interface IBoardService
 	{
+
 		internal Stone[,] Board { get; }
 
 		internal UniTask InitializeBoard(Transform boardParent);

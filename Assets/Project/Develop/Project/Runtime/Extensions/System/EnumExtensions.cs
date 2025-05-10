@@ -1,5 +1,7 @@
+using Runtime.Data.Constants.Enums;
 using Runtime.Data.Constants.Enums.AssetReferencesTypes;
 using System;
+using System.Collections.Generic;
 
 namespace Runtime.Extensions.System
 {
@@ -16,6 +18,16 @@ namespace Runtime.Extensions.System
 			};
 		}
 
+		internal static List<T> GetValuesList<T>() where T : Enum
+		{
+			return new List<T>((T[]) Enum.GetValues(typeof(T)));
+		}
+
+		internal static List<string> GetNamesList<T>() where T : Enum
+		{
+			return new List<string>(Enum.GetNames(typeof(T)));
+		}
+
 		internal static PrefabType ConvertToPrefabType(StoneType oldStatus)
 		{
 			switch (oldStatus)
@@ -28,10 +40,53 @@ namespace Runtime.Extensions.System
 					return PrefabType.GreenStone;
 				case StoneType.YellowStone:
 					return PrefabType.YellowStone;
-				default: 
+				default:
 					return PrefabType.Unknown;
 			}
 		}
+
+		internal static TargetType ConvertToTargetType(StoneType oldStatus)
+		{
+			switch (oldStatus)
+			{
+				case StoneType.RedStone:
+					return TargetType.RedStone;
+				case StoneType.BlueStone:
+					return TargetType.BlueStone;
+				case StoneType.GreenStone:
+					return TargetType.GreenStone;
+				case StoneType.YellowStone:
+					return TargetType.YellowStone;
+				default:
+					return TargetType.Unknown;
+
+			}
+		}
+
+		internal static TargetType ConvertToTargetType(PrefabType oldStatus)
+		{
+			switch (oldStatus)
+			{
+				case PrefabType.RedStone:
+					return TargetType.RedStone;
+				case PrefabType.BlueStone:
+					return TargetType.BlueStone;
+				case PrefabType.GreenStone:
+					return TargetType.GreenStone;
+				case PrefabType.YellowStone:
+					return TargetType.YellowStone;
+				case PrefabType.RadiusBomb:
+					return TargetType.ActivateBooster;
+				case PrefabType.VerticalBomb:
+					return TargetType.ActivateBooster;
+				case PrefabType.HorizontalBomb:
+					return TargetType.ActivateBooster;
+				default:
+					return TargetType.Unknown;
+
+			}
+		}
+
 
 		internal static T GetRandomValue<T>() where T : Enum
 		{

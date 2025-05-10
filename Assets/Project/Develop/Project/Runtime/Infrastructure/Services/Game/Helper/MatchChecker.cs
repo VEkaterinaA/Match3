@@ -95,13 +95,13 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 			return verticalMatch >= 3;
 		}
 
-		internal bool IsValidGemPlacement(Stone[,] stones, int x, int y, StoneType type)
+		internal bool IsMatchFreePlacement(Stone[,] stones, int x, int y, StoneType type)
 		{
 			return !(HasMatchingHorizontalPair(stones, x, y, type) ||
 					 HasMatchingVerticalPair(stones, x, y, type) ||
 					 IsSurroundedBySameType(stones, x, y, type));
 		}
-		internal bool IsValidGemPlacement(Stone[,] stones, Stone gem)
+		internal bool IsMatchFreePlacement(Stone[,] stones, Stone gem)
 		{
 			return !(HasMatchingHorizontalPair(stones, gem.X, gem.Y, gem.StoneType) ||
 					 HasMatchingVerticalPair(stones, gem.X, gem.Y, gem.StoneType) ||

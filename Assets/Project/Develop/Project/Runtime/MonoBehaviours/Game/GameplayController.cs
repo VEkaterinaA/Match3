@@ -1,9 +1,13 @@
+using Runtime.Extensions.System;
+using Runtime.Infrastructure.Services;
+using Runtime.Infrastructure.Services.Core;
 using Runtime.Infrastructure.Services.Game.Core;
 using Runtime.Infrastructure.Services.Game.Helper;
 using Runtime.Infrastructure.Services.Input.Core;
 using Runtime.Infrastructure.Services.UIServices;
 using Runtime.Infrastructure.Services.UIServices.Core;
 using Runtime.Visual.UI.UIDocumentWrappers.Screens;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -19,6 +23,7 @@ namespace Runtime.MonoBehaviours.Game
 		private IScreensService _screensService;
 		private IInputService _inputService;
 		private IBoardService _boardService;
+		private IPauseable _pauseable;
 
 		private EventSystem _eventSystem;
 		private PointerEventData _pointerData;
@@ -32,24 +37,50 @@ namespace Runtime.MonoBehaviours.Game
 		private Stone _selectedGem;
 		private Vector2 _dragStartPosition;
 
+		private Boolean _isBoardInitialized;
+		private Boolean _isPause;
+
+		private Single _elapsedTime;
+
+
 		[Inject]
-		private void Construct(IInputService inputService, IBoardService boardService, StoneAnimation stoneAnimation, ILevelInfoService levelInfoService, IScreensService screensService)
+		private void Construct(IInputService inputService, IBoardService boardService, StoneAnimation stoneAnimation, ILevelInfoService levelInfoService, 
+								IScreensService screensService, IPauseable pauseable)
 		{
 			_levelInfoService = levelInfoService;
 			_stoneAnimation = stoneAnimation;
 			_screensService = screensService;
 			_inputService = inputService;
 			_boardService = boardService;
+			_pauseable = pauseable;
 
 			_eventSystem = EventSystem.current;
 
 			SubscribeToEvents();
 		}
 
+
 		private void Start()
 		{
 			_screensService.Show<GameScreen>();
 			_boardService.InitializeBoard(_boardParent);
+
+			_boardService.InvokeAfterInitialization(() => _isBoardInitialized = true);
+		}
+
+		private void Update()
+		{
+			if(!_isBoardInitialized || _isPause)
+			{
+				return;
+			}
+			_elapsedTime += Time.deltaTime;
+
+			if (_elapsedTime >= 1)
+			{
+				_levelInfoService.SubsctractFromTimeLimit();
+				_elapsedTime = 0;
+			}
 		}
 
 		private void OnDisable()
@@ -151,12 +182,18 @@ namespace Runtime.MonoBehaviours.Game
 		{
 			_inputService.Select += OnGemSelect;
 			_inputService.Drag += OnGemDrag;
+
+			_pauseable.OnPause += () => _isPause = true;
+			_pauseable.OnUnpause += () => _isPause = false;
 		}
 
 		private void UnsubscribeFromEvents()
 		{
 			_inputService.Select -= OnGemSelect;
 			_inputService.Drag -= OnGemDrag;
+
+			_pauseable.OnPause -= () => _isPause = true;
+			_pauseable.OnUnpause -= () => _isPause = false;
 		}
 	}
 }
