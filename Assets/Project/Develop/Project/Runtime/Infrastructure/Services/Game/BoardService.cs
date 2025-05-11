@@ -37,6 +37,8 @@ namespace Runtime.Infrastructure.Services.Game
 		private Boolean _isInitialized;
 		private Action _initialized;
 
+		private List<(Int32 x, Int32 y, BoosterType type)> _boostersToCreate = new();
+
 		private IBoardService Service => this;
 
 		Stone[,] IBoardService.Board => _board;
@@ -151,21 +153,45 @@ namespace Runtime.Infrastructure.Services.Game
 					var horizontalMatch = GetLineMatch(gem, Vector2Int.right);
 					if (horizontalMatch.Count >= 3)
 					{
-						foreach (var matchGem in horizontalMatch)
-							_gemsToDestroy.Add(matchGem);
+						AddToDestroy(horizontalMatch);
+						TryCreateBooster(horizontalMatch, Vector2Int.right);
 					}
 
 					var verticalMatch = GetLineMatch(gem, Vector2Int.up);
 					if (verticalMatch.Count >= 3)
 					{
-						foreach (var matchGem in verticalMatch)
-							_gemsToDestroy.Add(matchGem);
+						AddToDestroy(verticalMatch);
+						TryCreateBooster(verticalMatch, Vector2Int.up);
 					}
 				}
 			}
 
 			return new HashSet<Stone>(_gemsToDestroy);
 		}
+
+		private void TryCreateBooster(List<Stone> matchList, Vector2Int direction)
+		{
+			if (matchList.Count == 4)
+			{
+				var middle = matchList[1];
+				_boostersToCreate.Add((middle.X, middle.Y,
+					direction == Vector2Int.right ? BoosterType.HorizontalBomb : BoosterType.VerticalBomb));
+			}
+			else if (matchList.Count >= 5)
+			{
+				var center = matchList[2];
+				_boostersToCreate.Add((center.X, center.Y, BoosterType.RadiusBomb));
+			}
+		}
+
+		private void AddToDestroy(IEnumerable<Stone> stones)
+		{
+			foreach (var gem in stones)
+			{
+				_gemsToDestroy.Add(gem);
+			}
+		}
+
 
 		private List<Stone> GetLineMatch(Stone startGem, Vector2Int direction)
 		{
@@ -208,7 +234,7 @@ namespace Runtime.Infrastructure.Services.Game
 				_stoneAnimation.PlayDestroyAnimation(stone);
 			}
 		}
-		private void CheckAndHandleGemsDestruction(Stone gem)
+		private async void CheckAndHandleGemsDestruction(Stone gem)
 		{
 			gem.GemDestroyComplete -= CheckAndHandleGemsDestruction;
 
@@ -218,6 +244,15 @@ namespace Runtime.Infrastructure.Services.Game
 			{
 				_countOfGemsToBeDestroy = 0;
 				_countOfGemsDestroyed = 0;
+
+				foreach (var (x, y, type) in _boostersToCreate)
+				{
+					var booster = await _stoneCreator.CreateBoosterStone(x, y, type, _boardProvider.GetBoardOffset(), _boardParent);
+					_board[x, y] = booster;
+					_stoneAnimation.PlaySpawnAnimation(booster);
+				}
+
+				_boostersToCreate.Clear();
 
 				CollapseAndRefillBoard();
 			}

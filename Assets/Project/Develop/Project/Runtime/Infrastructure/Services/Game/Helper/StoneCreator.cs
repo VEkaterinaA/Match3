@@ -52,6 +52,21 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 			return stone;
 		}
 
+		internal async UniTask<Booster> CreateBoosterStone(int x, int y, BoosterType boosterType, Vector2 offset, Transform boardParent)
+		{
+			var position = new Vector2(
+				x * _gameConfig.CellSize + offset.x,
+				(_levelInfoService.LevelInfo.HeightOfBoard - 1 - y) * _gameConfig.CellSize + offset.y);
+
+			var boosterObject = await _prefabsFactory.CreateGameObjectAsync(EnumExtensions.ConvertToPrefabType(boosterType), boardParent);
+			var rectTransform = boosterObject.GetComponent<RectTransform>();
+			rectTransform.anchoredPosition = position;
+
+			var booster = boosterObject.GetComponent<Booster>();
+			booster.Initialize(x, y);
+
+			return booster;
+		}
 
 		private StoneType GetRandomValidStoneType(Stone[,] stones, int x, int y)
 		{
