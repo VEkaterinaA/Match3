@@ -20,37 +20,34 @@ namespace Runtime.Extensions.System
 			return new List<string>(Enum.GetNames(typeof(T)));
 		}
 
-		internal static PrefabType ConvertToPrefabType(StoneType oldStatus)
+		internal static PrefabType ConvertToPrefabType(CellType oldStatus)
 		{
 			return oldStatus switch
 			{
-				StoneType.RedStone => PrefabType.RedStone,
-				StoneType.BlueStone => PrefabType.BlueStone,
-				StoneType.GreenStone => PrefabType.GreenStone,
-				StoneType.YellowStone => PrefabType.YellowStone,
+				CellType.RedStone => PrefabType.RedStone,
+				CellType.BlueStone => PrefabType.BlueStone,
+				CellType.GreenStone => PrefabType.GreenStone,
+				CellType.RadiusBomb => PrefabType.RadiusBomb,
+				CellType.YellowStone => PrefabType.YellowStone,
+				CellType.VerticalBomb => PrefabType.VerticalBomb,
+				CellType.HorizontalBomb => PrefabType.HorizontalBomb,
+
 				_ => PrefabType.Unknown,
 			};
 		}
 
-		internal static PrefabType ConvertToPrefabType(BoosterType oldStatus)
-		{
-			return oldStatus switch
-			{
-				BoosterType.HorizontalBomb => PrefabType.HorizontalBomb,
-				BoosterType.VerticalBomb => PrefabType.VerticalBomb,
-				BoosterType.RadiusBomb => PrefabType.RadiusBomb,
-				_ => PrefabType.Unknown,
-			};
-		}
 
-		internal static TargetType ConvertToTargetType(StoneType oldStatus)
+		internal static TargetType ConvertToTargetType(CellType oldStatus)
 		{
 			return oldStatus switch
 			{
-				StoneType.RedStone => TargetType.RedStone,
-				StoneType.BlueStone => TargetType.BlueStone,
-				StoneType.GreenStone => TargetType.GreenStone,
-				StoneType.YellowStone => TargetType.YellowStone,
+				CellType.RedStone => TargetType.RedStone,
+				CellType.BlueStone => TargetType.BlueStone,
+				CellType.GreenStone => TargetType.GreenStone,
+				CellType.RadiusBomb => TargetType.YellowStone,
+				CellType.YellowStone => TargetType.YellowStone,
+				CellType.VerticalBomb => TargetType.YellowStone,
+				CellType.HorizontalBomb => TargetType.YellowStone,
 				_ => TargetType.Unknown,
 			};
 		}

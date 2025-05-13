@@ -6,6 +6,7 @@ using Runtime.Extensions.UnityEngine;
 using Runtime.Infrastructure.Services.Game.Core;
 using Runtime.Infrastructure.Services.Providers;
 using Runtime.MonoBehaviours.Game;
+using Runtime.MonoBehaviours.Game.Core;
 using System;
 using UnityEngine;
 using VContainer;
@@ -29,7 +30,7 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 
 			_сompositeMotionHandle = new();
 		}
-		public void MoveTo(Stone stone, Vector2 newPosition, Action action)
+		public void MoveTo(IBoardItem stone, Vector2 newPosition, Action action)
 		{
 			var motion = stone.RectTransform.CreateMotion(
 			stone.RectTransform.anchoredPosition,
@@ -43,42 +44,42 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 			_сompositeMotionHandle.AddAutoRemove(motion.BindToAnchoredPosition());
 		}
 
-		public void MoveToCell(Stone stone, Action action = null)
+		public void MoveToCell(IBoardItem item, Action action = null)
 		{
 			var offset = _boardProvider.GetBoardOffset();
 
 			var position = new Vector2(
-							stone.X * _gameConfig.CellSize + offset.x,
-							(_levelInfoService.LevelInfo.HeightOfBoard - 1 - stone.Y) * _gameConfig.CellSize + offset.y);
-			MoveTo(stone, position, action);
+							item.X * _gameConfig.CellSize + offset.x,
+							(_levelInfoService.LevelInfo.HeightOfBoard - 1 - item.Y) * _gameConfig.CellSize + offset.y);
+			MoveTo(item, position, action);
 		}
 
-		public void SwapWith(Stone stoneOne, Stone stoneTwo, Action action = null)
+		public void SwapWith(IBoardItem cellOne, IBoardItem cellTwo, Action action = null)
 		{
 			if (_сompositeMotionHandle.Count != 0)
 			{
 				return;
 			}
 
-			MoveToCell(stoneOne);
-			MoveToCell(stoneTwo, action);
+			MoveToCell(cellOne);
+			MoveToCell(cellTwo, action);
 		}
 
-		public void PlayDestroyAnimation(Stone stone)
+		public void PlayDestroyAnimation(IBoardItem cell)
 		{
-			var handle = stone.transform
-				.CreateMotion(stone.RectTransform.localScale, Vector3.zero, _gameConfig.DestroyAnimationDuration)
+			var handle = cell.GameObject.transform
+				.CreateMotion((cell as IBoardItem).RectTransform.localScale, Vector3.zero, _gameConfig.DestroyAnimationDuration)
 				.AddEase(Ease.InBack)
 			.WithOnComplete(() =>
 			{
-				stone.DestroyGem();
-				stone.GemDestroyComplete?.Invoke(stone);
+				cell.OnCellDestroyCompleted();
+				cell.OnCellDestroyGameObject();
 			});
 
 			_сompositeMotionHandle.AddAutoRemove(handle.BindToLocalScale());
 		}
 
-		public void PlaySpawnAnimation(Stone stone)
+		public void PlaySpawnAnimation(IBoardItem stone)
 		{
 			var delay = UnityEngine.Random.Range(0f, 0.3f);
 

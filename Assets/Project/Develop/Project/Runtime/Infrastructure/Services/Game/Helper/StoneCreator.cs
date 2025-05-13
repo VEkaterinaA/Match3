@@ -6,6 +6,7 @@ using Runtime.Extensions.System;
 using Runtime.Infrastructure.Services.Game.Core;
 using Runtime.Infrastructure.Services.Providers;
 using Runtime.MonoBehaviours.Game;
+using Runtime.MonoBehaviours.Game.Core;
 using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
@@ -33,7 +34,7 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 		}
 
 
-		internal async UniTask<Stone> CreateStone(Stone[,] stones, int x, int y, Vector2 offset, Transform boardParent)
+		internal async UniTask<IBoardItem> CreateStone(IBoardItem[,] stones, int x, int y, Vector2 offset, Transform boardParent)
 		{
 			var position = new Vector2(
 				x * _gameConfig.CellSize + offset.x,
@@ -43,40 +44,39 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 			var stoneType = GetRandomValidStoneType(stones, x, y);
 			var stoneObject = await _prefabsFactory.CreateGameObjectAsync(EnumExtensions.ConvertToPrefabType(stoneType), boardParent);
 
-			var rectTransform = stoneObject.GetComponent<RectTransform>();
-			rectTransform.anchoredPosition = position;
+			var stone = stoneObject.GetComponent<IBoardItem>();
+			stone.RectTransform.anchoredPosition = position;
 
-			var stone = stoneObject.GetComponent<Stone>();
 			stone.Initialize(x, y);
 
 			return stone;
 		}
 
-		internal async UniTask<Booster> CreateBoosterStone(int x, int y, BoosterType boosterType, Vector2 offset, Transform boardParent)
+		internal async UniTask<IBoardItem> CreateBoosterStone(int x, int y, CellType boosterType, Vector2 offset, Transform boardParent)
 		{
 			var position = new Vector2(
 				x * _gameConfig.CellSize + offset.x,
 				(_levelInfoService.LevelInfo.HeightOfBoard - 1 - y) * _gameConfig.CellSize + offset.y);
 
 			var boosterObject = await _prefabsFactory.CreateGameObjectAsync(EnumExtensions.ConvertToPrefabType(boosterType), boardParent);
-			var rectTransform = boosterObject.GetComponent<RectTransform>();
-			rectTransform.anchoredPosition = position;
 
-			var booster = boosterObject.GetComponent<Booster>();
+			var booster = boosterObject.GetComponent<IBoardItem>();
+			booster.RectTransform.anchoredPosition = position;
+
 			booster.Initialize(x, y);
 
 			return booster;
 		}
 
-		private StoneType GetRandomValidStoneType(Stone[,] stones, int x, int y)
+		private CellType GetRandomValidStoneType(IBoardItem[,] stones, int x, int y)
 		{
 			var availableTypes = GetAvailableStoneTypes(stones, x, y);
 			return availableTypes[UnityEngine.Random.Range(0, availableTypes.Count)];
 		}
 
-		private List<StoneType> GetAvailableStoneTypes(Stone[,] stones, int x, int y)
+		private List<CellType> GetAvailableStoneTypes(IBoardItem[,] stones, int x, int y)
 		{
-			var availableTypes = new List<StoneType>();
+			var availableTypes = new List<CellType>();
 
 			foreach (var type in _stoneTypeProvider.StoneTypes)
 			{

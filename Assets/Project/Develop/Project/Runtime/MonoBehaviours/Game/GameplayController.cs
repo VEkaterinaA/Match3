@@ -6,6 +6,7 @@ using Runtime.Infrastructure.Services.Game.Helper;
 using Runtime.Infrastructure.Services.Input.Core;
 using Runtime.Infrastructure.Services.UIServices;
 using Runtime.Infrastructure.Services.UIServices.Core;
+using Runtime.MonoBehaviours.Game.Core;
 using Runtime.Visual.UI.UIDocumentWrappers.Screens;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace Runtime.MonoBehaviours.Game
 
 		[SerializeField] private Transform _boardParent;
 
-		private Stone _selectedGem;
+		private IBoardItem _selectedCell;
 		private Vector2 _dragStartPosition;
 
 		private Boolean _isBoardInitialized;
@@ -97,14 +98,14 @@ namespace Runtime.MonoBehaviours.Game
 
 			if (clickedGem != null)
 			{
-				_selectedGem = clickedGem;
+				_selectedCell = clickedGem;
 				_dragStartPosition = clickPosition;
 			}
 		}
 
 		private void OnGemDrag()
 		{
-			if (_selectedGem == null) return;
+			if (_selectedCell == null) return;
 
 			var currentPosition = _inputService.PointerPosition;
 			var dragDelta = currentPosition - _dragStartPosition;
@@ -120,22 +121,22 @@ namespace Runtime.MonoBehaviours.Game
 			var direction = dragDelta.normalized;
 			var moveDirection = GetMoveDirection(direction);
 
-			var newX = _selectedGem.X + moveDirection.x;
-			var newY = _selectedGem.Y + moveDirection.y;
+			var newX = _selectedCell.X + moveDirection.x;
+			var newY = _selectedCell.Y + moveDirection.y;
 
 			if (IsValidPosition(newX, newY))
 			{
-				var targetGem = _boardService.GetStone(newX, newY);
-				if (targetGem != null)
+				var targetCell = _boardService.GetCell(newX, newY);
+				if (targetCell != null)
 				{
-					var selectedStone = _selectedGem;
-					_boardService.SwapGemsInBoard(selectedStone, targetGem);
-					_stoneAnimation.SwapWith(selectedStone, targetGem, () =>
+					var selectedCell = _selectedCell;
+					_boardService.SwapGemsInBoard(selectedCell, targetCell);
+					_stoneAnimation.SwapWith(selectedCell, targetCell, () =>
 					{
-						_boardService.TrySwapOrRevert(selectedStone, targetGem);
+						_boardService.TrySwapOrRevert(selectedCell, targetCell);
 					});
 
-					_selectedGem = null;
+					_selectedCell = null;
 				}
 			}
 		}

@@ -1,50 +1,61 @@
 ﻿using LitMotion;
 using Runtime.Data.Constants.Enums.AssetReferencesTypes;
+using Runtime.MonoBehaviours.Game.Core;
 using System;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 
 namespace Runtime.MonoBehaviours.Game
 
 {
-    internal class Stone : MonoBehaviour
-    {
-        [SerializeField] private StoneType _stoneType;
+    internal class Stone : MonoBehaviour, IBoardItem
+	{
+        [SerializeField] private CellType _stoneType;
 
-        internal int X { get; set; }
-        internal int Y { get; set; }
-        internal StoneType StoneType => _stoneType;
-
-        internal Action<Stone> GemDestroyComplete;
-
-        private RectTransform _rectTransform;
-        private CompositeMotionHandle _сompositeMotionHandle;
-
-        internal RectTransform RectTransform => _rectTransform;
+		private RectTransform _rectTransform;
 
 
-        private void Awake()
+        private IBoardItem ThisInterface => this;
+
+        private Action<IBoardItem> _cellDestroyComplete;
+
+		Int32 IBoardItem.X { get; set; }
+		Int32 IBoardItem.Y { get; set; }
+
+		RectTransform IBoardItem.RectTransform => _rectTransform;
+
+		CellType IBoardItem.CellType => _stoneType;
+
+		GameObject IBoardItem.GameObject => gameObject;
+
+		event Action<IBoardItem> IBoardItem.CellDestroyComplete
+        {
+            add => _cellDestroyComplete += value;
+            remove => _cellDestroyComplete -= value;
+		}
+
+
+		private void Awake()
         {
             _rectTransform = GetComponent<RectTransform>();
-            _сompositeMotionHandle = new CompositeMotionHandle();
-        }
+		}
 
-        internal void Initialize(Int32 x, Int32 y)
+		void IBoardItem.Initialize(Int32 x, Int32 y)
         {
-            X = x;
-            Y = y;
+			ThisInterface.X = x;
+			ThisInterface.Y = y;
 
             _rectTransform.localScale = Vector3.zero;
         }
 
-
-        internal void DestroyGem()
+        void IBoardItem.OnCellDestroyGameObject()
         {
             Destroy(gameObject);
         }
 
-        private void OnDestroy()
-        {
-            _сompositeMotionHandle.Cancel();
-        }
-    }
+		void IBoardItem.OnCellDestroyCompleted()
+		{
+			_cellDestroyComplete?.Invoke(this);
+		}
+	}
 }

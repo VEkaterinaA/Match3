@@ -7,6 +7,7 @@ using Runtime.Infrastructure.Services.Game.Core;
 using Runtime.Infrastructure.Services.Game.Helper;
 using Runtime.Infrastructure.Services.Providers;
 using Runtime.MonoBehaviours.Game;
+using Runtime.MonoBehaviours.Game.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,9 +26,9 @@ namespace Runtime.Infrastructure.Services.Game
 		private MatchChecker _matchChecker;
 		private StoneCreator _stoneCreator;
 
-		private Stone[,] _board;
-		private List<StoneType> _gemTypes;
-		private readonly HashSet<Stone> _gemsToDestroy = new();
+		private IBoardItem[,] _board;
+		private List<CellType> _gemTypes;
+		private readonly HashSet<IBoardItem> _gemsToDestroy = new();
 
 		private Int32 _countOfGemsDestroyed;
 		private Int32 _countOfGemsToBeDestroy;
@@ -37,11 +38,11 @@ namespace Runtime.Infrastructure.Services.Game
 		private Boolean _isInitialized;
 		private Action _initialized;
 
-		private List<(Int32 x, Int32 y, BoosterType type)> _boostersToCreate = new();
+		private List<(Int32 x, Int32 y, CellType type)> _boostersToCreate = new();
 
 		private IBoardService Service => this;
 
-		Stone[,] IBoardService.Board => _board;
+		IBoardItem[,] IBoardService.Board => _board;
 
 		Boolean IInitializationInformer.IsInitialized => _isInitialized;
 
@@ -95,12 +96,12 @@ namespace Runtime.Infrastructure.Services.Game
 			_initialized?.Invoke();
 		}
 
-		void IBoardService.SwapGemsInBoard(Stone gem1, Stone gem2)
+		void IBoardService.SwapGemsInBoard(IBoardItem cellOne, IBoardItem cellTwo)
 		{
-			(_board[gem1.X, gem1.Y], _board[gem2.X, gem2.Y]) = (_board[gem2.X, gem2.Y], _board[gem1.X, gem1.Y]);
+			(_board[cellOne.X, cellOne.Y], _board[cellTwo.X, cellTwo.Y]) = (_board[cellTwo.X, cellTwo.Y], _board[cellOne.X, cellOne.Y]);
 
-			(gem1.X, gem2.X) = (gem2.X, gem1.X);
-			(gem1.Y, gem2.Y) = (gem2.Y, gem1.Y);
+			(cellOne.X, cellTwo.X) = (cellTwo.X, cellOne.X);
+			(cellOne.Y, cellTwo.Y) = (cellTwo.Y, cellOne.Y);
 		}
 
 
@@ -115,13 +116,13 @@ namespace Runtime.Infrastructure.Services.Game
 			}
 		}
 
-		void IBoardService.TrySwapOrRevert(Stone stoneOne, Stone stoneTwo)
+		void IBoardService.TrySwapOrRevert(IBoardItem cellOne, IBoardItem CellTwo)
 		{
-			if (_matchChecker.IsMatchFreePlacement(_board, stoneOne) && _matchChecker.IsMatchFreePlacement(_board, stoneTwo))
+			if (_matchChecker.IsMatchFreePlacement(_board, cellOne) && _matchChecker.IsMatchFreePlacement(_board, CellTwo))
 			{
-				Service.SwapGemsInBoard(stoneOne, stoneTwo);
+				Service.SwapGemsInBoard(cellOne, CellTwo);
 
-				_stoneAnimation.SwapWith(stoneOne, stoneTwo);
+				_stoneAnimation.SwapWith(cellOne, CellTwo);
 			}
 			else
 			{
@@ -130,7 +131,7 @@ namespace Runtime.Infrastructure.Services.Game
 			}
 		}
 
-		Stone IBoardService.GetStone(Int32 x, Int32 y)
+		IBoardItem IBoardService.GetCell(Int32 x, Int32 y)
 		{
 			if (x >= 0 && x < _levelInfoService.LevelInfo.WidthOfBoard && y >= 0 && y < _levelInfoService.LevelInfo.HeightOfBoard)
 			{
@@ -139,7 +140,7 @@ namespace Runtime.Infrastructure.Services.Game
 			return null;
 		}
 
-		private HashSet<Stone> FindAllMatches()
+		private HashSet<IBoardItem> FindAllMatches()
 		{
 			_gemsToDestroy.Clear();
 
@@ -147,17 +148,17 @@ namespace Runtime.Infrastructure.Services.Game
 			{
 				for (var y = 0; y < _levelInfoService.LevelInfo.HeightOfBoard; y++)
 				{
-					var gem = _board[x, y];
-					if (gem == null) continue;
+					var cell = _board[x, y];
+					if (cell == null) continue;
 
-					var horizontalMatch = GetLineMatch(gem, Vector2Int.right);
+					var horizontalMatch = GetLineMatch(cell, Vector2Int.right);
 					if (horizontalMatch.Count >= 3)
 					{
 						AddToDestroy(horizontalMatch);
 						TryCreateBooster(horizontalMatch, Vector2Int.right);
 					}
 
-					var verticalMatch = GetLineMatch(gem, Vector2Int.up);
+					var verticalMatch = GetLineMatch(cell, Vector2Int.up);
 					if (verticalMatch.Count >= 3)
 					{
 						AddToDestroy(verticalMatch);
@@ -166,45 +167,45 @@ namespace Runtime.Infrastructure.Services.Game
 				}
 			}
 
-			return new HashSet<Stone>(_gemsToDestroy);
+			return new HashSet<IBoardItem>(_gemsToDestroy);
 		}
 
-		private void TryCreateBooster(List<Stone> matchList, Vector2Int direction)
+		private void TryCreateBooster(List<IBoardItem> matchList, Vector2Int direction)
 		{
 			if (matchList.Count == 4)
 			{
 				var middle = matchList[1];
 				_boostersToCreate.Add((middle.X, middle.Y,
-					direction == Vector2Int.right ? BoosterType.HorizontalBomb : BoosterType.VerticalBomb));
+					direction == Vector2Int.right ? CellType.HorizontalBomb : CellType.VerticalBomb));
 			}
 			else if (matchList.Count >= 5)
 			{
 				var center = matchList[2];
-				_boostersToCreate.Add((center.X, center.Y, BoosterType.RadiusBomb));
+				_boostersToCreate.Add((center.X, center.Y, CellType.RadiusBomb));
 			}
 		}
 
-		private void AddToDestroy(IEnumerable<Stone> stones)
+		private void AddToDestroy(IEnumerable<IBoardItem> cells)
 		{
-			foreach (var gem in stones)
+			foreach (var cell in cells)
 			{
-				_gemsToDestroy.Add(gem);
+				_gemsToDestroy.Add(cell);
 			}
 		}
 
 
-		private List<Stone> GetLineMatch(Stone startGem, Vector2Int direction)
+		private List<IBoardItem> GetLineMatch(IBoardItem startCell, Vector2Int direction)
 		{
-			List<Stone> match = new() { startGem };
-			var x = startGem.X + direction.x;
-			var y = startGem.Y + direction.y;
+			List<IBoardItem> match = new() { startCell };
+			var x = startCell.X + direction.x;
+			var y = startCell.Y + direction.y;
 
 			while (_matchChecker.IsInsideBoard(x, y))
 			{
-				var nextGem = _board[x, y];
-				if (nextGem == null || nextGem.StoneType != startGem.StoneType) break;
+				var nextCell = _board[x, y];
+				if (nextCell == null || nextCell.CellType != startCell.CellType) break;
 
-				match.Add(nextGem);
+				match.Add(nextCell);
 				x += direction.x;
 				y += direction.y;
 			}
@@ -212,31 +213,31 @@ namespace Runtime.Infrastructure.Services.Game
 			return match;
 		}
 
-		private void DestroyMatches(HashSet<Stone> matchedStones)
+		private void DestroyMatches(HashSet<IBoardItem> matchedCells)
 		{
-			_countOfGemsToBeDestroy = matchedStones.Count;
+			_countOfGemsToBeDestroy = matchedCells.Count;
 
 			var targetType = _levelInfoService.LevelInfo.TargetType;
 
-			var stoneType = EnumExtensions.ConvertToTargetType(matchedStones.First().StoneType);
+			var cellType = EnumExtensions.ConvertToTargetType(matchedCells.First().CellType);
 
-			foreach (var stone in matchedStones)
+			foreach (var cell in matchedCells)
 			{
-				_board[stone.X, stone.Y] = null;
+				_board[cell.X, cell.Y] = null;
 
-				if(stoneType == targetType)
+				if(cellType == targetType)
 				{
 					_levelInfoService.SubsctractFromGoalQuantity();
 				}
 
-				stone.GemDestroyComplete += CheckAndHandleGemsDestruction;
+				cell.CellDestroyComplete += CheckAndHandleGemsDestruction;
 
-				_stoneAnimation.PlayDestroyAnimation(stone);
+				_stoneAnimation.PlayDestroyAnimation(cell);
 			}
 		}
-		private async void CheckAndHandleGemsDestruction(Stone gem)
+		private async void CheckAndHandleGemsDestruction(IBoardItem cell)
 		{
-			gem.GemDestroyComplete -= CheckAndHandleGemsDestruction;
+			cell.CellDestroyComplete -= CheckAndHandleGemsDestruction;
 
 			_countOfGemsDestroyed++;
 
@@ -278,14 +279,14 @@ namespace Runtime.Infrastructure.Services.Game
 					}
 					else if (emptyCount > 0)
 					{
-						var gem = _board[x, y];
-						_board[x, y + emptyCount] = gem;
+						var cell = _board[x, y];
+						_board[x, y + emptyCount] = cell;
 						_board[x, y] = null;
 
-						gem.Y = y + emptyCount;
+						cell.Y = y + emptyCount;
 
-						var newPos = GetGemPosition(gem.X, gem.Y);
-						gem.GetComponent<RectTransform>().anchoredPosition = newPos;
+						var newPos = GetGemPosition(cell.X, cell.Y);
+						cell.RectTransform.anchoredPosition = newPos;
 					}
 				}
 			}
@@ -324,11 +325,11 @@ namespace Runtime.Infrastructure.Services.Game
 				return;
 			}
 
-			foreach (var gem in _board)
+			foreach (var cellItem in _board)
 			{
-				if (gem != null)
+				if (cellItem != null)
 				{
-					UnityEngine.Object.DestroyImmediate(gem.gameObject);
+					UnityEngine.Object.DestroyImmediate(cellItem.GameObject);
 				}
 			}
 		}
