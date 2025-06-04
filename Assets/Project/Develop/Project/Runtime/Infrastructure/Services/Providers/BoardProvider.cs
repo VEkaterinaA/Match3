@@ -21,7 +21,7 @@ namespace Runtime.Infrastructure.Services.Providers
 			_levelInfoService = levelInfoService;
 			_gameConfig = gameConfig;
 
-			StoneTypes = new List<CellType>((CellType[]) Enum.GetValues(typeof(CellType)));
+			StoneTypes = new List<CellType>() { CellType.RedStone, CellType.BlueStone, CellType.YellowStone, CellType.GreenStone};
 		}
 
 		internal Vector2 GetBoardOffset()

@@ -1,8 +1,7 @@
-﻿using Runtime.Data.Configs.Core;
-using Runtime.Data.Constants.Enums.AssetReferencesTypes;
+﻿using Runtime.Data.Constants.Enums.AssetReferencesTypes;
 using Runtime.Infrastructure.Services.Game.Core;
-using Runtime.MonoBehaviours.Game;
 using Runtime.MonoBehaviours.Game.Core;
+using UnityEngine;
 using VContainer;
 
 namespace Runtime.Infrastructure.Services.Game.Helper
@@ -36,6 +35,10 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 		internal bool IsInsideBoard(int x, int y)
 		{
 			return x >= 0 && x < _levelInfoService.LevelInfo.WidthOfBoard && y >= 0 && y < _levelInfoService.LevelInfo.HeightOfBoard;
+		}
+		internal bool IsInsideBoard(Vector2Int pos)
+		{
+			return pos.x >= 0 && pos.x < _levelInfoService.LevelInfo.WidthOfBoard && pos.y >= 0 && pos.y < _levelInfoService.LevelInfo.HeightOfBoard;
 		}
 
 		private bool CanSwapFormMatch(IBoardItem[,] board, int x1, int y1, int x2, int y2)

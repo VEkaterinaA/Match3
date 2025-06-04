@@ -11,21 +11,21 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 		private ILevelInfoService _levelInfoService;
 		private IBoardService _boardService;
 
-		private Label TargetLabel { get; }
 		private Label QuantityLabel { get; }
 		private Label MoveLimitLabel { get; }
 		private Label TimeLimitLabel { get; }
 		private VisualElement MoveContainer { get; }
 		private VisualElement TimeContainer { get; }
+		private VisualElement TargetVisualElement { get; }
 
 		internal GameScreen(UIDocument uiDocument) : base(uiDocument)
 		{
-			TargetLabel = RootVisualElement.Q<Label>(nameof(TargetLabel));
 			QuantityLabel = RootVisualElement.Q<Label>(nameof(QuantityLabel));
 			MoveLimitLabel = RootVisualElement.Q<Label>(nameof(MoveLimitLabel));
 			TimeLimitLabel = RootVisualElement.Q<Label>(nameof(TimeLimitLabel));
 			MoveContainer = RootVisualElement.Q<VisualElement>(nameof(MoveContainer));
 			TimeContainer = RootVisualElement.Q<VisualElement>(nameof(TimeContainer));
+			TargetVisualElement = RootVisualElement.Q<VisualElement>(nameof(TargetVisualElement));
 
 		}
 
@@ -36,12 +36,12 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 			_levelInfoService = levelInfoService;
 			_boardService = boardService;
 
-			_levelInfoService.InvokeAfterInitialization(InitSettingsGameScreen);
+			_levelInfoService.InvokeAfterInitialization(InitLevelSettingsGameScreen);
 		}
 
-		private void InitSettingsGameScreen()
+		private void InitLevelSettingsGameScreen()
 		{
-			TargetLabel.text = _levelInfoService.LevelInfo.TargetType.ToString();
+			//TargetLabel.text = _levelInfoService.LevelInfo.TargetType.ToString();
 
 			if (_levelInfoService.LevelInfo.TargetType == Data.Constants.Enums.TargetType.ScorePoints)
 			{

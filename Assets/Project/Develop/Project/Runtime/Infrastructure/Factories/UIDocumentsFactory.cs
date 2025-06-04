@@ -84,6 +84,7 @@ namespace Runtime.Infrastructure.Factories
 			return uiDocumentType switch
 			{
 				ScreenType.SettingsScreen => new SettingsScreen(uiDocument),
+				ScreenType.GameOverScreen => new GameOverScreen(uiDocument),
 				ScreenType.PauseScreen => new PauseScreen(uiDocument),
 				ScreenType.GameScreen => new GameScreen(uiDocument),
 				PopupType.LevelEditorPopup => new LevelEditorPopup(uiDocument, true),

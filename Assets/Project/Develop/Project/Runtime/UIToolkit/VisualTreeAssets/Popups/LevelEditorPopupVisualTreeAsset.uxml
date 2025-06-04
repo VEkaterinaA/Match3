@@ -1,6 +1,6 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/Project/Develop/Project/Runtime/UIToolkit/StyleSheets/Popups/LevelEditorPopupStyleSheets.uss?fileID=7433441132597879392&amp;guid=5ce8897351df1eb499a4e61ba40033de&amp;type=3#LevelEditorPopupStyleSheets" />
-    <engine:VisualElement name="PanelVisualElement" class="PopupPanel" style="flex-grow: 1;">
+    <engine:VisualElement name="PanelVisualElement" class="PopupPanel" style="flex-grow: 1; background-color: rgba(255, 255, 255, 0.49); position: absolute;">
         <engine:VisualElement name="PopupBackground" style="border-top-left-radius: 25px; border-top-right-radius: 25px; border-bottom-right-radius: 25px; border-bottom-left-radius: 25px;">
             <engine:VisualElement name="PopupContainer" class="PopupPanel" style="flex-grow: 1;">
                 <engine:Label text="Level editor" name="Title" style="align-items: center; width: 200px; align-self: center;" />

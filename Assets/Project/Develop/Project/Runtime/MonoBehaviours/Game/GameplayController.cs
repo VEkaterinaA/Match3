@@ -1,10 +1,8 @@
 using Runtime.Extensions.System;
-using Runtime.Infrastructure.Services;
 using Runtime.Infrastructure.Services.Core;
 using Runtime.Infrastructure.Services.Game.Core;
 using Runtime.Infrastructure.Services.Game.Helper;
 using Runtime.Infrastructure.Services.Input.Core;
-using Runtime.Infrastructure.Services.UIServices;
 using Runtime.Infrastructure.Services.UIServices.Core;
 using Runtime.MonoBehaviours.Game.Core;
 using Runtime.Visual.UI.UIDocumentWrappers.Screens;
@@ -45,7 +43,7 @@ namespace Runtime.MonoBehaviours.Game
 
 
 		[Inject]
-		private void Construct(IInputService inputService, IBoardService boardService, StoneAnimation stoneAnimation, ILevelInfoService levelInfoService, 
+		private void Construct(IInputService inputService, IBoardService boardService, StoneAnimation stoneAnimation, ILevelInfoService levelInfoService,
 								IScreensService screensService, IPauseable pauseable)
 		{
 			_levelInfoService = levelInfoService;
@@ -71,7 +69,7 @@ namespace Runtime.MonoBehaviours.Game
 
 		private void Update()
 		{
-			if(!_isBoardInitialized || _isPause)
+			if (!_isBoardInitialized || _isPause)
 			{
 				return;
 			}
@@ -81,6 +79,11 @@ namespace Runtime.MonoBehaviours.Game
 			{
 				_levelInfoService.SubsctractFromTimeLimit();
 				_elapsedTime = 0;
+				if(_levelInfoService.LevelInfo.TimeLimit == 0)
+				{
+					Time.timeScale = 0f;
+					_screensService.Show<GameOverScreen>();
+				}
 			}
 		}
 

@@ -7,6 +7,7 @@ using Runtime.Infrastructure.Services.UIServices.Core;
 using Runtime.MonoBehaviours;
 using Runtime.Visual.UI.UIDocumentWrappers.Popups;
 using Runtime.Visual.UI.UIDocumentWrappers.Screens;
+using System;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -25,6 +26,7 @@ namespace Runtime.MonoBehaviours.UIControllers
 
 		private Button _playButton;
 		private Button _settingsButton;
+		private Button _achievementsButton;
 		private Button _exitButton;
 
 		[Inject]
@@ -48,12 +50,15 @@ namespace Runtime.MonoBehaviours.UIControllers
 			var root = _menuDocument.rootVisualElement;
 
 			_playButton = root.Q<Button>("PlayButton");
-			_settingsButton = root.Q<Button>("SettingsButton");
 			_exitButton = root.Q<Button>("ExitButton");
+			_settingsButton = root.Q<Button>("SettingsButton");
+			_achievementsButton = root.Q<Button>("AchievementsButton");
 
 			_playButton.clicked += OnPlayButtonClicked;
 
 			_settingsButton.clicked += OnSettingsButtonClicked;
+
+			_achievementsButton.clicked += OnAchievementsClicked;
 
 			_exitButton.clicked += OnExitButtonClicked;
 		}
@@ -62,9 +67,11 @@ namespace Runtime.MonoBehaviours.UIControllers
 		{
 			_playButton.clicked -= OnPlayButtonClicked;
 
+			_exitButton.clicked -= OnExitButtonClicked;
+
 			_settingsButton.clicked -= OnSettingsButtonClicked;
 
-			_exitButton.clicked -= OnExitButtonClicked;
+			_achievementsButton.clicked -= OnAchievementsClicked;
 		}
 
 		private void OnDestroy()
@@ -81,6 +88,12 @@ namespace Runtime.MonoBehaviours.UIControllers
 		{
 			_screensService.Show<SettingsScreen>();
 		}
+
+		private void OnAchievementsClicked()
+		{
+
+		}
+
 
 		private void OnExitButtonClicked()
 		{

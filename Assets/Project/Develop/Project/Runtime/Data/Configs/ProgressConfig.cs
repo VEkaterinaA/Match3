@@ -39,7 +39,6 @@ namespace Runtime.Data.Configs
 		IUserInfo IProgressConfig.CreateUserInfo()
 		{
 			var userInfo = Instantiate(this)._userInfo;
-			userInfo.GenerateID();
 
 			return userInfo;
 		}

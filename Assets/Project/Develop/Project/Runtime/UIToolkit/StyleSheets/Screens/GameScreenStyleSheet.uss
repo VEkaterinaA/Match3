@@ -1,0 +1,29 @@
+.NameLabel {
+    width: 97%;
+    font-size: 24px;
+    -unity-text-align: upper-center;
+    top: -21px;
+    position: absolute;
+    background-color: rgb(255, 255, 255);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-left-color: rgb(125, 125, 125);
+    border-right-color: rgb(125, 125, 125);
+    border-top-color: rgb(125, 125, 125);
+    border-bottom-color: rgb(125, 125, 125);
+    border-top-width: 1.2px;
+    border-right-width: 1.2px;
+    border-bottom-width: 1.2px;
+    border-left-width: 1.2px;
+}
+
+.QuanintyLabel {
+    -unity-text-align: upper-center;
+    font-size: 133px;
+    margin-top: 15px;
+    margin-right: 25px;
+    margin-bottom: 15px;
+    margin-left: 25px;
+}

@@ -15,6 +15,7 @@ namespace Runtime.MonoBehaviours.Game.Core
 
 		internal RectTransform RectTransform { get; }
 
+		internal Boolean IsBooster { get; }
 
 		internal Int32 X { get; set; }
 

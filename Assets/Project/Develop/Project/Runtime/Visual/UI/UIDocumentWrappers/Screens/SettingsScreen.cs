@@ -18,7 +18,7 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 		private IGameStateMachine _gameStateMachine;
 		private IGameService _gameService;
 
-		private SavedSettings SavedSettings => _persistentProgressService?.UserInfo?.SavedSettings;
+		private Settings SavedSettings => _persistentProgressService?.UserInfo?.Settings;
 
 		private Slider MusicSlider { get; }
 

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Runtime.Data.Progress
@@ -8,37 +7,26 @@ namespace Runtime.Data.Progress
 	public sealed class UserInfo : IUserInfo
 	{
 		[SerializeField]
-		private List<String> _progressSlotsIDs = new List<String>();
+		private Settings _settings;
+
 		[SerializeField]
-		private SavedSettings _savedSettings;
-		[SerializeField]
-		private String _activeProgressID;
-		[SerializeField]
-		private String _id;
+		private PlayerStats _playerStats;
 
-		List<String> IUserInfo.ProgressSlotsIDs => _progressSlotsIDs;
-
-		SavedSettings IUserInfo.SavedSettings => _savedSettings;
-
-		String IUserInfo.ID => _id;
-
-		String IUserInfo.ActiveProgressID
+		Settings IUserInfo.Settings
 		{
-			get => _activeProgressID;
-			set
+			get
 			{
-				_activeProgressID = value;
-
-				if (!_progressSlotsIDs.Contains(_activeProgressID))
-				{
-					_progressSlotsIDs.Add(_activeProgressID);
-				}
+				return _settings;
 			}
 		}
 
-		internal void GenerateID()
+		PlayerStats IUserInfo.PlayerStats
 		{
-			_id = Guid.NewGuid().ToString();
+			get
+			{
+				return _playerStats;
+			}
 		}
+
 	}
 }

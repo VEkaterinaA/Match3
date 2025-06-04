@@ -11,7 +11,7 @@
 #PopupBackground {
     width: 700px;
     height: auto;
-    background-image: url("project://database/Assets/Project/Art/Textures/Backgrounds/back_plate_02.png?fileID=2800000&guid=60327d889c4cdfb4f9fe6dc98f2edd63&type=3#back_plate_02");
+    background-image: url("project://database/Assets/Project/Art/Textures/Backgrounds/back_plate_04.png?fileID=2800000&guid=a6d2033a9e3b401429766cbe4756caf2&type=3#back_plate_04");
     background-color: rgb(255, 255, 255);
     top: 150px;
 }

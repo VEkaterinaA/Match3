@@ -8,7 +8,7 @@ using UnityEngine.Localization.Settings;
 namespace Runtime.MonoBehaviours.Game
 
 {
-    internal class Stone : MonoBehaviour, IBoardItem
+	internal class Stone : MonoBehaviour, IBoardItem
 	{
         [SerializeField] private CellType _stoneType;
 
@@ -24,9 +24,12 @@ namespace Runtime.MonoBehaviours.Game
 
 		RectTransform IBoardItem.RectTransform => _rectTransform;
 
+		GameObject IBoardItem.GameObject => gameObject;
+
 		CellType IBoardItem.CellType => _stoneType;
 
-		GameObject IBoardItem.GameObject => gameObject;
+		Boolean IBoardItem.IsBooster => false;
+
 
 		event Action<IBoardItem> IBoardItem.CellDestroyComplete
         {

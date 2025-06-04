@@ -5,7 +5,6 @@ using Runtime.Data.Constants.Enums.AssetReferencesTypes;
 using Runtime.Extensions.System;
 using Runtime.Infrastructure.Services.Game.Core;
 using Runtime.Infrastructure.Services.Providers;
-using Runtime.MonoBehaviours.Game;
 using Runtime.MonoBehaviours.Game.Core;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,7 +12,7 @@ using VContainer;
 
 namespace Runtime.Infrastructure.Services.Game.Helper
 {
-	internal class StoneCreator
+	internal class ItemCreator
 	{
 		private IPrefabsFactory<PrefabType, GameObject> _prefabsFactory;
 		private ILevelInfoService _levelInfoService;
@@ -52,7 +51,7 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 			return stone;
 		}
 
-		internal async UniTask<IBoardItem> CreateBoosterStone(int x, int y, CellType boosterType, Vector2 offset, Transform boardParent)
+		internal async UniTask<IBoardItem> CreateBooster(int x, int y, CellType boosterType, Vector2 offset, Transform boardParent)
 		{
 			var position = new Vector2(
 				x * _gameConfig.CellSize + offset.x,

@@ -6,5 +6,6 @@ namespace Runtime.Data.Constants.Enums.AssetReferencesTypes
 		SettingsScreen = 0,
 		PauseScreen = 1,
 		GameScreen = 2,
+		GameOverScreen = 3,
 	}
 }

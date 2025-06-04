@@ -21,13 +21,14 @@ namespace Runtime.Infrastructure.Services.Game
 	{
 		private ILevelInfoService _levelInfoService;
 		private IGameConfig _gameConfig;
+		private BoosterCreator _boosterCreator;
 		private StoneAnimation _stoneAnimation;
 		private BoardProvider _boardProvider;
 		private MatchChecker _matchChecker;
-		private StoneCreator _stoneCreator;
+		private ItemCreator _stoneCreator;
 
 		private IBoardItem[,] _board;
-		private List<CellType> _gemTypes;
+
 		private readonly HashSet<IBoardItem> _gemsToDestroy = new();
 
 		private Int32 _countOfGemsDestroyed;
@@ -53,10 +54,12 @@ namespace Runtime.Infrastructure.Services.Game
 		}
 
 		[Inject]
-		private void Construct(IGameConfig gameConfig, StoneCreator stoneCreator, MatchChecker matchChecker, StoneAnimation stoneAnimation, BoardProvider boardProvider, ILevelInfoService levelInfoService)
+		private void Construct(IGameConfig gameConfig, ItemCreator stoneCreator, MatchChecker matchChecker, StoneAnimation stoneAnimation, BoardProvider boardProvider, ILevelInfoService levelInfoService,
+								BoosterCreator boosterCreator)
 		{
 			_levelInfoService = levelInfoService;
 			_stoneAnimation = stoneAnimation;
+			_boosterCreator = boosterCreator;
 			_boardProvider = boardProvider;
 			_matchChecker = matchChecker;
 			_stoneCreator = stoneCreator;
@@ -71,7 +74,7 @@ namespace Runtime.Infrastructure.Services.Game
 				var width = _levelInfoService.LevelInfo.WidthOfBoard;
 				var height = _levelInfoService.LevelInfo.HeightOfBoard;
 				ClearBoard();
-				_board = new Stone[width,height];
+				_board = new IBoardItem[width,height];
 				var offset = _boardProvider.GetBoardOffset();
 
 				for (var x = 0; x < width; x++)
@@ -107,12 +110,23 @@ namespace Runtime.Infrastructure.Services.Game
 
 		void IBoardService.HandleMatchesAfterSwap()
 		{
-			
-			var matches = FindAllMatches();
+			var allMatches = FindAllMatches();
 
-			if (matches.Count > 0)
+			_boostersToCreate = _boosterCreator.GetBoostersToCreate(allMatches);
+
+
+			if (allMatches.Count > 0)
 			{
-				DestroyMatches(matches);
+				var matchedCells = new HashSet<IBoardItem>();
+				foreach (var match in allMatches)
+				{
+					foreach (var cell in match)
+					{
+						matchedCells.Add(cell);
+					}
+				}
+
+				DestroyMatches(matchedCells);
 			}
 		}
 
@@ -140,50 +154,31 @@ namespace Runtime.Infrastructure.Services.Game
 			return null;
 		}
 
-		private HashSet<IBoardItem> FindAllMatches()
+		private List<List<IBoardItem>> FindAllMatches()
 		{
-			_gemsToDestroy.Clear();
+			var allMatches = new List<List<IBoardItem>>();
 
 			for (var x = 0; x < _levelInfoService.LevelInfo.WidthOfBoard; x++)
 			{
 				for (var y = 0; y < _levelInfoService.LevelInfo.HeightOfBoard; y++)
 				{
 					var cell = _board[x, y];
-					if (cell == null) continue;
+					if (cell == null)
+						continue;
 
-					var horizontalMatch = GetLineMatch(cell, Vector2Int.right);
-					if (horizontalMatch.Count >= 3)
-					{
-						AddToDestroy(horizontalMatch);
-						TryCreateBooster(horizontalMatch, Vector2Int.right);
-					}
+					var vertical = GetLineMatch(cell, Vector2Int.right);
+					if (vertical.Count >= 3)
+						allMatches.Add(vertical);
 
-					var verticalMatch = GetLineMatch(cell, Vector2Int.up);
-					if (verticalMatch.Count >= 3)
-					{
-						AddToDestroy(verticalMatch);
-						TryCreateBooster(verticalMatch, Vector2Int.up);
-					}
+					var horizontal = GetLineMatch(cell, Vector2Int.up);
+					if (horizontal.Count >= 3)
+						allMatches.Add(horizontal);
 				}
 			}
 
-			return new HashSet<IBoardItem>(_gemsToDestroy);
+			return allMatches;
 		}
 
-		private void TryCreateBooster(List<IBoardItem> matchList, Vector2Int direction)
-		{
-			if (matchList.Count == 4)
-			{
-				var middle = matchList[1];
-				_boostersToCreate.Add((middle.X, middle.Y,
-					direction == Vector2Int.right ? CellType.HorizontalBomb : CellType.VerticalBomb));
-			}
-			else if (matchList.Count >= 5)
-			{
-				var center = matchList[2];
-				_boostersToCreate.Add((center.X, center.Y, CellType.RadiusBomb));
-			}
-		}
 
 		private void AddToDestroy(IEnumerable<IBoardItem> cells)
 		{
@@ -248,7 +243,7 @@ namespace Runtime.Infrastructure.Services.Game
 
 				foreach (var (x, y, type) in _boostersToCreate)
 				{
-					var booster = await _stoneCreator.CreateBoosterStone(x, y, type, _boardProvider.GetBoardOffset(), _boardParent);
+					var booster = await _stoneCreator.CreateBooster(x, y, type, _boardProvider.GetBoardOffset(), _boardParent);
 					_board[x, y] = booster;
 					_stoneAnimation.PlaySpawnAnimation(booster);
 				}

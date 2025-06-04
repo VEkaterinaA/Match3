@@ -22,11 +22,14 @@ namespace Runtime.MonoBehaviours.Game
 
 		Int32 IBoardItem.Y { get; set; }
 
-		CellType IBoardItem.CellType => _boosterType;
-
 		RectTransform IBoardItem.RectTransform => _rectTransform;
 
 		GameObject IBoardItem.GameObject => gameObject;
+
+		CellType IBoardItem.CellType => _boosterType;
+
+		Boolean IBoardItem.IsBooster => true;
+
 
 		event Action<IBoardItem> IBoardItem.CellDestroyComplete
 		{

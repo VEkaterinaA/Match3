@@ -44,35 +44,12 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 		private ProgressConfig _progressConfig;
 		[SerializeField]
 		private GameConfig _gameConfig;
-		/*		[SerializeField]
-				private InventoryConfig _inventoryConfig;				
-				[SerializeField]
-				private LightingConfig _lightingConfig;
-				[SerializeField]
-				private GraphicsConfig _graphicsConfig;
-				[SerializeField]
-				private CameraConfig _cameraConfig;
-				[SerializeField]
-				private QuestsConfig _questsConfig;
-				[SerializeField]
-				private EnemyConfig _enemyConfig;
-				[SerializeField]
-				private AudioConfig _audioConfig;
-				[SerializeField]
-				private InputConfig _inputConfig;
-				[SerializeField]
-				private FogConfig _fogConfig;
-				[SerializeField]
-				private UIConfig _uiConfig;*/
 		[Header("Components")]
 		[SerializeField]
 		private UIDocument _loadingScreenUIDocument;
 		[SerializeField]
 		[GetComponent]
 		private LoopsService _loopsService;
-		/*		[SerializeField]
-				[GetComponent]
-				private TimerService _timerManager;*/
 		[SerializeField]
 		private EventSystem _eventSystem;
 
@@ -112,9 +89,6 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 		{
 			containerBuilder.Register<UIDocumentsFactory<ScreenType>>(Lifetime.Singleton).As<IUIDocumentsFactory<ScreenType>>();
 			containerBuilder.Register<UIDocumentsFactory<PopupType>>(Lifetime.Singleton).As<IUIDocumentsFactory<PopupType>>();
-			/*			containerBuilder.Register<ComponentsFactory>(Lifetime.Singleton).As<IComponentsFactory>();
-						containerBuilder.Register<TemplatesFactory>(Lifetime.Singleton).As<ITemplatesFactory>();
-			*/
 			containerBuilder.Register<ProgressFactory>(Lifetime.Singleton).As<IProgressFactory>();
 			containerBuilder.UseEntryPoints(ConfigureEntryPoints);
 
@@ -133,8 +107,9 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 			containerBuilder.Register<SceneLoadService>(Lifetime.Singleton).AsImplementedInterfaces();
 			containerBuilder.Register<Pauseable>(Lifetime.Singleton).AsImplementedInterfaces();
 			containerBuilder.Register<BoardProvider>(Lifetime.Singleton);
+			containerBuilder.Register<BoosterCreator>(Lifetime.Singleton);
 			containerBuilder.Register<StoneAnimation>(Lifetime.Singleton);
-			containerBuilder.Register<StoneCreator>(Lifetime.Singleton);
+			containerBuilder.Register<ItemCreator>(Lifetime.Singleton);
 			containerBuilder.Register<MatchChecker>(Lifetime.Singleton);
 
 			containerBuilder.RegisterComponent(_loopsService).AsImplementedInterfaces();

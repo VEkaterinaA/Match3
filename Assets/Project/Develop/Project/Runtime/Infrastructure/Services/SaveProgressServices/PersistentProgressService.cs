@@ -80,7 +80,7 @@ namespace Runtime.Infrastructure.Services.SaveProgressServices
 
 				_isAllowSaveProgress = true;
 
-				_userInfo.ActiveProgressID = ((value is null) ? null : _progressSlots.First(pair => (pair.Value == _activeProgress)).Key);
+				//_userInfo.ActiveProgressID = ((value is null) ? null : _progressSlots.First(pair => (pair.Value == _activeProgress)).Key);
 
 				_progressConfig.Display(value, _userInfo);
 
@@ -126,7 +126,7 @@ namespace Runtime.Infrastructure.Services.SaveProgressServices
 					_userInfo = _progressFactory.CreateUserInfo();
 				}
 
-				foreach (var progressSlotID in _userInfo.ProgressSlotsIDs)
+				/*foreach (var progressSlotID in _userInfo.ProgressSlotsIDs)
 				{
 					var progressPath = DataPath.GetForPlayerProgressWithID(progressSlotID);
 					if (await _fileSystemService.ExistsAsync(progressPath))
@@ -140,7 +140,7 @@ namespace Runtime.Infrastructure.Services.SaveProgressServices
 				if (_userInfo.ActiveProgressID != null && _progressSlots.TryGetValue(_userInfo.ActiveProgressID, out var activeProgress))
 				{
 					Service.ActiveProgress = activeProgress;
-				}
+				}*/
 			}
 			catch (Exception e)
 			{
