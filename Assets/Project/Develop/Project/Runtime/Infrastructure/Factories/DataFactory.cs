@@ -5,7 +5,7 @@ using VContainer;
 
 namespace Runtime.Infrastructure.Factories
 {
-	internal sealed class ProgressFactory : IProgressFactory
+	internal sealed class DataFactory : IDataFactory
 	{
 		private IObjectResolver _objectResolver;
 		private IProgressConfig _progressConfig;
@@ -17,17 +17,8 @@ namespace Runtime.Infrastructure.Factories
 			_progressConfig = progressConfig;
 		}
 
-		IPersistentProgress IProgressFactory.CreatePlayerProgress()
-		{
-			/*			var playerProgress = _progressConfig.ProgressPrototype.Clone();
-						_objectResolver.Inject(playerProgress);
 
-						return playerProgress;
-			*/
-			return new PersistentProgress();
-		}
-
-		IUserInfo IProgressFactory.CreateUserInfo()
+		IUserInfo IDataFactory.CreateUserInfo()
 		{
 			var userInfo = _progressConfig.CreateUserInfo();
 			_objectResolver.Inject(userInfo);

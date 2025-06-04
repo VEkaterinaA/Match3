@@ -1,27 +1,27 @@
-using VContainer;
-using UnityEngine;
-using Runtime.DI.Core;
-using VContainer.Unity;
+using FlyingBears.Runtime.Infrastructure.Factories.PrefabsAssets;
 using Runtime.Attributes;
 using Runtime.Data.Configs;
-using UnityEngine.UIElements;
-using UnityEngine.EventSystems;
 using Runtime.Data.Constants.Enums;
-using Runtime.Infrastructure.Services;
-using Runtime.Infrastructure.Factories;
-using Runtime.Infrastructure.Services.App;
-using Runtime.Infrastructure.Services.Input;
-using Runtime.Infrastructure.Factories.Core;
-using Runtime.Infrastructure.Services.UIServices;
-using Runtime.Visual.UI.UIDocumentWrappers.Screens;
 using Runtime.Data.Constants.Enums.AssetReferencesTypes;
-using Runtime.Infrastructure.Services.SaveProgressServices;
-using Runtime.Infrastructure.Services.Providers.Containers;
-using Runtime.Infrastructure.Services.Providers.Containers.Core;
+using Runtime.Data.Progress.Runtime.Infrastructure.Services.SaveProgressServices;
+using Runtime.DI.Core;
+using Runtime.Infrastructure.Factories;
+using Runtime.Infrastructure.Factories.Core;
+using Runtime.Infrastructure.Services;
 using Runtime.Infrastructure.Services.Game;
 using Runtime.Infrastructure.Services.Game.Helper;
-using FlyingBears.Runtime.Infrastructure.Factories.PrefabsAssets;
+using Runtime.Infrastructure.Services.Input;
 using Runtime.Infrastructure.Services.Providers;
+using Runtime.Infrastructure.Services.Providers.Containers;
+using Runtime.Infrastructure.Services.Providers.Containers.Core;
+using Runtime.Infrastructure.Services.SaveProgressServices;
+using Runtime.Infrastructure.Services.UIServices;
+using Runtime.Visual.UI.UIDocumentWrappers.Screens;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
+using VContainer;
+using VContainer.Unity;
 
 namespace Runtime.MonoBehaviours.LifetimeScopes
 {
@@ -89,7 +89,7 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 		{
 			containerBuilder.Register<UIDocumentsFactory<ScreenType>>(Lifetime.Singleton).As<IUIDocumentsFactory<ScreenType>>();
 			containerBuilder.Register<UIDocumentsFactory<PopupType>>(Lifetime.Singleton).As<IUIDocumentsFactory<PopupType>>();
-			containerBuilder.Register<ProgressFactory>(Lifetime.Singleton).As<IProgressFactory>();
+			containerBuilder.Register<DataFactory>(Lifetime.Singleton).As<IDataFactory>();
 			containerBuilder.UseEntryPoints(ConfigureEntryPoints);
 
 			return;
@@ -121,17 +121,11 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 			{
 				entryPointsBuilder.Add<ScreensService>().WithParameter(_loadingScreen).WithParameter(transform);
 				entryPointsBuilder.Add<PopupsService>().WithParameter(transform);
-				entryPointsBuilder.Add<PersistentProgressService>();
 				entryPointsBuilder.Add<LevelInfoService>();
 				entryPointsBuilder.Add<InputService>();
 				entryPointsBuilder.Add<BoardService>();
 				entryPointsBuilder.Add<GameService>();
-
-#if UNITY_EDITOR
-				entryPointsBuilder.Add<EditorApplicationService>();
-#else
-				entryPointsBuilder.Add<RuntimeApplicationService>();
-#endif
+				entryPointsBuilder.Add<SaveManager>();
 			}
 		}
 

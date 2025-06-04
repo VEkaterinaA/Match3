@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace Runtime.Infrastructure.Factories.Core
 {
-	internal interface IProgressFactory
+	internal interface IDataFactory
 	{
-		internal IPersistentProgress CreatePlayerProgress();
-
 		internal IUserInfo CreateUserInfo();
 	}
 }

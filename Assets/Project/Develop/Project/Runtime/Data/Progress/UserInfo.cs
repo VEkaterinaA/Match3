@@ -1,5 +1,7 @@
+using Runtime.Data.Progress.Runtime.Infrastructure.Services.SaveProgressServices;
 using System;
 using UnityEngine;
+using VContainer;
 
 namespace Runtime.Data.Progress
 {
@@ -27,6 +29,10 @@ namespace Runtime.Data.Progress
 				return _playerStats;
 			}
 		}
-
+		public UserInfo()
+		{
+			_settings = new Settings();
+			_playerStats = new PlayerStats();
+		}
 	}
 }

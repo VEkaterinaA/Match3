@@ -15,17 +15,7 @@ namespace HiddenLightEditor.MenuItems
 		[MenuItem("Tools/Clear Data")]
 		public static void DeleteProgress()
 		{
-			if (Load<UserInfo>(DataPath.UserInfo) is IUserInfo userInfo)
-			{
-				File.Delete(DataPath.UserInfo);
-
-				/*foreach (var progressSlotID in userInfo.ProgressSlotsIDs)
-				{
-					File.Delete(DataPath.GetForPlayerProgressWithID(progressSlotID));
-				}*/
-			}
-
-			Debug.Log($"[{nameof(Tools)}] All data has been cleared.");
+			PlayerPrefs.DeleteAll();
 		}
 
 
