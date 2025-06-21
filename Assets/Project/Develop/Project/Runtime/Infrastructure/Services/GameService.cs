@@ -20,6 +20,7 @@ namespace Runtime.Infrastructure.Services
 
 		private readonly Dictionary<Type, IGameState> _availableGameStates = new Dictionary<Type, IGameState>()
 		{
+			[typeof(LevelCompletionGameState)] = new LevelCompletionGameState(),
 			[typeof(LoadingGameState)] = new LoadingGameState(),
 			[typeof(PausedGameState)] = new PausedGameState(),
 			[typeof(LoopsGameState)] = new LoopsGameState(),

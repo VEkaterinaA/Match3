@@ -5,6 +5,7 @@ using Runtime.Data.Constants.Enums.AssetReferencesTypes;
 using Runtime.Extensions.System;
 using Runtime.Infrastructure.Factories.Core;
 using Runtime.Infrastructure.Services.Game.Core;
+using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer;
@@ -18,23 +19,25 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 		private IBoardService _boardService;
 		private IUIConfig _uIConfig;
 
+		private Label ScoreLabel { get; }
 		private Label QuantityLabel { get; }
 		private Label MoveLimitLabel { get; }
 		private Label TimeLimitLabel { get; }
 		private VisualElement TargetIcon { get; }
 		private VisualElement MoveContainer { get; }
 		private VisualElement TimeContainer { get; }
-		private VisualElement TargetVisualElement { get; }
+		private VisualElement TargetContainer { get; }
 
 		internal GameScreen(UIDocument uiDocument) : base(uiDocument)
 		{
+			ScoreLabel = RootVisualElement.Q<Label>(nameof(ScoreLabel));
 			QuantityLabel = RootVisualElement.Q<Label>(nameof(QuantityLabel));
 			MoveLimitLabel = RootVisualElement.Q<Label>(nameof(MoveLimitLabel));
 			TimeLimitLabel = RootVisualElement.Q<Label>(nameof(TimeLimitLabel));
 			TargetIcon = RootVisualElement.Q<VisualElement>(nameof(TargetIcon));
 			MoveContainer = RootVisualElement.Q<VisualElement>(nameof(MoveContainer));
 			TimeContainer = RootVisualElement.Q<VisualElement>(nameof(TimeContainer));
-			TargetVisualElement = RootVisualElement.Q<VisualElement>(nameof(TargetVisualElement));
+			TargetContainer = RootVisualElement.Q<VisualElement>(nameof(TargetContainer));
 
 		}
 
@@ -51,13 +54,19 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 
 		private void InitLevelSettingsGameScreen()
 		{
+			UpdateScoreData();
+
+			_levelInfoService.ScoreChanged += UpdateScoreData;
+
+
 			if (_levelInfoService.LevelInfo.TargetType == Data.Constants.Enums.TargetType.ScorePoints)
 			{
-				QuantityLabel.style.display = DisplayStyle.None;
+				TargetContainer.style.display = DisplayStyle.None;
 			}
 			else
 			{
-				QuantityLabel.style.display = DisplayStyle.Flex;
+				TargetContainer.style.display = DisplayStyle.Flex;
+
 				UpdateTargetData();
 
 				_levelInfoService.GoalQuantityChanged += UpdateQuantityLabel;
@@ -89,6 +98,11 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 
 		}
 
+		private void UpdateScoreData()
+		{
+			ScoreLabel.text = _levelInfoService.LevelInfo.Score.ToString();
+		}
+
 		private void UpdateTimeLimit()
 		{
 			TimeLimitLabel.text = _levelInfoService.LevelInfo.TimeLimit.ToString();
@@ -115,6 +129,7 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 			base.Unsubscribe();
 
 			_levelInfoService.TimeChanged -= UpdateTimeLimit;
+			_levelInfoService.ScoreChanged -= UpdateScoreData;
 			_levelInfoService.MoveCompleted -= UpdateMoveLimitLabel;
 			_levelInfoService.GoalQuantityChanged -= UpdateQuantityLabel;
 		}

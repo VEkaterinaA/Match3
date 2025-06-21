@@ -1,7 +1,7 @@
 using Runtime.Data.Constants.Enums;
+using Runtime.Data.Progress;
 using Runtime.Infrastructure.GameStateMachine.Core;
 using Runtime.Infrastructure.GameStateMachine.States;
-using Runtime.Infrastructure.Services.Game;
 using Runtime.Infrastructure.Services.Game.Core;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -14,6 +14,7 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 	{
 		private IGameStateMachine _gameStateMachine;
 		private IBoardService _boardService;
+		private IUserInfo _userInfo;
 
 		private Button ResumeButton { get; }
 		private Button RestartButton { get; }
@@ -27,10 +28,11 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 		}
 
 		[Inject]
-		internal void Construct(IGameStateMachine gameStateMachine, IBoardService boardService)
+		internal void Construct(IGameStateMachine gameStateMachine, IBoardService boardService, IUserInfo userInfo, )
 		{
 			_gameStateMachine = gameStateMachine;
 			_boardService = boardService;
+			_userInfo = userInfo;
 		}
 
 		protected override void Show()
@@ -74,19 +76,25 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 
 		private void OnRestartButtonClicked()
 		{
-			_gameStateMachine.Get<LoadingGameState>().SceneName = SceneName.CoreSceneAsset;
-			_gameStateMachine.Enter<LoadingGameState>();
-			ScreensService.Hide<PauseScreen>();
+			_gameStateMachine.Get<LevelCompletionGameState>().RunAllLevelCompletionProcesses(() =>
+			{
+				_gameStateMachine.Get<LoadingGameState>().SceneName = SceneName.CoreSceneAsset;
+				_gameStateMachine.Enter<LoadingGameState>();
+				ScreensService.Hide<PauseScreen>();
+			});
+			_gameStateMachine.Enter<LevelCompletionGameState>();
 		}
 
 		private void OnMainMenuButtonClicked()
 		{
-			_gameStateMachine.Get<LoadingGameState>().SceneName = SceneName.MainMenuSceneAsset;
-			_gameStateMachine.Enter<LoadingGameState>();
-			ScreensService.Hide<PauseScreen>();
-			ScreensService.Hide<GameScreen>();
-
-			_boardService.ResetAll();
+			_gameStateMachine.Get<LevelCompletionGameState>().RunAllLevelCompletionProcesses(() =>
+			{
+				_gameStateMachine.Get<LoadingGameState>().SceneName = SceneName.MainMenuSceneAsset;
+				_gameStateMachine.Enter<LoadingGameState>();
+				ScreensService.Hide<PauseScreen>();
+				ScreensService.Hide<GameScreen>();
+			});
+			_gameStateMachine.Enter<LevelCompletionGameState>();
 		}
 	}
 }
