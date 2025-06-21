@@ -18,23 +18,27 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 		private IBoardService _boardService;
 		private IUIConfig _uIConfig;
 
+		private Label ScoreLabel { get; }
 		private Label QuantityLabel { get; }
 		private Label MoveLimitLabel { get; }
 		private Label TimeLimitLabel { get; }
 		private VisualElement TargetIcon { get; }
 		private VisualElement MoveContainer { get; }
 		private VisualElement TimeContainer { get; }
-		private VisualElement TargetVisualElement { get; }
+		private VisualElement ScoreContainer { get; }
+		private VisualElement TargetContainer { get; }
 
 		internal GameScreen(UIDocument uiDocument) : base(uiDocument)
 		{
+			ScoreLabel = RootVisualElement.Q<Label>(nameof(ScoreLabel));
 			QuantityLabel = RootVisualElement.Q<Label>(nameof(QuantityLabel));
 			MoveLimitLabel = RootVisualElement.Q<Label>(nameof(MoveLimitLabel));
 			TimeLimitLabel = RootVisualElement.Q<Label>(nameof(TimeLimitLabel));
 			TargetIcon = RootVisualElement.Q<VisualElement>(nameof(TargetIcon));
 			MoveContainer = RootVisualElement.Q<VisualElement>(nameof(MoveContainer));
 			TimeContainer = RootVisualElement.Q<VisualElement>(nameof(TimeContainer));
-			TargetVisualElement = RootVisualElement.Q<VisualElement>(nameof(TargetVisualElement));
+			ScoreContainer = RootVisualElement.Q<VisualElement>(nameof(ScoreContainer));
+			TargetContainer = RootVisualElement.Q<VisualElement>(nameof(TargetContainer));
 
 		}
 
@@ -53,11 +57,14 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 		{
 			if (_levelInfoService.LevelInfo.TargetType == Data.Constants.Enums.TargetType.ScorePoints)
 			{
-				QuantityLabel.style.display = DisplayStyle.None;
+				ScoreContainer.style.display = DisplayStyle.Flex;
+				TargetContainer.style.display = DisplayStyle.None;
 			}
 			else
 			{
-				QuantityLabel.style.display = DisplayStyle.Flex;
+				ScoreContainer.style.display = DisplayStyle.None;
+				TargetContainer.style.display = DisplayStyle.Flex;
+
 				UpdateTargetData();
 
 				_levelInfoService.GoalQuantityChanged += UpdateQuantityLabel;
