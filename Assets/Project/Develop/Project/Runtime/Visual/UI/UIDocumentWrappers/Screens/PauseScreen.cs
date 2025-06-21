@@ -13,9 +13,6 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 	internal sealed class PauseScreen : Screen
 	{
 		private IGameStateMachine _gameStateMachine;
-		private IBoardService _boardService;
-		private IUserInfo _userInfo;
-
 		private Button ResumeButton { get; }
 		private Button RestartButton { get; }
 		private Button MainMenuButton { get; }
@@ -28,11 +25,9 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 		}
 
 		[Inject]
-		internal void Construct(IGameStateMachine gameStateMachine, IBoardService boardService, IUserInfo userInfo, )
+		internal void Construct(IGameStateMachine gameStateMachine)
 		{
 			_gameStateMachine = gameStateMachine;
-			_boardService = boardService;
-			_userInfo = userInfo;
 		}
 
 		protected override void Show()

@@ -1,7 +1,8 @@
 using Cysharp.Threading.Tasks;
+using Runtime.Data.Configs;
+using Runtime.Data.Configs.Core;
 using Runtime.Data.Progress;
 using Runtime.Infrastructure.Core;
-using Runtime.Infrastructure.Factories.Core;
 using System;
 using UnityEngine;
 using VContainer;
@@ -9,12 +10,12 @@ using VContainer.Unity;
 
 namespace Runtime.Infrastructure.Services.SaveProgressServices
 {
-	internal sealed class SaveManager : IInitializationInformer, IInitializable, IDisposable
+	internal sealed class DataService : IInitializationInformer, IInitializable, IDisposable
 	{
 		private const string SAVE_KEY = "user_data";
 
+		private IProgressConfig _progressConfig;
 
-		private IDataFactory _progressFactory;
 		private IUserInfo _userInfo;
 
 		private Action _initialized;
@@ -32,10 +33,9 @@ namespace Runtime.Infrastructure.Services.SaveProgressServices
 		}
 
 		[Inject]
-		private void Construct(IDataFactory progressFactory)
+		private void Construct(IProgressConfig progressConfig)
 		{
-			_progressFactory = progressFactory;
-			_userInfo = _progressFactory.CreateUserInfo();
+			_progressConfig = progressConfig;
 		}
 
 		async void IInitializable.Initialize()
@@ -76,6 +76,8 @@ namespace Runtime.Infrastructure.Services.SaveProgressServices
 					var userInfo = JsonUtility.FromJson<UserInfo>(jsonData);
 					Debug.Log("Данные успешно загружены");
 					_userInfo = userInfo;
+
+					return;
 				}
 
 				Debug.Log("Сохранённые данные не найдены, создаём новые");
@@ -90,7 +92,7 @@ namespace Runtime.Infrastructure.Services.SaveProgressServices
 
 		private UserInfo CreateNewUserInfo()
 		{
-			var userInfo = new UserInfo();
+			var userInfo = _progressConfig.UserInfo.Clone();
 			return userInfo;
 		}
 	}

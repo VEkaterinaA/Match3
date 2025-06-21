@@ -1,3 +1,4 @@
+using Runtime.Infrastructure.Core;
 using System;
 using UnityEngine;
 
@@ -7,10 +8,10 @@ namespace Runtime.Data.Progress
 	public sealed class UserInfo : IUserInfo
 	{
 		[SerializeField]
-		private Settings _settings;
+		public Settings _settings;
 
 		[SerializeField]
-		private PlayerStats _playerStats;
+		public PlayerStats _playerStats;
 
 		Settings IUserInfo.Settings
 		{
@@ -36,10 +37,15 @@ namespace Runtime.Data.Progress
 			}
 		}
 
-		public UserInfo()
+		UserInfo IPrototype<UserInfo>.Clone()
 		{
-			_settings = new Settings();
-			_playerStats = new PlayerStats();
+			var userInfo = new UserInfo();
+
+			userInfo._settings = ((IPrototype<Settings>) _settings).Clone();
+			userInfo._playerStats = ((IPrototype<PlayerStats>) _playerStats).Clone();
+
+			return userInfo;
 		}
+
 	}
 }

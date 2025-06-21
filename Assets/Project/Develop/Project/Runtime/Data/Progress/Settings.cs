@@ -1,29 +1,28 @@
-﻿using System;
+﻿using Runtime.Infrastructure.Core;
+using System;
 using UnityEngine;
 
 namespace Runtime.Data.Progress
 {
 	[Serializable]
-	internal class Settings
+	public class Settings  : IPrototype<Settings>
 	{
 		[SerializeField]
 		[Range(0.0f, 1.0f)]
-		private Single _musicVolumeMultiplier;
+		public Single MusicVolumeMultiplier;
 		[SerializeField]
 		[Range(0.0f, 1.0f)]
-		private Single _soundVolumeMultiplier;
+		public Single SoundVolumeMultiplier;
 
-		internal Single MusicVolumeMultiplier
+
+		Settings IPrototype<Settings>.Clone()
 		{
-			get => _musicVolumeMultiplier;
-			set => _musicVolumeMultiplier = value;
-		}
+			var settings = new Settings();
 
-		internal Single SoundVolumeMultiplier
-		{
-			get => _soundVolumeMultiplier;
-			set => _soundVolumeMultiplier = value;
-		}
+			settings.MusicVolumeMultiplier = MusicVolumeMultiplier;
+			settings.SoundVolumeMultiplier = SoundVolumeMultiplier;
 
+			return settings;
+		}
 	}
 }

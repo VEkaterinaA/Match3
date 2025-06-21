@@ -1,7 +1,7 @@
 namespace Runtime.Infrastructure.Core
 {
-	internal interface IPrototype<out TObject>
+	public interface IPrototype<out TObject>
 	{
-		internal TObject Clone();
+		public TObject Clone();
 	}
 }

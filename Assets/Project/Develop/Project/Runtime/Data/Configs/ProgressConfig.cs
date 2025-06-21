@@ -19,6 +19,9 @@ namespace Runtime.Data.Configs
 			set => _runtimeUserInfo = value;
 		}
 
+		IUserInfo IProgressConfig.UserInfo => _userInfo;
+
+
 		void IProgressConfig.Display(IUserInfo userInfo)
 		{
 			_userInfo = (UserInfo) userInfo;

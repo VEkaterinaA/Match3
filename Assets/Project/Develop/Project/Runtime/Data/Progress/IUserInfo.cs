@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Runtime.Infrastructure.Core;
+using System;
 
 namespace Runtime.Data.Progress
 {
-	public interface IUserInfo
+	public interface IUserInfo : IPrototype<UserInfo>
 	{
-		internal Settings Settings { get; }
-		internal PlayerStats PlayerStats { get; }
+		public Settings Settings { get; }
+		public PlayerStats PlayerStats { get; }
 
-		internal void ScoreCheck(Int32 value);
+		public void ScoreCheck(Int32 value);
 	}
 }

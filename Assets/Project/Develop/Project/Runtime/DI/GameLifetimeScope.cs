@@ -90,7 +90,6 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 		{
 			containerBuilder.Register<UIDocumentsFactory<ScreenType>>(Lifetime.Singleton).As<IUIDocumentsFactory<ScreenType>>();
 			containerBuilder.Register<UIDocumentsFactory<PopupType>>(Lifetime.Singleton).As<IUIDocumentsFactory<PopupType>>();
-			containerBuilder.Register<DataFactory>(Lifetime.Singleton).As<IDataFactory>();
 			containerBuilder.UseEntryPoints(ConfigureEntryPoints);
 
 			return;
@@ -113,7 +112,7 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 			containerBuilder.Register<ItemCreator>(Lifetime.Singleton);
 			containerBuilder.Register<MatchChecker>(Lifetime.Singleton);
 
-			containerBuilder.Register<SaveManager>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+			containerBuilder.Register<DataService>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
 
 			containerBuilder.RegisterComponent(_loopsService).AsImplementedInterfaces();
 			containerBuilder.UseEntryPoints(ConfigureEntryPoints);

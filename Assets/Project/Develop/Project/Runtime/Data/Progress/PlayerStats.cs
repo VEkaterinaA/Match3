@@ -1,30 +1,26 @@
-﻿using System;
+﻿using Runtime.Infrastructure.Core;
+using System;
 
 namespace Runtime.Data.Progress
 {
 	[Serializable]
-	internal class PlayerStats
+	public class PlayerStats : IPrototype<PlayerStats>
 	{
-		private Int32 _games_won;
-		private Int32 _games_played;
-		private Int32 _highest_score;
+		public Int32 Games_won;
+		public Int32 Games_played;
+		public Int32 Highest_score;
 
-		internal Int32 Games_won
+
+		PlayerStats IPrototype<PlayerStats>.Clone()
 		{
-			get => _games_won;
-			set => _games_won = value;
+			var playerStats = new PlayerStats();
+
+			playerStats.Games_won = Games_won;
+			playerStats.Games_played = Games_played;
+			playerStats.Highest_score = Highest_score;
+
+			return playerStats;
 		}
 
-		internal Int32 Games_played 
-		{ 
-			get => _games_played; 
-			set => _games_played = value; 
-		}
-
-		internal Int32 Highest_score 
-		{ 
-			get => _highest_score; 
-			set => _highest_score = value; 
-		}
 	}
 }

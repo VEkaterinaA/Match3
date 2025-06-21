@@ -17,7 +17,7 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 	{
 		private IGameStateMachine _gameStateMachine;
 		private IGameService _gameService;
-		private SaveManager _saveManager;
+		private DataService _saveManager;
 
 		private Settings SavedSettings => _saveManager?.UserInfo?.Settings;
 
@@ -35,7 +35,7 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 		}
 
 		[Inject]
-		internal void Construct(IGameStateMachine gameStateMachine, IGameService gameService, SaveManager saveManager)
+		internal void Construct(IGameStateMachine gameStateMachine, IGameService gameService, DataService saveManager)
 		{
 			_gameStateMachine = gameStateMachine;
 			_gameService = gameService;
