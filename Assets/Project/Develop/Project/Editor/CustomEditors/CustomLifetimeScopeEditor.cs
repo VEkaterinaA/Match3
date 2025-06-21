@@ -1,4 +1,4 @@
-using HiddenLightEditor.Extensions;
+using Editor.Extensions;
 using Runtime.DI.Core;
 using Runtime.Extensions.System;
 using Runtime.MonoBehaviours;
@@ -7,10 +7,10 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-namespace HiddenLightEditor.CustomEditors
+namespace Editor.CustomEditors
 {
 	[CustomEditor(typeof(CustomLifetimeScope), true)]
-	internal sealed class CustomLifetimeScopeEditor : Editor
+	internal sealed class CustomLifetimeScopeEditor : UnityEditor.Editor
 	{
 		private SerializedProperty _injectableComponents;
 

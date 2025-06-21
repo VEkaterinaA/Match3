@@ -2,7 +2,7 @@
 using System.IO;
 using UnityEditor;
 
-namespace HiddenLightEditor.Extensions
+namespace Editor.Extensions
 {
     internal static class AssetDatabaseExtensions
     {

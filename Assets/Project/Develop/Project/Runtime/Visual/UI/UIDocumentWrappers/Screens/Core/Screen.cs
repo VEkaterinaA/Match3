@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer;
-using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 
 namespace Runtime.Visual.UI.UIDocumentWrappers.Screens.Core
 {

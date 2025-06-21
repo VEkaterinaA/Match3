@@ -8,7 +8,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-namespace HiddenLightEditor.MenuItems
+namespace Editor.MenuItems
 {
 	internal static class Tools
 	{

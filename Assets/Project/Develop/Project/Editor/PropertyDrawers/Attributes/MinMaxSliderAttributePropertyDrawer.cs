@@ -3,7 +3,7 @@ using Runtime.Attributes;
 using UnityEditor;
 using UnityEngine;
 
-namespace HiddenLightEditor.PropertyDrawers.Attributes
+namespace Editor.PropertyDrawers.Attributes
 {
 	[CustomPropertyDrawer(typeof(MinMaxSliderAttribute))]
 	internal sealed class MinMaxSliderAttributePropertyDrawer : PropertyDrawer

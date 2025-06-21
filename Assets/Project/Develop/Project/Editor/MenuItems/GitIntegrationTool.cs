@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-namespace HiddenLightEditor.MenuItems
+namespace Editor.MenuItems
 {
     [InitializeOnLoad]
     internal sealed class GitIntegrationTool

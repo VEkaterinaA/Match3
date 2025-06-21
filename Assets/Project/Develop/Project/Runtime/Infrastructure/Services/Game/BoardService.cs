@@ -137,10 +137,16 @@ namespace Runtime.Infrastructure.Services.Game
 					break;
 
 				case CellType.RadiusBomb:
-					for (var dx = -1; dx <= 1; dx++)
+					
+					var radius = 2;
+
+					for (var dx = -radius; dx <= radius; dx++)
 					{
-						for (var dy = -1; dy <= 1; dy++)
+						for (var dy = -radius; dy <= radius; dy++)
 						{
+							if (Mathf.Abs(dx) + Mathf.Abs(dy) > radius)
+								continue;
+
 							var nx = x + dx;
 							var ny = y + dy;
 

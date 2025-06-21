@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace HiddenLightEditor.PropertyDrawers.Attributes
+namespace Editor.PropertyDrawers.Attributes
 {
 	[CustomPropertyDrawer(typeof(ReadOnlyFieldAttribute))]
 	internal sealed class ReadOnlyFieldAttributePropertyDrawer : PropertyDrawer

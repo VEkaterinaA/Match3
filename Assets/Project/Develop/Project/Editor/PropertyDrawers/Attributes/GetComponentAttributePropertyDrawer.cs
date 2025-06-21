@@ -2,7 +2,7 @@ using Runtime.Attributes;
 using UnityEditor;
 using UnityEngine;
 
-namespace HiddenLightEditor.PropertyDrawers.Attributes
+namespace Editor.PropertyDrawers.Attributes
 {
 	[CustomPropertyDrawer(typeof(GetComponentAttribute))]
 	internal sealed class GetComponentAttributePropertyDrawer : PropertyDrawer

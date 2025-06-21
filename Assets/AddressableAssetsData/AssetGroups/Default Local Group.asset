@@ -27,12 +27,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - Screen
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 49dbae66582b6cf459c64db0e5794dbd
-    m_Address: MainMenuScreenVisualTreeAsset
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Screen
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a4e998590452649efbccf94f9a4be02e
     m_Address: SettingsScreenVisualTreeAsset
     m_ReadOnly: 0
@@ -88,7 +82,7 @@ MonoBehaviour:
     - PanelSetting
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9eab11910dca2cd43ba2e5cf08c8ce52
-    m_Address: Assets/Project/Develop/Project/Runtime/UIToolkit/VisualTreeAssets/Screens/GameScreenVisualTreeAsset.uxml
+    m_Address: GameScreenVisualTreeAsset
     m_ReadOnly: 0
     m_SerializedLabels:
     - Screen
@@ -111,7 +105,13 @@ MonoBehaviour:
     - Prefab
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9aa1f52e1f6501b4d8593ab54367a9eb
-    m_Address: Assets/Project/Develop/Project/Runtime/UIToolkit/VisualTreeAssets/Screens/GameOverScreen.uxml
+    m_Address: GameOverScreen
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Screen
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30b2c4a4fd29bf14a8f1b9cfeb1e855c
+    m_Address: MainMenuScreenVisualTreeAsset
     m_ReadOnly: 0
     m_SerializedLabels:
     - Screen

@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace HiddenLightEditor.Extensions
+namespace Editor.Extensions
 {
 	internal static class SerializedPropertyExtension
 	{

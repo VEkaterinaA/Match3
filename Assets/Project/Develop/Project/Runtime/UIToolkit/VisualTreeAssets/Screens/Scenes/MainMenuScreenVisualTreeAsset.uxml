@@ -1,4 +1,4 @@
-<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/Project/Develop/Project/Runtime/UIToolkit/StyleSheets/Screens/MainMenuScreenStyleSheet.uss?fileID=7433441132597879392&amp;guid=aa4b8a0619df5434ca8b1c25bd8d4d95&amp;type=3#MainMenuScreenStyleSheet" />
     <Style src="project://database/Assets/Project/Develop/Project/Runtime/UIToolkit/StyleSheets/TextStyleSheet.uss?fileID=7433441132597879392&amp;guid=391606ca684ee1b4fbf1f3b0fd62fcd8&amp;type=3#TextStyleSheet" />
     <Style src="project://database/Assets/Project/Develop/Project/Runtime/UIToolkit/StyleSheets/ButtonStyleSheet.uss?fileID=7433441132597879392&amp;guid=0424f69d5a5051848af00ba861bbe1d0&amp;type=3#ButtonStyleSheet" />

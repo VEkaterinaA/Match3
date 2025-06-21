@@ -24,10 +24,10 @@ namespace Runtime.MonoBehaviours.UIControllers
 		[SerializeField]
 		private UIDocument _menuDocument;
 
-		private Button _playButton;
-		private Button _settingsButton;
-		private Button _achievementsButton;
-		private Button _exitButton;
+		private Button PlayButton;
+		private Button ExitButton;
+		private Button SettingsButton;
+		private Button AchievementsButton;
 
 		[Inject]
 		internal void Construct(IGameStateMachine gameStateMachine, IScreensService screensService, IPopupsService popupsService)
@@ -35,7 +35,10 @@ namespace Runtime.MonoBehaviours.UIControllers
 			_gameStateMachine = gameStateMachine;
 			_screensService = screensService;
 			_popupsService = popupsService;
+		}
 
+		private void Awake()
+		{
 			Subscribe();
 		}
 
@@ -49,29 +52,38 @@ namespace Runtime.MonoBehaviours.UIControllers
 
 			var root = _menuDocument.rootVisualElement;
 
-			_playButton = root.Q<Button>("PlayButton");
-			_exitButton = root.Q<Button>("ExitButton");
-			_settingsButton = root.Q<Button>("SettingsButton");
-			_achievementsButton = root.Q<Button>("AchievementsButton");
+			if(root == null)
+			{
+				Debug.LogError("root is null");
+			}
 
-			_playButton.clicked += OnPlayButtonClicked;
+			PlayButton = root.Q<Button>(nameof(PlayButton));
+			ExitButton = root.Q<Button>(nameof(ExitButton));
+			SettingsButton = root.Q<Button>(nameof(SettingsButton));
+			AchievementsButton = root.Q<Button>(nameof(AchievementsButton));
 
-			_settingsButton.clicked += OnSettingsButtonClicked;
+			if(PlayButton == null)
+			{
+				Debug.LogError("PlayButton is null");
+			}
+			PlayButton.clicked += OnPlayButtonClicked;
 
-			_achievementsButton.clicked += OnAchievementsClicked;
+			SettingsButton.clicked += OnSettingsButtonClicked;
 
-			_exitButton.clicked += OnExitButtonClicked;
+			AchievementsButton.clicked += OnAchievementsClicked;
+
+			ExitButton.clicked += OnExitButtonClicked;
 		}
 
 		private void UnSubscribe()
 		{
-			_playButton.clicked -= OnPlayButtonClicked;
+			PlayButton.clicked -= OnPlayButtonClicked;
 
-			_exitButton.clicked -= OnExitButtonClicked;
+			ExitButton.clicked -= OnExitButtonClicked;
 
-			_settingsButton.clicked -= OnSettingsButtonClicked;
+			SettingsButton.clicked -= OnSettingsButtonClicked;
 
-			_achievementsButton.clicked -= OnAchievementsClicked;
+			AchievementsButton.clicked -= OnAchievementsClicked;
 		}
 
 		private void OnDestroy()
