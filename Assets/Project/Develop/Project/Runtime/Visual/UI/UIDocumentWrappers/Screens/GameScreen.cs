@@ -5,6 +5,7 @@ using Runtime.Data.Constants.Enums.AssetReferencesTypes;
 using Runtime.Extensions.System;
 using Runtime.Infrastructure.Factories.Core;
 using Runtime.Infrastructure.Services.Game.Core;
+using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer;
@@ -25,7 +26,6 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 		private VisualElement TargetIcon { get; }
 		private VisualElement MoveContainer { get; }
 		private VisualElement TimeContainer { get; }
-		private VisualElement ScoreContainer { get; }
 		private VisualElement TargetContainer { get; }
 
 		internal GameScreen(UIDocument uiDocument) : base(uiDocument)
@@ -37,7 +37,6 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 			TargetIcon = RootVisualElement.Q<VisualElement>(nameof(TargetIcon));
 			MoveContainer = RootVisualElement.Q<VisualElement>(nameof(MoveContainer));
 			TimeContainer = RootVisualElement.Q<VisualElement>(nameof(TimeContainer));
-			ScoreContainer = RootVisualElement.Q<VisualElement>(nameof(ScoreContainer));
 			TargetContainer = RootVisualElement.Q<VisualElement>(nameof(TargetContainer));
 
 		}
@@ -55,14 +54,17 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 
 		private void InitLevelSettingsGameScreen()
 		{
+			UpdateScoreData();
+
+			_levelInfoService.ScoreChanged += UpdateScoreData;
+
+
 			if (_levelInfoService.LevelInfo.TargetType == Data.Constants.Enums.TargetType.ScorePoints)
 			{
-				ScoreContainer.style.display = DisplayStyle.Flex;
 				TargetContainer.style.display = DisplayStyle.None;
 			}
 			else
 			{
-				ScoreContainer.style.display = DisplayStyle.None;
 				TargetContainer.style.display = DisplayStyle.Flex;
 
 				UpdateTargetData();
@@ -96,6 +98,11 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 
 		}
 
+		private void UpdateScoreData()
+		{
+			ScoreLabel.text = _levelInfoService.LevelInfo.Score.ToString();
+		}
+
 		private void UpdateTimeLimit()
 		{
 			TimeLimitLabel.text = _levelInfoService.LevelInfo.TimeLimit.ToString();
@@ -122,6 +129,7 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 			base.Unsubscribe();
 
 			_levelInfoService.TimeChanged -= UpdateTimeLimit;
+			_levelInfoService.ScoreChanged -= UpdateScoreData;
 			_levelInfoService.MoveCompleted -= UpdateMoveLimitLabel;
 			_levelInfoService.GoalQuantityChanged -= UpdateQuantityLabel;
 		}

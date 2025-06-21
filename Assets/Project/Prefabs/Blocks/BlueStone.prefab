@@ -86,3 +86,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _stoneType: 1
+  _value: 2

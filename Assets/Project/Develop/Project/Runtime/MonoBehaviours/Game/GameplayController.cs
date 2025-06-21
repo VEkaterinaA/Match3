@@ -1,4 +1,6 @@
 using Runtime.Extensions.System;
+using Runtime.Infrastructure.GameStateMachine.Core;
+using Runtime.Infrastructure.GameStateMachine.States;
 using Runtime.Infrastructure.Services.Core;
 using Runtime.Infrastructure.Services.Game.Core;
 using Runtime.Infrastructure.Services.Game.Helper;
@@ -17,6 +19,7 @@ namespace Runtime.MonoBehaviours.Game
 {
 	internal class GameplayController : InjectedBehaviour
 	{
+		private IGameStateMachine _gameStateMachine;
 		private ILevelInfoService _levelInfoService;
 		private BoardItemAnimation _stoneAnimation;
 		private IScreensService _screensService;
@@ -44,8 +47,9 @@ namespace Runtime.MonoBehaviours.Game
 
 		[Inject]
 		private void Construct(IInputService inputService, IBoardService boardService, BoardItemAnimation stoneAnimation, ILevelInfoService levelInfoService,
-								IScreensService screensService, IPauseable pauseable)
+								IScreensService screensService, IPauseable pauseable, IGameStateMachine gameStateMachine)
 		{
+			_gameStateMachine = gameStateMachine;
 			_levelInfoService = levelInfoService;
 			_stoneAnimation = stoneAnimation;
 			_screensService = screensService;
@@ -77,12 +81,17 @@ namespace Runtime.MonoBehaviours.Game
 
 			if (_elapsedTime >= 1)
 			{
-				_levelInfoService.SubsctractFromTimeLimit();
+				_levelInfoService.SubtractFromTimeLimit();
 				_elapsedTime = 0;
 				if(_levelInfoService.LevelInfo.TimeLimit == 0)
 				{
 					Time.timeScale = 0f;
-					_screensService.Show<GameOverScreen>();
+
+					_gameStateMachine.Get<LevelCompletionGameState>().RunAllLevelCompletionProcesses(() =>
+					{
+						_screensService.Show<GameOverScreen>();
+					});
+					_gameStateMachine.Enter<LevelCompletionGameState>();
 				}
 			}
 		}

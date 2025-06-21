@@ -10,7 +10,8 @@ namespace Runtime.MonoBehaviours.Game
 	{
 		[SerializeField]
 		private CellType _boosterType;
-
+		[SerializeField]
+		private Int32 _value;
 
 		private RectTransform _rectTransform;
 
@@ -21,6 +22,8 @@ namespace Runtime.MonoBehaviours.Game
 		Int32 IBoardItem.X { get; set; }
 
 		Int32 IBoardItem.Y { get; set; }
+
+		Int32 IBoardItem.Value => _value;
 
 		RectTransform IBoardItem.RectTransform => _rectTransform;
 

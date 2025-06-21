@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Runtime.Data.Progress
 {
@@ -7,5 +6,7 @@ namespace Runtime.Data.Progress
 	{
 		internal Settings Settings { get; }
 		internal PlayerStats PlayerStats { get; }
+
+		internal void ScoreCheck(Int32 value);
 	}
 }

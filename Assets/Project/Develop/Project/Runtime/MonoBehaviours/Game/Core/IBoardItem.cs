@@ -17,6 +17,8 @@ namespace Runtime.MonoBehaviours.Game.Core
 
 		internal Boolean IsBooster { get; }
 
+		internal Int32 Value { get; }
+
 		internal Int32 X { get; set; }
 
 		internal Int32 Y { get; set; }

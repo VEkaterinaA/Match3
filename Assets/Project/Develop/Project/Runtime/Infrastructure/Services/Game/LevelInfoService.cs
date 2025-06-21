@@ -15,6 +15,8 @@ namespace Runtime.Infrastructure.Services.Game
 
 		private Action _timeChanged;
 
+		private Action _scoreChanged;
+
 		private Action _moveCompleted;
 
 		private Action _goalQuantityChanged;
@@ -32,11 +34,6 @@ namespace Runtime.Infrastructure.Services.Game
 			remove => _moveCompleted -= value;
 		}
 
-		event Action ILevelInfoService.GoalQuantityChanged
-		{
-			add => _goalQuantityChanged += value;
-			remove => _goalQuantityChanged -= value;
-		}
 
 		event Action ILevelInfoService.TimeChanged
 		{
@@ -44,6 +41,17 @@ namespace Runtime.Infrastructure.Services.Game
 			remove => _timeChanged -= value;
 		}
 
+		event Action ILevelInfoService.ScoreChanged
+		{
+			add => _scoreChanged += value;
+			remove => _scoreChanged -= value;
+		}
+
+		event Action ILevelInfoService.GoalQuantityChanged
+		{
+			add => _goalQuantityChanged += value;
+			remove => _goalQuantityChanged -= value;
+		}
 
 		event Action IInitializationInformer.Initialized
         {
@@ -59,7 +67,7 @@ namespace Runtime.Infrastructure.Services.Game
             _initialized?.Invoke();
         }
 
-		void ILevelInfoService.SubsctractFromGoalQuantity()
+		void ILevelInfoService.SubtractFromGoalQuantity()
 		{
 			if(!_levelInfo.GoalQuantity.HasValue)
 			{
@@ -70,7 +78,7 @@ namespace Runtime.Infrastructure.Services.Game
 			_goalQuantityChanged?.Invoke();			
 		}
 
-		void ILevelInfoService.SubsctractFromMoveLimit()
+		void ILevelInfoService.SubtractFromMoveLimit()
 		{
 			if(!_levelInfo.MoveLimit.HasValue)
             {
@@ -81,7 +89,7 @@ namespace Runtime.Infrastructure.Services.Game
             _moveCompleted?.Invoke();
 		}
 
-		void ILevelInfoService.SubsctractFromTimeLimit()
+		void ILevelInfoService.SubtractFromTimeLimit()
 		{
 			if(!_levelInfo.TimeLimit.HasValue)
 			{
@@ -90,6 +98,13 @@ namespace Runtime.Infrastructure.Services.Game
 
 			_levelInfo.TimeLimit--;
 			_timeChanged?.Invoke();
+		}
+
+		void ILevelInfoService.AddToScore(Int32 addedValue)
+		{
+			_levelInfo.Score += addedValue;
+
+			_scoreChanged?.Invoke();
 		}
 	}
 }

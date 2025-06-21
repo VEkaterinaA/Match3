@@ -210,7 +210,7 @@ namespace Runtime.Infrastructure.Services.Game
 			}
 			else
 			{
-				_levelInfoService.SubsctractFromMoveLimit();
+				_levelInfoService.SubtractFromMoveLimit();
 				Service.HandleMatchesAfterSwap();
 			}
 		}
@@ -297,11 +297,13 @@ namespace Runtime.Infrastructure.Services.Game
 
 			foreach (var cell in matchedCells)
 			{
+				_levelInfoService.AddToScore(cell.Value);
+
 				_board[cell.X, cell.Y] = null;
 
 				if (cellType == targetType)
 				{
-					_levelInfoService.SubsctractFromGoalQuantity();
+					_levelInfoService.SubtractFromGoalQuantity();
 				}
 
 				cell.CellDestroyComplete += CheckAndHandleBoardItemsDestruction;

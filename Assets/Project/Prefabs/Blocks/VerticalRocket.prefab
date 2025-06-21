@@ -59,6 +59,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _boosterType: 5
+  _value: 4
 --- !u!114 &1404782042918883216
 MonoBehaviour:
   m_ObjectHideFlags: 0

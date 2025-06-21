@@ -27,6 +27,15 @@ namespace Runtime.Data.Progress
 				return _playerStats;
 			}
 		}
+
+		void IUserInfo.ScoreCheck(Int32 value)
+		{
+			if(_playerStats.Highest_score < value)
+			{
+				_playerStats.Highest_score = value;
+			}
+		}
+
 		public UserInfo()
 		{
 			_settings = new Settings();
