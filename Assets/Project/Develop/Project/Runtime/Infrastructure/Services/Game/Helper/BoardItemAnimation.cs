@@ -43,6 +43,10 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 
 			_сompositeMotionHandle.AddAutoRemove(motion.BindToAnchoredPosition());
 		}
+		public void CancelAllAnimations()
+		{
+			_сompositeMotionHandle.Cancel();
+		}
 
 		public void MoveToCell(IBoardItem item, Action action = null)
 		{

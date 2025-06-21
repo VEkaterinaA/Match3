@@ -1,6 +1,8 @@
 using Runtime.Data.Constants.Enums;
 using Runtime.Infrastructure.GameStateMachine.Core;
 using Runtime.Infrastructure.GameStateMachine.States;
+using Runtime.Infrastructure.Services.Game;
+using Runtime.Infrastructure.Services.Game.Core;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer;
@@ -11,6 +13,7 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 	internal sealed class PauseScreen : Screen
 	{
 		private IGameStateMachine _gameStateMachine;
+		private IBoardService _boardService;
 
 		private Button ResumeButton { get; }
 		private Button RestartButton { get; }
@@ -24,9 +27,10 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 		}
 
 		[Inject]
-		internal void Construct(IGameStateMachine gameStateMachine)
+		internal void Construct(IGameStateMachine gameStateMachine, IBoardService boardService)
 		{
 			_gameStateMachine = gameStateMachine;
+			_boardService = boardService;
 		}
 
 		protected override void Show()
@@ -80,6 +84,9 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 			_gameStateMachine.Get<LoadingGameState>().SceneName = SceneName.MainMenuSceneAsset;
 			_gameStateMachine.Enter<LoadingGameState>();
 			ScreensService.Hide<PauseScreen>();
+			ScreensService.Hide<GameScreen>();
+
+			_boardService.ResetAll();
 		}
 	}
 }

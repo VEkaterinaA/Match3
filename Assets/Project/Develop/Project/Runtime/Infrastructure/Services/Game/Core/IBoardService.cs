@@ -1,5 +1,4 @@
 ﻿using Cysharp.Threading.Tasks;
-using Runtime.MonoBehaviours.Game;
 using Runtime.MonoBehaviours.Game.Core;
 using System;
 using UnityEngine;
@@ -12,6 +11,8 @@ namespace Runtime.Infrastructure.Services.Game.Core
 		internal IBoardItem[,] Board { get; }
 
 		internal UniTask InitializeBoard(Transform boardParent);
+
+		internal void ResetAll();
 
 		internal void RunBooster(IBoardItem booster);
 

@@ -6,13 +6,11 @@ using Runtime.Infrastructure.Core;
 using Runtime.Infrastructure.Services.Game.Core;
 using Runtime.Infrastructure.Services.Game.Helper;
 using Runtime.Infrastructure.Services.Providers;
-using Runtime.MonoBehaviours.Game;
 using Runtime.MonoBehaviours.Game.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Localization.Settings;
 using VContainer;
 
 namespace Runtime.Infrastructure.Services.Game
@@ -73,8 +71,8 @@ namespace Runtime.Infrastructure.Services.Game
 			{
 				var width = _levelInfoService.LevelInfo.WidthOfBoard;
 				var height = _levelInfoService.LevelInfo.HeightOfBoard;
-				ClearBoard();
-				_board = new IBoardItem[width,height];
+
+				_board = new IBoardItem[width, height];
 				var offset = _boardProvider.GetBoardOffset();
 
 				for (var x = 0; x < width; x++)
@@ -97,6 +95,12 @@ namespace Runtime.Infrastructure.Services.Game
 
 			_isInitialized = true;
 			_initialized?.Invoke();
+		}
+
+		void IBoardService.ResetAll()
+		{
+			_boardItemAnimation.CancelAllAnimations();
+			ClearBoard();
 		}
 
 		void IBoardService.RunBooster(IBoardItem booster)
@@ -295,7 +299,7 @@ namespace Runtime.Infrastructure.Services.Game
 			{
 				_board[cell.X, cell.Y] = null;
 
-				if(cellType == targetType)
+				if (cellType == targetType)
 				{
 					_levelInfoService.SubsctractFromGoalQuantity();
 				}

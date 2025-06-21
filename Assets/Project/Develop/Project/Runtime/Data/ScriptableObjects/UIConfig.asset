@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0745ca5873391e94997dd9d3c4ef1d13, type: 3}
+  m_Name: UIConfig
+  m_EditorClassIdentifier: 
+  _targetTextures:
+    _serializedList:
+    - Key: 1
+      Value: {fileID: 2800000, guid: 961f19c65950d1d4abe73b7b90c0b966, type: 3}
+    - Key: 2
+      Value: {fileID: 2800000, guid: 67af65161383af74d8435e8c388e0b16, type: 3}
+    - Key: 3
+      Value: {fileID: 2800000, guid: fab9c83060e42a14d85c621a4a9788d5, type: 3}
+    - Key: 4
+      Value: {fileID: 2800000, guid: c35f0b494ccc0df44b77fb921248c5f2, type: 3}
+    - Key: 5
+      Value: {fileID: 2800000, guid: fd3ad06b69368ee46a50fbe3b43b1cf3, type: 3}

@@ -12,7 +12,7 @@ namespace Runtime.Data.Configs
 		private Single _saveCooldown;
 		[Header("Board Settings")]
 		[SerializeField] private Single _cellSize = 100f;
-		[Header("Gem")]
+		[Header("Stone")]
 		[SerializeField] private Single _moveDuration = 0.3f;
 		[SerializeField] private Single _spawnAnimationDuration = 0.2f;
 		[SerializeField] private Single _destroyAnimationDuration = 0.8f;

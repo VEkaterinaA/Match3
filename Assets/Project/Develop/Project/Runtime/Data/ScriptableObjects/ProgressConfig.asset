@@ -12,41 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ab3f024570d3bd4ebc77286452d6787, type: 3}
   m_Name: ProgressConfig
   m_EditorClassIdentifier: 
-  _runtimeProgress:
-    _savedInventory:
-      _inventoryItemsQuantity:
-        _serializedList: []
-    _savedLevels:
-      _levelInfosDictionary:
-        _serializedList: []
-    _savedDateTimeTicks: 0
-    _name: 
   _runtimeUserInfo:
-    _progressSlotsIDs: []
-    _savedSettings:
+    _settings:
       _musicVolumeMultiplier: 0
       _soundVolumeMultiplier: 0
-      _subtitlesAreEnabled: 0
-      _subtitlesLocaleIndex: 0
-      _languageLocaleIndex: 0
-    _activeProgressID: 
-    _id: 
-  _playerProgress:
-    _savedInventory:
-      _inventoryItemsQuantity:
-        _serializedList: []
-    _savedLevels:
-      _levelInfosDictionary:
-        _serializedList: []
-    _savedDateTimeTicks: 0
-    _name: 
   _userInfo:
-    _progressSlotsIDs: []
-    _savedSettings:
-      _musicVolumeMultiplier: 0
-      _soundVolumeMultiplier: 0
-      _subtitlesAreEnabled: 0
-      _subtitlesLocaleIndex: 0
-      _languageLocaleIndex: 0
-    _activeProgressID: 
-    _id: 
+    _settings:
+      _musicVolumeMultiplier: 0.7
+      _soundVolumeMultiplier: 0.7

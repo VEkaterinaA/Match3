@@ -134,6 +134,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
         type: 3}
+      propertyPath: _uiConfig
+      value: 
+      objectReference: {fileID: 11400000, guid: 0204e1fed57a62149b63a5ab50297ab9,
+        type: 2}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
       propertyPath: _popupsInfoAssetsContainer._uiDocumentsInfosDictionary._serializedList.Array.size
       value: 1
       objectReference: {fileID: 0}

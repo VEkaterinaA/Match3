@@ -43,6 +43,8 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 		private ProgressConfig _progressConfig;
 		[SerializeField]
 		private GameConfig _gameConfig;
+		[SerializeField]
+		private UIConfig _uiConfig;
 		[Header("Components")]
 		[SerializeField]
 		private UIDocument _loadingScreenUIDocument;
@@ -133,6 +135,7 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 		{
 			containerBuilder.RegisterInstance(_progressConfig).AsImplementedInterfaces();
 			containerBuilder.RegisterInstance(_gameConfig).AsImplementedInterfaces();
+			containerBuilder.RegisterInstance(_uiConfig).AsImplementedInterfaces();
 		}
 	}
 }

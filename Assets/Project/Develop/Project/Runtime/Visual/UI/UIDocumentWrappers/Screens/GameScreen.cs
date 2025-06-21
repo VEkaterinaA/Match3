@@ -1,5 +1,11 @@
+using FlyingBears.Runtime.Infrastructure.Factories.PrefabsAssets;
+using FlyingBears.Runtime.Infrastructure.Factories.PrefabsAssets.Core;
+using Runtime.Data.Configs;
+using Runtime.Data.Constants.Enums.AssetReferencesTypes;
 using Runtime.Extensions.System;
+using Runtime.Infrastructure.Factories.Core;
 using Runtime.Infrastructure.Services.Game.Core;
+using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer;
 using Screen = Runtime.Visual.UI.UIDocumentWrappers.Screens.Core.Screen;
@@ -10,10 +16,12 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 	{
 		private ILevelInfoService _levelInfoService;
 		private IBoardService _boardService;
+		private IUIConfig _uIConfig;
 
 		private Label QuantityLabel { get; }
 		private Label MoveLimitLabel { get; }
 		private Label TimeLimitLabel { get; }
+		private VisualElement TargetIcon { get; }
 		private VisualElement MoveContainer { get; }
 		private VisualElement TimeContainer { get; }
 		private VisualElement TargetVisualElement { get; }
@@ -23,6 +31,7 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 			QuantityLabel = RootVisualElement.Q<Label>(nameof(QuantityLabel));
 			MoveLimitLabel = RootVisualElement.Q<Label>(nameof(MoveLimitLabel));
 			TimeLimitLabel = RootVisualElement.Q<Label>(nameof(TimeLimitLabel));
+			TargetIcon = RootVisualElement.Q<VisualElement>(nameof(TargetIcon));
 			MoveContainer = RootVisualElement.Q<VisualElement>(nameof(MoveContainer));
 			TimeContainer = RootVisualElement.Q<VisualElement>(nameof(TimeContainer));
 			TargetVisualElement = RootVisualElement.Q<VisualElement>(nameof(TargetVisualElement));
@@ -31,18 +40,17 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 
 
 		[Inject]
-		internal void Construct(ILevelInfoService levelInfoService, IBoardService boardService)
+		internal void Construct(ILevelInfoService levelInfoService, IBoardService boardService, IUIConfig uIConfig)
 		{
 			_levelInfoService = levelInfoService;
 			_boardService = boardService;
+			_uIConfig = uIConfig;
 
 			_levelInfoService.InvokeAfterInitialization(InitLevelSettingsGameScreen);
 		}
 
 		private void InitLevelSettingsGameScreen()
 		{
-			//TargetLabel.text = _levelInfoService.LevelInfo.TargetType.ToString();
-
 			if (_levelInfoService.LevelInfo.TargetType == Data.Constants.Enums.TargetType.ScorePoints)
 			{
 				QuantityLabel.style.display = DisplayStyle.None;
@@ -50,7 +58,7 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 			else
 			{
 				QuantityLabel.style.display = DisplayStyle.Flex;
-				UpdateQuantityLabel();
+				UpdateTargetData();
 
 				_levelInfoService.GoalQuantityChanged += UpdateQuantityLabel;
 			}
@@ -86,6 +94,12 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 			TimeLimitLabel.text = _levelInfoService.LevelInfo.TimeLimit.ToString();
 		}
 
+		private void UpdateTargetData()
+		{
+			TargetIcon.style.backgroundImage = new StyleBackground(_uIConfig.TargetTextures[_levelInfoService.LevelInfo.TargetType]);
+
+			UpdateQuantityLabel();
+		}
 		private void UpdateQuantityLabel()
 		{
 			QuantityLabel.text = _levelInfoService.LevelInfo.GoalQuantity.ToString();
