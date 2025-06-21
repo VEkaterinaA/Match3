@@ -9,16 +9,17 @@ using VContainer;
 using Screen = Runtime.Visual.UI.UIDocumentWrappers.Screens.Core.Screen;
 using Cysharp.Threading.Tasks;
 using Runtime.Extensions.System;
+using Runtime.Infrastructure.Services.SaveProgressServices;
 
 namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 {
 	internal sealed class SettingsScreen : Screen
 	{
-		private IPersistentProgressService _persistentProgressService;
 		private IGameStateMachine _gameStateMachine;
 		private IGameService _gameService;
+		private SaveManager _saveManager;
 
-		private SavedSettings SavedSettings => _persistentProgressService?.UserInfo?.SavedSettings;
+		private Settings SavedSettings => _saveManager?.UserInfo?.Settings;
 
 		private Slider MusicSlider { get; }
 
@@ -34,13 +35,13 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 		}
 
 		[Inject]
-		internal void Construct(IPersistentProgressService persistentProgressService, IGameStateMachine gameStateMachine, IGameService gameService)
+		internal void Construct(IGameStateMachine gameStateMachine, IGameService gameService, SaveManager saveManager)
 		{
-			_persistentProgressService = persistentProgressService;
 			_gameStateMachine = gameStateMachine;
 			_gameService = gameService;
+			_saveManager = saveManager;
 
-			_persistentProgressService.InvokeAfterInitialization(InitSliders);
+			_saveManager.InvokeAfterInitialization(InitSliders);
 		}
 
 		protected override void Show()
@@ -112,7 +113,7 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 
 		private async UniTask SaveSettingsAsync()
 		{
-			await _persistentProgressService.SaveGameData();
+			_saveManager.SaveData();
 		}
 	}
 }

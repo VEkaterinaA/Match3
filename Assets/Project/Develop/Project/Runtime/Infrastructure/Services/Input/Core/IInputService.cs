@@ -9,6 +9,7 @@ namespace Runtime.Infrastructure.Services.Input.Core
 
 		internal Boolean IsEnabled { get; set; }
 
+		internal event Action DoubleClick;
 		internal event Action Select;
 		internal event Action Swipe;
 		internal event Action Drag;

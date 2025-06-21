@@ -1,11 +1,10 @@
 using Runtime.Extensions.System;
-using Runtime.Infrastructure.Services;
 using Runtime.Infrastructure.Services.Core;
 using Runtime.Infrastructure.Services.Game.Core;
 using Runtime.Infrastructure.Services.Game.Helper;
 using Runtime.Infrastructure.Services.Input.Core;
-using Runtime.Infrastructure.Services.UIServices;
 using Runtime.Infrastructure.Services.UIServices.Core;
+using Runtime.MonoBehaviours.Game.Core;
 using Runtime.Visual.UI.UIDocumentWrappers.Screens;
 using System;
 using System.Collections.Generic;
@@ -19,7 +18,7 @@ namespace Runtime.MonoBehaviours.Game
 	internal class GameplayController : InjectedBehaviour
 	{
 		private ILevelInfoService _levelInfoService;
-		private StoneAnimation _stoneAnimation;
+		private BoardItemAnimation _stoneAnimation;
 		private IScreensService _screensService;
 		private IInputService _inputService;
 		private IBoardService _boardService;
@@ -34,7 +33,7 @@ namespace Runtime.MonoBehaviours.Game
 
 		[SerializeField] private Transform _boardParent;
 
-		private Stone _selectedGem;
+		private IBoardItem _selectedCell;
 		private Vector2 _dragStartPosition;
 
 		private Boolean _isBoardInitialized;
@@ -44,7 +43,7 @@ namespace Runtime.MonoBehaviours.Game
 
 
 		[Inject]
-		private void Construct(IInputService inputService, IBoardService boardService, StoneAnimation stoneAnimation, ILevelInfoService levelInfoService, 
+		private void Construct(IInputService inputService, IBoardService boardService, BoardItemAnimation stoneAnimation, ILevelInfoService levelInfoService,
 								IScreensService screensService, IPauseable pauseable)
 		{
 			_levelInfoService = levelInfoService;
@@ -70,7 +69,7 @@ namespace Runtime.MonoBehaviours.Game
 
 		private void Update()
 		{
-			if(!_isBoardInitialized || _isPause)
+			if (!_isBoardInitialized || _isPause)
 			{
 				return;
 			}
@@ -80,6 +79,11 @@ namespace Runtime.MonoBehaviours.Game
 			{
 				_levelInfoService.SubsctractFromTimeLimit();
 				_elapsedTime = 0;
+				if(_levelInfoService.LevelInfo.TimeLimit == 0)
+				{
+					Time.timeScale = 0f;
+					_screensService.Show<GameOverScreen>();
+				}
 			}
 		}
 
@@ -88,23 +92,35 @@ namespace Runtime.MonoBehaviours.Game
 			UnsubscribeFromEvents();
 		}
 
-
-		private void OnGemSelect()
+		private void OnBoosterCheckAndActivate()
 		{
 			var clickPosition = _inputService.PointerPosition != Vector2.zero ? _inputService.PointerPosition : (Vector2) Input.mousePosition;
 
-			var clickedGem = GetGemAtPosition(clickPosition);
+			var clickedBooster = GetItemAtPosition<Booster>(clickPosition);
 
-			if (clickedGem != null)
+			if(clickedBooster != null)
 			{
-				_selectedGem = clickedGem;
+				_boardService.RunBooster(clickedBooster);
+			}
+		}
+
+
+		private void OnStoneSelect()
+		{
+			var clickPosition = _inputService.PointerPosition != Vector2.zero ? _inputService.PointerPosition : (Vector2) Input.mousePosition;
+
+			var clickedStone = GetItemAtPosition<Stone>(clickPosition);
+
+			if (clickedStone != null)
+			{
+				_selectedCell = clickedStone;
 				_dragStartPosition = clickPosition;
 			}
 		}
 
 		private void OnGemDrag()
 		{
-			if (_selectedGem == null) return;
+			if (_selectedCell == null) return;
 
 			var currentPosition = _inputService.PointerPosition;
 			var dragDelta = currentPosition - _dragStartPosition;
@@ -120,27 +136,27 @@ namespace Runtime.MonoBehaviours.Game
 			var direction = dragDelta.normalized;
 			var moveDirection = GetMoveDirection(direction);
 
-			var newX = _selectedGem.X + moveDirection.x;
-			var newY = _selectedGem.Y + moveDirection.y;
+			var newX = _selectedCell.X + moveDirection.x;
+			var newY = _selectedCell.Y + moveDirection.y;
 
 			if (IsValidPosition(newX, newY))
 			{
-				var targetGem = _boardService.GetStone(newX, newY);
-				if (targetGem != null)
+				var targetCell = _boardService.GetCell(newX, newY);
+				if (targetCell != null)
 				{
-					var selectedStone = _selectedGem;
-					_boardService.SwapGemsInBoard(selectedStone, targetGem);
-					_stoneAnimation.SwapWith(selectedStone, targetGem, () =>
+					var selectedCell = _selectedCell;
+					_boardService.SwapGemsInBoard(selectedCell, targetCell);
+					_stoneAnimation.SwapWith(selectedCell, targetCell, () =>
 					{
-						_boardService.TrySwapOrRevert(selectedStone, targetGem);
+						_boardService.TrySwapOrRevert(selectedCell, targetCell);
 					});
 
-					_selectedGem = null;
+					_selectedCell = null;
 				}
 			}
 		}
 
-		private Stone GetGemAtPosition(Vector2 position)
+		private T GetItemAtPosition<T>(Vector2 position) where T : class
 		{
 			_pointerData = new PointerEventData(_eventSystem)
 			{
@@ -152,7 +168,7 @@ namespace Runtime.MonoBehaviours.Game
 
 			if (results.Count > 0)
 			{
-				return results[0].gameObject.GetComponent<Stone>();
+				return results[0].gameObject.GetComponent<T>();
 			}
 
 			return null;
@@ -180,7 +196,8 @@ namespace Runtime.MonoBehaviours.Game
 
 		private void SubscribeToEvents()
 		{
-			_inputService.Select += OnGemSelect;
+			_inputService.DoubleClick += OnBoosterCheckAndActivate;
+			_inputService.Select += OnStoneSelect;
 			_inputService.Drag += OnGemDrag;
 
 			_pauseable.OnPause += () => _isPause = true;
@@ -189,7 +206,8 @@ namespace Runtime.MonoBehaviours.Game
 
 		private void UnsubscribeFromEvents()
 		{
-			_inputService.Select -= OnGemSelect;
+			_inputService.DoubleClick -= OnBoosterCheckAndActivate;
+			_inputService.Select -= OnStoneSelect;
 			_inputService.Drag -= OnGemDrag;
 
 			_pauseable.OnPause -= () => _isPause = true;

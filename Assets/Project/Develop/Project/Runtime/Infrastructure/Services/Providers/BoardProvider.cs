@@ -13,7 +13,7 @@ namespace Runtime.Infrastructure.Services.Providers
 		private ILevelInfoService _levelInfoService;
 		private IGameConfig _gameConfig;
 
-		internal List<StoneType> StoneTypes { get; }
+		internal List<CellType> StoneTypes { get; }
 
 		[Inject]
 		internal BoardProvider(IGameConfig gameConfig, ILevelInfoService levelInfoService)
@@ -21,7 +21,7 @@ namespace Runtime.Infrastructure.Services.Providers
 			_levelInfoService = levelInfoService;
 			_gameConfig = gameConfig;
 
-			StoneTypes = new List<StoneType>((StoneType[]) Enum.GetValues(typeof(StoneType)));
+			StoneTypes = new List<CellType>() { CellType.RedStone, CellType.BlueStone, CellType.YellowStone, CellType.GreenStone};
 		}
 
 		internal Vector2 GetBoardOffset()

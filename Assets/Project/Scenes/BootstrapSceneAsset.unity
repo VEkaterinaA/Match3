@@ -140,17 +140,22 @@ PrefabInstance:
     - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
         type: 3}
       propertyPath: _screensInfoAssetsContainer._uiDocumentsInfosDictionary._serializedList.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
         type: 3}
       propertyPath: _prefabAssetsContainer._prefabsAssetsReferencesDictionary._serializedList.Array.size
-      value: 4
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
         type: 3}
       propertyPath: _screensInfoAssetsContainer._uiDocumentsInfosDictionary._serializedList.Array.data[2].Key
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _screensInfoAssetsContainer._uiDocumentsInfosDictionary._serializedList.Array.data[3].Key
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
         type: 3}
@@ -174,6 +179,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
         type: 3}
+      propertyPath: _prefabAssetsContainer._prefabsAssetsReferencesDictionary._serializedList.Array.data[4].Key
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _prefabAssetsContainer._prefabsAssetsReferencesDictionary._serializedList.Array.data[5].Key
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _prefabAssetsContainer._prefabsAssetsReferencesDictionary._serializedList.Array.data[6].Key
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
       propertyPath: _prefabAssetsContainer._prefabsAssetsReferencesDictionary._serializedList.Array.data[0].Value.m_AssetGUID
       value: 3e07c021ef300344ebbe51763e140de2
       objectReference: {fileID: 0}
@@ -194,7 +214,32 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
         type: 3}
+      propertyPath: _prefabAssetsContainer._prefabsAssetsReferencesDictionary._serializedList.Array.data[4].Value.m_AssetGUID
+      value: 5fd9e9020c648d640a830c70257f07fb
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _prefabAssetsContainer._prefabsAssetsReferencesDictionary._serializedList.Array.data[5].Value.m_AssetGUID
+      value: dad15fc6b850407489593e057b4ea968
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _prefabAssetsContainer._prefabsAssetsReferencesDictionary._serializedList.Array.data[6].Value.m_AssetGUID
+      value: a27ba5edb1e1e214c9460acd950510d8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _screensInfoAssetsContainer._uiDocumentsInfosDictionary._serializedList.Array.data[1].Value._sortingOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
       propertyPath: _screensInfoAssetsContainer._uiDocumentsInfosDictionary._serializedList.Array.data[2].Value._sortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _screensInfoAssetsContainer._uiDocumentsInfosDictionary._serializedList.Array.data[3].Value._sortingOrder
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
@@ -209,13 +254,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
         type: 3}
+      propertyPath: _screensInfoAssetsContainer._uiDocumentsInfosDictionary._serializedList.Array.data[3].Value._panelSettingsReference.m_AssetGUID
+      value: dd16e7f642d67604da985e6b2768798b
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
       propertyPath: _popupsInfoAssetsContainer._uiDocumentsInfosDictionary._serializedList.Array.data[0].Value._visualTreeAssetReference.m_AssetGUID
       value: 0877af9586ff8e34e9c6945d9389b2aa
       objectReference: {fileID: 0}
     - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
         type: 3}
       propertyPath: _screensInfoAssetsContainer._uiDocumentsInfosDictionary._serializedList.Array.data[2].Value._visualTreeAssetReference.m_AssetGUID
-      value: 1711562a081c803498b7b1b2247c3a60
+      value: 9eab11910dca2cd43ba2e5cf08c8ce52
+      objectReference: {fileID: 0}
+    - target: {fileID: 3231188096190005964, guid: cf8aa02ccea36284b815f477a028b35d,
+        type: 3}
+      propertyPath: _screensInfoAssetsContainer._uiDocumentsInfosDictionary._serializedList.Array.data[3].Value._visualTreeAssetReference.m_AssetGUID
+      value: 9aa1f52e1f6501b4d8593ab54367a9eb
       objectReference: {fileID: 0}
     - target: {fileID: 8458401065805826530, guid: cf8aa02ccea36284b815f477a028b35d,
         type: 3}

@@ -7,6 +7,7 @@ using Runtime.Infrastructure.Services.Game.Core;
 using Runtime.Infrastructure.Services.Game.Helper;
 using Runtime.Infrastructure.Services.Providers;
 using Runtime.MonoBehaviours.Game;
+using Runtime.MonoBehaviours.Game.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,26 +21,29 @@ namespace Runtime.Infrastructure.Services.Game
 	{
 		private ILevelInfoService _levelInfoService;
 		private IGameConfig _gameConfig;
-		private StoneAnimation _stoneAnimation;
+		private BoardItemAnimation _boardItemAnimation;
+		private BoosterCreator _boosterCreator;
 		private BoardProvider _boardProvider;
 		private MatchChecker _matchChecker;
-		private StoneCreator _stoneCreator;
+		private ItemCreator _itemCreator;
 
-		private Stone[,] _board;
-		private List<StoneType> _gemTypes;
-		private readonly HashSet<Stone> _gemsToDestroy = new();
+		private IBoardItem[,] _board;
 
-		private Int32 _countOfGemsDestroyed;
-		private Int32 _countOfGemsToBeDestroy;
+		private readonly HashSet<IBoardItem> _gemsToDestroy = new();
+
+		private Int32 _countOfBoardItemDestroyed;
+		private Int32 _countOfBoardItemToBeDestroy;
 
 		private Transform _boardParent;
 
 		private Boolean _isInitialized;
 		private Action _initialized;
 
+		private List<(Int32 x, Int32 y, CellType type)> _boostersToCreate = new();
+
 		private IBoardService Service => this;
 
-		Stone[,] IBoardService.Board => _board;
+		IBoardItem[,] IBoardService.Board => _board;
 
 		Boolean IInitializationInformer.IsInitialized => _isInitialized;
 
@@ -50,13 +54,15 @@ namespace Runtime.Infrastructure.Services.Game
 		}
 
 		[Inject]
-		private void Construct(IGameConfig gameConfig, StoneCreator stoneCreator, MatchChecker matchChecker, StoneAnimation stoneAnimation, BoardProvider boardProvider, ILevelInfoService levelInfoService)
+		private void Construct(IGameConfig gameConfig, ItemCreator stoneCreator, MatchChecker matchChecker, BoardItemAnimation stoneAnimation, BoardProvider boardProvider, ILevelInfoService levelInfoService,
+								BoosterCreator boosterCreator)
 		{
 			_levelInfoService = levelInfoService;
-			_stoneAnimation = stoneAnimation;
+			_boardItemAnimation = stoneAnimation;
+			_boosterCreator = boosterCreator;
 			_boardProvider = boardProvider;
 			_matchChecker = matchChecker;
-			_stoneCreator = stoneCreator;
+			_itemCreator = stoneCreator;
 			_gameConfig = gameConfig;
 		}
 
@@ -68,14 +74,14 @@ namespace Runtime.Infrastructure.Services.Game
 				var width = _levelInfoService.LevelInfo.WidthOfBoard;
 				var height = _levelInfoService.LevelInfo.HeightOfBoard;
 				ClearBoard();
-				_board = new Stone[width,height];
+				_board = new IBoardItem[width,height];
 				var offset = _boardProvider.GetBoardOffset();
 
 				for (var x = 0; x < width; x++)
 				{
 					for (var y = 0; y < height; y++)
 					{
-						_board[x, y] = await _stoneCreator.CreateStone(_board, x, y, offset, boardParent);
+						_board[x, y] = await _itemCreator.CreateStone(_board, x, y, offset, boardParent);
 					}
 				}
 
@@ -83,7 +89,7 @@ namespace Runtime.Infrastructure.Services.Game
 				{
 					for (var y = 0; y < height; y++)
 					{
-						_stoneAnimation.PlaySpawnAnimation(_board[x, y]);
+						_boardItemAnimation.PlaySpawnAnimation(_board[x, y]);
 					}
 				}
 			}
@@ -93,33 +99,110 @@ namespace Runtime.Infrastructure.Services.Game
 			_initialized?.Invoke();
 		}
 
-		void IBoardService.SwapGemsInBoard(Stone gem1, Stone gem2)
+		void IBoardService.RunBooster(IBoardItem booster)
 		{
-			(_board[gem1.X, gem1.Y], _board[gem2.X, gem2.Y]) = (_board[gem2.X, gem2.Y], _board[gem1.X, gem1.Y]);
+			var x = booster.X;
+			var y = booster.Y;
 
-			(gem1.X, gem2.X) = (gem2.X, gem1.X);
-			(gem1.Y, gem2.Y) = (gem2.Y, gem1.Y);
+			HashSet<IBoardItem> cellsToDestroy = new();
+
+			cellsToDestroy.Add(booster);
+
+			switch (booster.CellType)
+			{
+				case CellType.HorizontalBomb:
+					for (var col = 0; col < _levelInfoService.LevelInfo.WidthOfBoard; col++)
+					{
+						var cell = _board[col, y];
+						if (cell != null && !cell.IsBooster)
+						{
+							cellsToDestroy.Add(cell);
+						}
+					}
+					break;
+
+				case CellType.VerticalBomb:
+					for (var row = 0; row < _levelInfoService.LevelInfo.HeightOfBoard; row++)
+					{
+						var cell = _board[x, row];
+						if (cell != null && !cell.IsBooster)
+						{
+							cellsToDestroy.Add(cell);
+						}
+					}
+					break;
+
+				case CellType.RadiusBomb:
+					for (var dx = -1; dx <= 1; dx++)
+					{
+						for (var dy = -1; dy <= 1; dy++)
+						{
+							var nx = x + dx;
+							var ny = y + dy;
+
+							if (_matchChecker.IsInsideBoard(nx, ny))
+							{
+								var cell = _board[nx, ny];
+								if (cell != null && !cell.IsBooster)
+								{
+									cellsToDestroy.Add(cell);
+								}
+							}
+						}
+					}
+					break;
+
+				default:
+					Debug.LogWarning($"Booster of type {booster.CellType} has no effect implementation.");
+					return;
+			}
+
+			_board[x, y] = null;
+
+			if (cellsToDestroy.Count > 0)
+			{
+				DestroyMatches(cellsToDestroy);
+			}
+		}
+
+		void IBoardService.SwapGemsInBoard(IBoardItem cellOne, IBoardItem cellTwo)
+		{
+			(_board[cellOne.X, cellOne.Y], _board[cellTwo.X, cellTwo.Y]) = (_board[cellTwo.X, cellTwo.Y], _board[cellOne.X, cellOne.Y]);
+
+			(cellOne.X, cellTwo.X) = (cellTwo.X, cellOne.X);
+			(cellOne.Y, cellTwo.Y) = (cellTwo.Y, cellOne.Y);
 		}
 
 
 		void IBoardService.HandleMatchesAfterSwap()
 		{
-			
-			var matches = FindAllMatches();
+			var allMatches = FindAllMatches();
 
-			if (matches.Count > 0)
+			_boostersToCreate = _boosterCreator.GetBoostersToCreate(allMatches);
+
+
+			if (allMatches.Count > 0)
 			{
-				DestroyMatches(matches);
+				var matchedCells = new HashSet<IBoardItem>();
+				foreach (var match in allMatches)
+				{
+					foreach (var cell in match)
+					{
+						matchedCells.Add(cell);
+					}
+				}
+
+				DestroyMatches(matchedCells);
 			}
 		}
 
-		void IBoardService.TrySwapOrRevert(Stone stoneOne, Stone stoneTwo)
+		void IBoardService.TrySwapOrRevert(IBoardItem cellOne, IBoardItem CellTwo)
 		{
-			if (_matchChecker.IsMatchFreePlacement(_board, stoneOne) && _matchChecker.IsMatchFreePlacement(_board, stoneTwo))
+			if (_matchChecker.IsMatchFreePlacement(_board, cellOne) && _matchChecker.IsMatchFreePlacement(_board, CellTwo))
 			{
-				Service.SwapGemsInBoard(stoneOne, stoneTwo);
+				Service.SwapGemsInBoard(cellOne, CellTwo);
 
-				_stoneAnimation.SwapWith(stoneOne, stoneTwo);
+				_boardItemAnimation.SwapWith(cellOne, CellTwo);
 			}
 			else
 			{
@@ -128,7 +211,7 @@ namespace Runtime.Infrastructure.Services.Game
 			}
 		}
 
-		Stone IBoardService.GetStone(Int32 x, Int32 y)
+		IBoardItem IBoardService.GetCell(Int32 x, Int32 y)
 		{
 			if (x >= 0 && x < _levelInfoService.LevelInfo.WidthOfBoard && y >= 0 && y < _levelInfoService.LevelInfo.HeightOfBoard)
 			{
@@ -137,48 +220,62 @@ namespace Runtime.Infrastructure.Services.Game
 			return null;
 		}
 
-		private HashSet<Stone> FindAllMatches()
+		private List<List<IBoardItem>> FindAllMatches()
 		{
-			_gemsToDestroy.Clear();
+			var allMatches = new List<List<IBoardItem>>();
 
 			for (var x = 0; x < _levelInfoService.LevelInfo.WidthOfBoard; x++)
 			{
 				for (var y = 0; y < _levelInfoService.LevelInfo.HeightOfBoard; y++)
 				{
-					var gem = _board[x, y];
-					if (gem == null) continue;
-
-					var horizontalMatch = GetLineMatch(gem, Vector2Int.right);
-					if (horizontalMatch.Count >= 3)
+					var cell = _board[x, y];
+					if (cell == null)
 					{
-						foreach (var matchGem in horizontalMatch)
-							_gemsToDestroy.Add(matchGem);
+						continue;
 					}
 
-					var verticalMatch = GetLineMatch(gem, Vector2Int.up);
-					if (verticalMatch.Count >= 3)
+					var vertical = GetLineMatch(cell, Vector2Int.right);
+					if (vertical.Count >= 3)
 					{
-						foreach (var matchGem in verticalMatch)
-							_gemsToDestroy.Add(matchGem);
+						allMatches.Add(vertical);
+					}
+
+					var horizontal = GetLineMatch(cell, Vector2Int.up);
+					if (horizontal.Count >= 3)
+					{
+						allMatches.Add(horizontal);
 					}
 				}
 			}
 
-			return new HashSet<Stone>(_gemsToDestroy);
+			return allMatches;
 		}
 
-		private List<Stone> GetLineMatch(Stone startGem, Vector2Int direction)
+
+		private void AddToDestroy(IEnumerable<IBoardItem> cells)
 		{
-			List<Stone> match = new() { startGem };
-			var x = startGem.X + direction.x;
-			var y = startGem.Y + direction.y;
+			foreach (var cell in cells)
+			{
+				_gemsToDestroy.Add(cell);
+			}
+		}
+
+
+		private List<IBoardItem> GetLineMatch(IBoardItem startCell, Vector2Int direction)
+		{
+			List<IBoardItem> match = new() { startCell };
+			var x = startCell.X + direction.x;
+			var y = startCell.Y + direction.y;
 
 			while (_matchChecker.IsInsideBoard(x, y))
 			{
-				var nextGem = _board[x, y];
-				if (nextGem == null || nextGem.StoneType != startGem.StoneType) break;
+				var nextCell = _board[x, y];
+				if (nextCell == null || nextCell.CellType != startCell.CellType)
+				{
+					break;
+				}
 
-				match.Add(nextGem);
+				match.Add(nextCell);
 				x += direction.x;
 				y += direction.y;
 			}
@@ -186,38 +283,47 @@ namespace Runtime.Infrastructure.Services.Game
 			return match;
 		}
 
-		private void DestroyMatches(HashSet<Stone> matchedStones)
+		private void DestroyMatches(HashSet<IBoardItem> matchedCells)
 		{
-			_countOfGemsToBeDestroy = matchedStones.Count;
+			_countOfBoardItemToBeDestroy = matchedCells.Count;
 
 			var targetType = _levelInfoService.LevelInfo.TargetType;
 
-			var stoneType = EnumExtensions.ConvertToTargetType(matchedStones.First().StoneType);
+			var cellType = EnumExtensions.ConvertToTargetType(matchedCells.First().CellType);
 
-			foreach (var stone in matchedStones)
+			foreach (var cell in matchedCells)
 			{
-				_board[stone.X, stone.Y] = null;
+				_board[cell.X, cell.Y] = null;
 
-				if(stoneType == targetType)
+				if(cellType == targetType)
 				{
 					_levelInfoService.SubsctractFromGoalQuantity();
 				}
 
-				stone.GemDestroyComplete += CheckAndHandleGemsDestruction;
+				cell.CellDestroyComplete += CheckAndHandleBoardItemsDestruction;
 
-				_stoneAnimation.PlayDestroyAnimation(stone);
+				_boardItemAnimation.PlayDestroyAnimation(cell);
 			}
 		}
-		private void CheckAndHandleGemsDestruction(Stone gem)
+		private async void CheckAndHandleBoardItemsDestruction(IBoardItem cell)
 		{
-			gem.GemDestroyComplete -= CheckAndHandleGemsDestruction;
+			cell.CellDestroyComplete -= CheckAndHandleBoardItemsDestruction;
 
-			_countOfGemsDestroyed++;
+			_countOfBoardItemDestroyed++;
 
-			if (_countOfGemsToBeDestroy == _countOfGemsDestroyed)
+			if (_countOfBoardItemToBeDestroy == _countOfBoardItemDestroyed)
 			{
-				_countOfGemsToBeDestroy = 0;
-				_countOfGemsDestroyed = 0;
+				_countOfBoardItemToBeDestroy = 0;
+				_countOfBoardItemDestroyed = 0;
+
+				foreach (var (x, y, type) in _boostersToCreate)
+				{
+					var booster = await _itemCreator.CreateBooster(x, y, type, _boardProvider.GetBoardOffset(), _boardParent);
+					_board[x, y] = booster;
+					_boardItemAnimation.PlaySpawnAnimation(booster);
+				}
+
+				_boostersToCreate.Clear();
 
 				CollapseAndRefillBoard();
 			}
@@ -243,14 +349,14 @@ namespace Runtime.Infrastructure.Services.Game
 					}
 					else if (emptyCount > 0)
 					{
-						var gem = _board[x, y];
-						_board[x, y + emptyCount] = gem;
+						var cell = _board[x, y];
+						_board[x, y + emptyCount] = cell;
 						_board[x, y] = null;
 
-						gem.Y = y + emptyCount;
+						cell.Y = y + emptyCount;
 
-						var newPos = GetGemPosition(gem.X, gem.Y);
-						gem.GetComponent<RectTransform>().anchoredPosition = newPos;
+						var newPos = GetGemPosition(cell.X, cell.Y);
+						cell.RectTransform.anchoredPosition = newPos;
 					}
 				}
 			}
@@ -275,8 +381,8 @@ namespace Runtime.Infrastructure.Services.Game
 				{
 					if (_board[x, y] == null)
 					{
-						_board[x, y] = await _stoneCreator.CreateStone(_board, x, y, offset, _boardParent);
-						_stoneAnimation.PlaySpawnAnimation(_board[x, y]);
+						_board[x, y] = await _itemCreator.CreateStone(_board, x, y, offset, _boardParent);
+						_boardItemAnimation.PlaySpawnAnimation(_board[x, y]);
 					}
 				}
 			}
@@ -289,11 +395,11 @@ namespace Runtime.Infrastructure.Services.Game
 				return;
 			}
 
-			foreach (var gem in _board)
+			foreach (var cellItem in _board)
 			{
-				if (gem != null)
+				if (cellItem != null)
 				{
-					UnityEngine.Object.DestroyImmediate(gem.gameObject);
+					UnityEngine.Object.DestroyImmediate(cellItem.GameObject);
 				}
 			}
 		}

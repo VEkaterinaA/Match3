@@ -10,14 +10,6 @@ namespace Runtime.Extensions.System
 		private static readonly Random _random = new();
 
 
-		internal static Type ConvertToType(this Enum targetEnum)
-		{
-			return targetEnum switch
-			{
-				_ => throw new NotImplementedException($"[{nameof(ConvertToType)}] There is not implementation to convert [{targetEnum.GetType().Name}].{targetEnum} to type.")
-			};
-		}
-
 		internal static List<T> GetValuesList<T>() where T : Enum
 		{
 			return new List<T>((T[]) Enum.GetValues(typeof(T)));
@@ -28,64 +20,53 @@ namespace Runtime.Extensions.System
 			return new List<string>(Enum.GetNames(typeof(T)));
 		}
 
-		internal static PrefabType ConvertToPrefabType(StoneType oldStatus)
+		internal static PrefabType ConvertToPrefabType(CellType oldStatus)
 		{
-			switch (oldStatus)
+			return oldStatus switch
 			{
-				case StoneType.RedStone:
-					return PrefabType.RedStone;
-				case StoneType.BlueStone:
-					return PrefabType.BlueStone;
-				case StoneType.GreenStone:
-					return PrefabType.GreenStone;
-				case StoneType.YellowStone:
-					return PrefabType.YellowStone;
-				default:
-					return PrefabType.Unknown;
-			}
+				CellType.RedStone => PrefabType.RedStone,
+				CellType.BlueStone => PrefabType.BlueStone,
+				CellType.GreenStone => PrefabType.GreenStone,
+				CellType.RadiusBomb => PrefabType.RadiusBomb,
+				CellType.YellowStone => PrefabType.YellowStone,
+				CellType.VerticalBomb => PrefabType.VerticalBomb,
+				CellType.HorizontalBomb => PrefabType.HorizontalBomb,
+
+				_ => PrefabType.Unknown,
+			};
 		}
 
-		internal static TargetType ConvertToTargetType(StoneType oldStatus)
-		{
-			switch (oldStatus)
-			{
-				case StoneType.RedStone:
-					return TargetType.RedStone;
-				case StoneType.BlueStone:
-					return TargetType.BlueStone;
-				case StoneType.GreenStone:
-					return TargetType.GreenStone;
-				case StoneType.YellowStone:
-					return TargetType.YellowStone;
-				default:
-					return TargetType.Unknown;
 
-			}
+		internal static TargetType ConvertToTargetType(CellType oldStatus)
+		{
+			return oldStatus switch
+			{
+				CellType.RedStone => TargetType.RedStone,
+				CellType.BlueStone => TargetType.BlueStone,
+				CellType.GreenStone => TargetType.GreenStone,
+				CellType.RadiusBomb => TargetType.YellowStone,
+				CellType.YellowStone => TargetType.YellowStone,
+				CellType.VerticalBomb => TargetType.YellowStone,
+				CellType.HorizontalBomb => TargetType.YellowStone,
+				_ => TargetType.Unknown,
+			};
 		}
 
 		internal static TargetType ConvertToTargetType(PrefabType oldStatus)
 		{
-			switch (oldStatus)
+			return oldStatus switch
 			{
-				case PrefabType.RedStone:
-					return TargetType.RedStone;
-				case PrefabType.BlueStone:
-					return TargetType.BlueStone;
-				case PrefabType.GreenStone:
-					return TargetType.GreenStone;
-				case PrefabType.YellowStone:
-					return TargetType.YellowStone;
-				case PrefabType.RadiusBomb:
-					return TargetType.ActivateBooster;
-				case PrefabType.VerticalBomb:
-					return TargetType.ActivateBooster;
-				case PrefabType.HorizontalBomb:
-					return TargetType.ActivateBooster;
-				default:
-					return TargetType.Unknown;
-
-			}
+				PrefabType.RedStone => TargetType.RedStone,
+				PrefabType.BlueStone => TargetType.BlueStone,
+				PrefabType.GreenStone => TargetType.GreenStone,
+				PrefabType.YellowStone => TargetType.YellowStone,
+				PrefabType.RadiusBomb => TargetType.ActivateBooster,
+				PrefabType.VerticalBomb => TargetType.ActivateBooster,
+				PrefabType.HorizontalBomb => TargetType.ActivateBooster,
+				_ => TargetType.Unknown,
+			};
 		}
+
 
 
 		internal static T GetRandomValue<T>() where T : Enum

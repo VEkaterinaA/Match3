@@ -11,7 +11,6 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 {
 	internal class HUDScreen : Screen
 	{
-		private IPersistentProgressService _persistentProgressService;
 		private IScreensService _screensService;
 		private ILoopsService _loopsService;
 
@@ -25,14 +24,10 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 		}
 
 		[Inject]
-		internal void Construct(IPersistentProgressService persistentProgressService, IScreensService screensService, ILoopsService loopsService)
+		internal void Construct(IScreensService screensService, ILoopsService loopsService)
 		{
-			_persistentProgressService = persistentProgressService;
 			_screensService = screensService;
 			_loopsService = loopsService;
-
-			_persistentProgressService.InvokeAfterInitialization(Load);
-			_persistentProgressService.ActiveProgressChanged += Load;
 		}
 
 		private void Load()

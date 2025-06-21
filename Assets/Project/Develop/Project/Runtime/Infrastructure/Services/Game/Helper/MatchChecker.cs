@@ -1,7 +1,7 @@
-﻿using Runtime.Data.Configs.Core;
-using Runtime.Data.Constants.Enums.AssetReferencesTypes;
+﻿using Runtime.Data.Constants.Enums.AssetReferencesTypes;
 using Runtime.Infrastructure.Services.Game.Core;
-using Runtime.MonoBehaviours.Game;
+using Runtime.MonoBehaviours.Game.Core;
+using UnityEngine;
 using VContainer;
 
 namespace Runtime.Infrastructure.Services.Game.Helper
@@ -16,7 +16,7 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 			_levelInfoService = levelInfoService;
 		}
 
-		internal bool HasAnyPossibleMove(Stone[,] stones)
+		internal bool HasAnyPossibleMove(IBoardItem[,] stones)
 		{
 			for (var x = 0; x < _levelInfoService.LevelInfo.WidthOfBoard; x++)
 			{
@@ -36,42 +36,46 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 		{
 			return x >= 0 && x < _levelInfoService.LevelInfo.WidthOfBoard && y >= 0 && y < _levelInfoService.LevelInfo.HeightOfBoard;
 		}
+		internal bool IsInsideBoard(Vector2Int pos)
+		{
+			return pos.x >= 0 && pos.x < _levelInfoService.LevelInfo.WidthOfBoard && pos.y >= 0 && pos.y < _levelInfoService.LevelInfo.HeightOfBoard;
+		}
 
-		private bool CanSwapFormMatch(Stone[,] stones, int x1, int y1, int x2, int y2)
+		private bool CanSwapFormMatch(IBoardItem[,] board, int x1, int y1, int x2, int y2)
 		{
 			if (!IsInsideBoard(x2, y2))
 			{
 				return false;
 			}
 
-			var gem1 = stones[x1, y1];
-			var gem2 = stones[x2, y2];
+			var cellOne = board[x1, y1];
+			var cellTwo = board[x2, y2];
 
-			if (gem1 == null || gem2 == null)
+			if (cellOne == null || cellTwo == null)
 			{
 				return false;
 			}
 
-			(stones[x1, y1], stones[x2, y2]) = (stones[x2, y2], stones[x1, y1]);
+			(board[x1, y1], board[x2, y2]) = (board[x2, y2], board[x1, y1]);
 
-			var match = HasMatchAt(stones, x1, y1) || HasMatchAt(stones, x2, y2);
+			var match = HasMatchAt(board, x1, y1) || HasMatchAt(board, x2, y2);
 
-			(stones[x1, y1], stones[x2, y2]) = (stones[x2, y2], stones[x1, y1]);
+			(board[x1, y1], board[x2, y2]) = (board[x2, y2], board[x1, y1]);
 
 			return match;
 		}
 
-		private bool HasMatchAt(Stone[,] stones, int x, int y)
+		private bool HasMatchAt(IBoardItem[,] stones, int x, int y)
 		{
-			var type = stones[x, y].StoneType;
+			var type = stones[x, y].CellType;
 
 			var horizontalMatch = 1;
-			for (var i = x - 1; i >= 0 && stones[i, y]?.StoneType == type; i--)
+			for (var i = x - 1; i >= 0 && stones[i, y]?.CellType == type; i--)
 			{
 				horizontalMatch++;
 			}
 
-			for (var i = x + 1; i < _levelInfoService.LevelInfo.WidthOfBoard && stones[i, y]?.StoneType == type; i++)
+			for (var i = x + 1; i < _levelInfoService.LevelInfo.WidthOfBoard && stones[i, y]?.CellType == type; i++)
 			{
 				horizontalMatch++;
 			}
@@ -82,12 +86,12 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 			}
 
 			var verticalMatch = 1;
-			for (var i = y - 1; i >= 0 && stones[x, i]?.StoneType == type; i--)
+			for (var i = y - 1; i >= 0 && stones[x, i]?.CellType == type; i--)
 			{
 				verticalMatch++;
 			}
 
-			for (var i = y + 1; i < _levelInfoService.LevelInfo.HeightOfBoard && stones[x, i]?.StoneType == type; i++)
+			for (var i = y + 1; i < _levelInfoService.LevelInfo.HeightOfBoard && stones[x, i]?.CellType == type; i++)
 			{
 				verticalMatch++;
 			}
@@ -95,37 +99,37 @@ namespace Runtime.Infrastructure.Services.Game.Helper
 			return verticalMatch >= 3;
 		}
 
-		internal bool IsMatchFreePlacement(Stone[,] stones, int x, int y, StoneType type)
+		internal bool IsMatchFreePlacement(IBoardItem[,] stones, int x, int y, CellType type)
 		{
 			return !(HasMatchingHorizontalPair(stones, x, y, type) ||
 					 HasMatchingVerticalPair(stones, x, y, type) ||
 					 IsSurroundedBySameType(stones, x, y, type));
 		}
-		internal bool IsMatchFreePlacement(Stone[,] stones, Stone gem)
+		internal bool IsMatchFreePlacement(IBoardItem[,] stones, IBoardItem gem)
 		{
-			return !(HasMatchingHorizontalPair(stones, gem.X, gem.Y, gem.StoneType) ||
-					 HasMatchingVerticalPair(stones, gem.X, gem.Y, gem.StoneType) ||
-					 IsSurroundedBySameType(stones, gem.X, gem.Y, gem.StoneType));
+			return !(HasMatchingHorizontalPair(stones, gem.X, gem.Y, gem.CellType) ||
+					 HasMatchingVerticalPair(stones, gem.X, gem.Y, gem.CellType) ||
+					 IsSurroundedBySameType(stones, gem.X, gem.Y, gem.CellType));
 		}
 
 
-		private bool HasMatchingHorizontalPair(Stone[,] stones, int x, int y, StoneType type)
+		private bool HasMatchingHorizontalPair(IBoardItem[,] stones, int x, int y, CellType type)
 		{
-			return (x >= 2 && (stones[x - 1, y]?.StoneType == type && stones[x - 2, y]?.StoneType == type) ||
-				   (x <= _levelInfoService.LevelInfo.WidthOfBoard - 3 && stones[x + 1, y]?.StoneType == type && stones[x + 2, y]?.StoneType == type));
+			return (x >= 2 && (stones[x - 1, y]?.CellType == type && stones[x - 2, y]?.CellType == type) ||
+				   (x <= _levelInfoService.LevelInfo.WidthOfBoard - 3 && stones[x + 1, y]?.CellType == type && stones[x + 2, y]?.CellType == type));
 		}
 
-		private bool HasMatchingVerticalPair(Stone[,] stones, int x, int y, StoneType type)
+		private bool HasMatchingVerticalPair(IBoardItem[,] stones, int x, int y, CellType type)
 		{
-			return ((y >= 2) && (stones[x, y - 1]?.StoneType == type) && (stones[x, y - 2]?.StoneType == type) ||
-				   (y <= _levelInfoService.LevelInfo.HeightOfBoard - 3) && (stones[x, y + 1]?.StoneType == type) && (stones[x, y + 2]?.StoneType == type));
+			return ((y >= 2) && (stones[x, y - 1]?.CellType == type) && (stones[x, y - 2]?.CellType == type) ||
+				   (y <= _levelInfoService.LevelInfo.HeightOfBoard - 3) && (stones[x, y + 1]?.CellType == type) && (stones[x, y + 2]?.CellType == type));
 		}
 
-		private bool IsSurroundedBySameType(Stone[,] stones, int x, int y, StoneType type)
+		private bool IsSurroundedBySameType(IBoardItem[,] stones, int x, int y, CellType type)
 		{
 			return x > 0 && y > 0 && x < _levelInfoService.LevelInfo.WidthOfBoard - 1 && y < _levelInfoService.LevelInfo.HeightOfBoard - 1 &&
-				  (stones[x - 1, y]?.StoneType == type && stones[x + 1, y]?.StoneType == type ||
-				   stones[x, y - 1]?.StoneType == type && stones[x, y + 1]?.StoneType == type);
+				  (stones[x - 1, y]?.CellType == type && stones[x + 1, y]?.CellType == type ||
+				   stones[x, y - 1]?.CellType == type && stones[x, y + 1]?.CellType == type);
 		}
 	}
 }
