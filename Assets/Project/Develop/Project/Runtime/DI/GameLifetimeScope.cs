@@ -3,7 +3,6 @@ using Runtime.Attributes;
 using Runtime.Data.Configs;
 using Runtime.Data.Constants.Enums;
 using Runtime.Data.Constants.Enums.AssetReferencesTypes;
-using Runtime.Data.Progress.Runtime.Infrastructure.Services.SaveProgressServices;
 using Runtime.DI.Core;
 using Runtime.Infrastructure.Factories;
 using Runtime.Infrastructure.Factories.Core;
@@ -108,9 +107,11 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 			containerBuilder.Register<Pauseable>(Lifetime.Singleton).AsImplementedInterfaces();
 			containerBuilder.Register<BoardProvider>(Lifetime.Singleton);
 			containerBuilder.Register<BoosterCreator>(Lifetime.Singleton);
-			containerBuilder.Register<StoneAnimation>(Lifetime.Singleton);
+			containerBuilder.Register<BoardItemAnimation>(Lifetime.Singleton);
 			containerBuilder.Register<ItemCreator>(Lifetime.Singleton);
 			containerBuilder.Register<MatchChecker>(Lifetime.Singleton);
+
+			containerBuilder.Register<SaveManager>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
 
 			containerBuilder.RegisterComponent(_loopsService).AsImplementedInterfaces();
 			containerBuilder.UseEntryPoints(ConfigureEntryPoints);
@@ -125,7 +126,6 @@ namespace Runtime.MonoBehaviours.LifetimeScopes
 				entryPointsBuilder.Add<InputService>();
 				entryPointsBuilder.Add<BoardService>();
 				entryPointsBuilder.Add<GameService>();
-				entryPointsBuilder.Add<SaveManager>();
 			}
 		}
 

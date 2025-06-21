@@ -13,7 +13,7 @@ using VContainer;
 
 namespace Runtime.Infrastructure.Services.Game.Helper
 {
-	internal class StoneAnimation
+	internal class BoardItemAnimation
 	{
 		private ILevelInfoService _levelInfoService;
 		private BoardProvider _boardProvider;

@@ -13,6 +13,6 @@
                 <engine:Slider value="60" high-value="100" name="MusicSlider" style="width: 340px; height: 40px; justify-content: center;" />
             </engine:VisualElement>
         </engine:VisualElement>
-        <engine:Button name="CloseButton" style="border-left-color: rgba(149, 149, 149, 0); border-right-color: rgba(149, 149, 149, 0); border-top-color: rgba(149, 149, 149, 0); border-bottom-color: rgba(149, 149, 149, 0);" />
+        <engine:Button name="CloseButton" style="border-left-color: rgba(149, 149, 149, 0); border-right-color: rgba(149, 149, 149, 0); border-top-color: rgba(149, 149, 149, 0); border-bottom-color: rgba(149, 149, 149, 0); background-image: url(&quot;project://database/Assets/Project/Art/Textures/UI/Back.png?fileID=2800000&amp;guid=0d4e3965bd29d544cbb3bbf9f39d2936&amp;type=3#Back&quot;);" />
     </engine:VisualElement>
 </engine:UXML>

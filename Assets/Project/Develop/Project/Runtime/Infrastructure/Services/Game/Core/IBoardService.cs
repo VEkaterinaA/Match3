@@ -13,6 +13,8 @@ namespace Runtime.Infrastructure.Services.Game.Core
 
 		internal UniTask InitializeBoard(Transform boardParent);
 
+		internal void RunBooster(IBoardItem booster);
+
 		internal void TrySwapOrRevert(IBoardItem cellOne, IBoardItem cellTwo);
 
 		internal void SwapGemsInBoard(IBoardItem cellOne, IBoardItem cellTwo);

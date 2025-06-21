@@ -9,7 +9,7 @@ using VContainer;
 using Screen = Runtime.Visual.UI.UIDocumentWrappers.Screens.Core.Screen;
 using Cysharp.Threading.Tasks;
 using Runtime.Extensions.System;
-using Runtime.Data.Progress.Runtime.Infrastructure.Services.SaveProgressServices;
+using Runtime.Infrastructure.Services.SaveProgressServices;
 
 namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 {
@@ -41,7 +41,7 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 			_gameService = gameService;
 			_saveManager = saveManager;
 
-			InitSliders();
+			_saveManager.InvokeAfterInitialization(InitSliders);
 		}
 
 		protected override void Show()
@@ -113,7 +113,7 @@ namespace Runtime.Visual.UI.UIDocumentWrappers.Screens
 
 		private async UniTask SaveSettingsAsync()
 		{
-			await _persistentProgressService.SaveGameData();
+			_saveManager.SaveData();
 		}
 	}
 }

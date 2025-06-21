@@ -18,7 +18,7 @@ namespace Runtime.MonoBehaviours.Game
 	internal class GameplayController : InjectedBehaviour
 	{
 		private ILevelInfoService _levelInfoService;
-		private StoneAnimation _stoneAnimation;
+		private BoardItemAnimation _stoneAnimation;
 		private IScreensService _screensService;
 		private IInputService _inputService;
 		private IBoardService _boardService;
@@ -43,7 +43,7 @@ namespace Runtime.MonoBehaviours.Game
 
 
 		[Inject]
-		private void Construct(IInputService inputService, IBoardService boardService, StoneAnimation stoneAnimation, ILevelInfoService levelInfoService,
+		private void Construct(IInputService inputService, IBoardService boardService, BoardItemAnimation stoneAnimation, ILevelInfoService levelInfoService,
 								IScreensService screensService, IPauseable pauseable)
 		{
 			_levelInfoService = levelInfoService;
@@ -92,16 +92,28 @@ namespace Runtime.MonoBehaviours.Game
 			UnsubscribeFromEvents();
 		}
 
-
-		private void OnGemSelect()
+		private void OnBoosterCheckAndActivate()
 		{
 			var clickPosition = _inputService.PointerPosition != Vector2.zero ? _inputService.PointerPosition : (Vector2) Input.mousePosition;
 
-			var clickedGem = GetGemAtPosition(clickPosition);
+			var clickedBooster = GetItemAtPosition<Booster>(clickPosition);
 
-			if (clickedGem != null)
+			if(clickedBooster != null)
 			{
-				_selectedCell = clickedGem;
+				_boardService.RunBooster(clickedBooster);
+			}
+		}
+
+
+		private void OnStoneSelect()
+		{
+			var clickPosition = _inputService.PointerPosition != Vector2.zero ? _inputService.PointerPosition : (Vector2) Input.mousePosition;
+
+			var clickedStone = GetItemAtPosition<Stone>(clickPosition);
+
+			if (clickedStone != null)
+			{
+				_selectedCell = clickedStone;
 				_dragStartPosition = clickPosition;
 			}
 		}
@@ -144,7 +156,7 @@ namespace Runtime.MonoBehaviours.Game
 			}
 		}
 
-		private Stone GetGemAtPosition(Vector2 position)
+		private T GetItemAtPosition<T>(Vector2 position) where T : class
 		{
 			_pointerData = new PointerEventData(_eventSystem)
 			{
@@ -156,7 +168,7 @@ namespace Runtime.MonoBehaviours.Game
 
 			if (results.Count > 0)
 			{
-				return results[0].gameObject.GetComponent<Stone>();
+				return results[0].gameObject.GetComponent<T>();
 			}
 
 			return null;
@@ -184,7 +196,8 @@ namespace Runtime.MonoBehaviours.Game
 
 		private void SubscribeToEvents()
 		{
-			_inputService.Select += OnGemSelect;
+			_inputService.DoubleClick += OnBoosterCheckAndActivate;
+			_inputService.Select += OnStoneSelect;
 			_inputService.Drag += OnGemDrag;
 
 			_pauseable.OnPause += () => _isPause = true;
@@ -193,7 +206,8 @@ namespace Runtime.MonoBehaviours.Game
 
 		private void UnsubscribeFromEvents()
 		{
-			_inputService.Select -= OnGemSelect;
+			_inputService.DoubleClick -= OnBoosterCheckAndActivate;
+			_inputService.Select -= OnStoneSelect;
 			_inputService.Drag -= OnGemDrag;
 
 			_pauseable.OnPause -= () => _isPause = true;

@@ -12,15 +12,16 @@ namespace Runtime.Infrastructure.Services.Input
 	{
 		private readonly InputSystem _inputSystem = new InputSystem();
 
-		private Boolean _isEnabled;
-		private Boolean _isDragging;
-		private Vector2 _startPosition;
-		private const float MinSwipeDistance = 30f;
+		private const Single _doubleClickThreshold = 0.3f;
 
+		private Single _lastClickTime;
+		private Int32 _clickCounter;
+		private Boolean _isEnabled;
 
 		private ActionWrapper _selectActionWrapper;
 		private ActionWrapper _swipeActionWrapper;
 		private ActionWrapper _dragActionWrapper;
+		private Action _doubleClick;
 
 		private IInputService Service => this;
 
@@ -53,6 +54,11 @@ namespace Runtime.Infrastructure.Services.Input
 			}
 		}
 
+		event Action IInputService.DoubleClick
+		{
+			add => _doubleClick += value;
+			remove => _doubleClick -= value;
+		}
 		event Action IInputService.Select
 		{
 			add => _selectActionWrapper.Started += value;
@@ -78,12 +84,50 @@ namespace Runtime.Infrastructure.Services.Input
 			_swipeActionWrapper = new ActionWrapper(_inputSystem.Player.EndDrag);
 			_dragActionWrapper = new ActionWrapper(_inputSystem.Player.DragDelta);
 
+			Subscribe();
+
 			Service.IsEnabled = true;
 		}
 
 		void IDisposable.Dispose()
 		{
+			Unsubscribe();
+
 			_inputSystem.Dispose();
+		}
+
+		private void ClickCounter()
+		{
+			var time = Time.time;
+
+			if (time - _lastClickTime <= _doubleClickThreshold)
+			{
+				_clickCounter++;
+			}
+			else
+			{
+				_clickCounter = 1;
+			}
+
+			_lastClickTime = time;
+
+			if(_clickCounter == 2)
+			{
+				_doubleClick?.Invoke();
+
+				_clickCounter = 0;
+				_lastClickTime = 0;
+			}
+		}
+
+		private void Subscribe()
+		{
+			_selectActionWrapper.Started += ClickCounter;
+		}
+
+		private void Unsubscribe()
+		{
+			_selectActionWrapper.Started -= ClickCounter;
 		}
 
 

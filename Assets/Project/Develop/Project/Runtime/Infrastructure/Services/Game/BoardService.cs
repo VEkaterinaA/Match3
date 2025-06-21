@@ -21,18 +21,18 @@ namespace Runtime.Infrastructure.Services.Game
 	{
 		private ILevelInfoService _levelInfoService;
 		private IGameConfig _gameConfig;
+		private BoardItemAnimation _boardItemAnimation;
 		private BoosterCreator _boosterCreator;
-		private StoneAnimation _stoneAnimation;
 		private BoardProvider _boardProvider;
 		private MatchChecker _matchChecker;
-		private ItemCreator _stoneCreator;
+		private ItemCreator _itemCreator;
 
 		private IBoardItem[,] _board;
 
 		private readonly HashSet<IBoardItem> _gemsToDestroy = new();
 
-		private Int32 _countOfGemsDestroyed;
-		private Int32 _countOfGemsToBeDestroy;
+		private Int32 _countOfBoardItemDestroyed;
+		private Int32 _countOfBoardItemToBeDestroy;
 
 		private Transform _boardParent;
 
@@ -54,15 +54,15 @@ namespace Runtime.Infrastructure.Services.Game
 		}
 
 		[Inject]
-		private void Construct(IGameConfig gameConfig, ItemCreator stoneCreator, MatchChecker matchChecker, StoneAnimation stoneAnimation, BoardProvider boardProvider, ILevelInfoService levelInfoService,
+		private void Construct(IGameConfig gameConfig, ItemCreator stoneCreator, MatchChecker matchChecker, BoardItemAnimation stoneAnimation, BoardProvider boardProvider, ILevelInfoService levelInfoService,
 								BoosterCreator boosterCreator)
 		{
 			_levelInfoService = levelInfoService;
-			_stoneAnimation = stoneAnimation;
+			_boardItemAnimation = stoneAnimation;
 			_boosterCreator = boosterCreator;
 			_boardProvider = boardProvider;
 			_matchChecker = matchChecker;
-			_stoneCreator = stoneCreator;
+			_itemCreator = stoneCreator;
 			_gameConfig = gameConfig;
 		}
 
@@ -81,7 +81,7 @@ namespace Runtime.Infrastructure.Services.Game
 				{
 					for (var y = 0; y < height; y++)
 					{
-						_board[x, y] = await _stoneCreator.CreateStone(_board, x, y, offset, boardParent);
+						_board[x, y] = await _itemCreator.CreateStone(_board, x, y, offset, boardParent);
 					}
 				}
 
@@ -89,7 +89,7 @@ namespace Runtime.Infrastructure.Services.Game
 				{
 					for (var y = 0; y < height; y++)
 					{
-						_stoneAnimation.PlaySpawnAnimation(_board[x, y]);
+						_boardItemAnimation.PlaySpawnAnimation(_board[x, y]);
 					}
 				}
 			}
@@ -97,6 +97,72 @@ namespace Runtime.Infrastructure.Services.Game
 
 			_isInitialized = true;
 			_initialized?.Invoke();
+		}
+
+		void IBoardService.RunBooster(IBoardItem booster)
+		{
+			var x = booster.X;
+			var y = booster.Y;
+
+			HashSet<IBoardItem> cellsToDestroy = new();
+
+			cellsToDestroy.Add(booster);
+
+			switch (booster.CellType)
+			{
+				case CellType.HorizontalBomb:
+					for (var col = 0; col < _levelInfoService.LevelInfo.WidthOfBoard; col++)
+					{
+						var cell = _board[col, y];
+						if (cell != null && !cell.IsBooster)
+						{
+							cellsToDestroy.Add(cell);
+						}
+					}
+					break;
+
+				case CellType.VerticalBomb:
+					for (var row = 0; row < _levelInfoService.LevelInfo.HeightOfBoard; row++)
+					{
+						var cell = _board[x, row];
+						if (cell != null && !cell.IsBooster)
+						{
+							cellsToDestroy.Add(cell);
+						}
+					}
+					break;
+
+				case CellType.RadiusBomb:
+					for (var dx = -1; dx <= 1; dx++)
+					{
+						for (var dy = -1; dy <= 1; dy++)
+						{
+							var nx = x + dx;
+							var ny = y + dy;
+
+							if (_matchChecker.IsInsideBoard(nx, ny))
+							{
+								var cell = _board[nx, ny];
+								if (cell != null && !cell.IsBooster)
+								{
+									cellsToDestroy.Add(cell);
+								}
+							}
+						}
+					}
+					break;
+
+				default:
+					Debug.LogWarning($"Booster of type {booster.CellType} has no effect implementation.");
+					return;
+			}
+
+			_board[x, y] = null;
+
+			if (cellsToDestroy.Count > 0)
+			{
+				DestroyMatches(cellsToDestroy);
+			}
 		}
 
 		void IBoardService.SwapGemsInBoard(IBoardItem cellOne, IBoardItem cellTwo)
@@ -136,7 +202,7 @@ namespace Runtime.Infrastructure.Services.Game
 			{
 				Service.SwapGemsInBoard(cellOne, CellTwo);
 
-				_stoneAnimation.SwapWith(cellOne, CellTwo);
+				_boardItemAnimation.SwapWith(cellOne, CellTwo);
 			}
 			else
 			{
@@ -164,15 +230,21 @@ namespace Runtime.Infrastructure.Services.Game
 				{
 					var cell = _board[x, y];
 					if (cell == null)
+					{
 						continue;
+					}
 
 					var vertical = GetLineMatch(cell, Vector2Int.right);
 					if (vertical.Count >= 3)
+					{
 						allMatches.Add(vertical);
+					}
 
 					var horizontal = GetLineMatch(cell, Vector2Int.up);
 					if (horizontal.Count >= 3)
+					{
 						allMatches.Add(horizontal);
+					}
 				}
 			}
 
@@ -198,7 +270,10 @@ namespace Runtime.Infrastructure.Services.Game
 			while (_matchChecker.IsInsideBoard(x, y))
 			{
 				var nextCell = _board[x, y];
-				if (nextCell == null || nextCell.CellType != startCell.CellType) break;
+				if (nextCell == null || nextCell.CellType != startCell.CellType)
+				{
+					break;
+				}
 
 				match.Add(nextCell);
 				x += direction.x;
@@ -210,7 +285,7 @@ namespace Runtime.Infrastructure.Services.Game
 
 		private void DestroyMatches(HashSet<IBoardItem> matchedCells)
 		{
-			_countOfGemsToBeDestroy = matchedCells.Count;
+			_countOfBoardItemToBeDestroy = matchedCells.Count;
 
 			var targetType = _levelInfoService.LevelInfo.TargetType;
 
@@ -225,27 +300,27 @@ namespace Runtime.Infrastructure.Services.Game
 					_levelInfoService.SubsctractFromGoalQuantity();
 				}
 
-				cell.CellDestroyComplete += CheckAndHandleGemsDestruction;
+				cell.CellDestroyComplete += CheckAndHandleBoardItemsDestruction;
 
-				_stoneAnimation.PlayDestroyAnimation(cell);
+				_boardItemAnimation.PlayDestroyAnimation(cell);
 			}
 		}
-		private async void CheckAndHandleGemsDestruction(IBoardItem cell)
+		private async void CheckAndHandleBoardItemsDestruction(IBoardItem cell)
 		{
-			cell.CellDestroyComplete -= CheckAndHandleGemsDestruction;
+			cell.CellDestroyComplete -= CheckAndHandleBoardItemsDestruction;
 
-			_countOfGemsDestroyed++;
+			_countOfBoardItemDestroyed++;
 
-			if (_countOfGemsToBeDestroy == _countOfGemsDestroyed)
+			if (_countOfBoardItemToBeDestroy == _countOfBoardItemDestroyed)
 			{
-				_countOfGemsToBeDestroy = 0;
-				_countOfGemsDestroyed = 0;
+				_countOfBoardItemToBeDestroy = 0;
+				_countOfBoardItemDestroyed = 0;
 
 				foreach (var (x, y, type) in _boostersToCreate)
 				{
-					var booster = await _stoneCreator.CreateBooster(x, y, type, _boardProvider.GetBoardOffset(), _boardParent);
+					var booster = await _itemCreator.CreateBooster(x, y, type, _boardProvider.GetBoardOffset(), _boardParent);
 					_board[x, y] = booster;
-					_stoneAnimation.PlaySpawnAnimation(booster);
+					_boardItemAnimation.PlaySpawnAnimation(booster);
 				}
 
 				_boostersToCreate.Clear();
@@ -306,8 +381,8 @@ namespace Runtime.Infrastructure.Services.Game
 				{
 					if (_board[x, y] == null)
 					{
-						_board[x, y] = await _stoneCreator.CreateStone(_board, x, y, offset, _boardParent);
-						_stoneAnimation.PlaySpawnAnimation(_board[x, y]);
+						_board[x, y] = await _itemCreator.CreateStone(_board, x, y, offset, _boardParent);
+						_boardItemAnimation.PlaySpawnAnimation(_board[x, y]);
 					}
 				}
 			}
